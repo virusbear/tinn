@@ -20,7 +20,7 @@ class DriverGL: Driver {
         multisample: MultiSample,
         levels: MipMapLevel
     ): ColorBuffer =
-        ColorBufferGL.create(
+        ColorBufferGL(
             width,
             height,
             format,
@@ -37,7 +37,7 @@ class DriverGL: Driver {
     }
 
     override fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer =
-        VertexBufferGL.create(size, format)
+        VertexBufferGL(size, format)
 
     override fun createRenderTarget(width: Int, height: Int) {
         TODO("Not yet implemented")

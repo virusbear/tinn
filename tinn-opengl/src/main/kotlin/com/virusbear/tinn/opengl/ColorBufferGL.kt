@@ -7,50 +7,36 @@ import com.virusbear.tinn.MultiSample
 import org.lwjgl.opengl.GL33C.*
 import java.nio.ByteBuffer
 
-class ColorBufferGL private constructor(
-    private val target: Int,
-    private val texture: Int,
-    private val colorFormat: ColorFormat,
-    private val samples: MultiSample,
+class ColorBufferGL internal constructor(
     override val width: Int,
-    override val height: Int
+    override val height: Int,
+    private val format: ColorFormat,
+    samples: MultiSample,
+    levels: MipMapLevel
 ): ColorBuffer {
-    companion object {
-        fun create(
-            width: Int,
-            height: Int,
-            format: ColorFormat,
-            multisample: MultiSample,
-            levels: MipMapLevel
-        ): ColorBuffer {
-            require(width < LimitsGL.MaxTextureSize)
-            require(height < LimitsGL.MaxTextureSize)
-            require(multisample.samples < LimitsGL.MaxSamples)
+    private val target: Int
+    private val texture: Int
 
-            val texture = glGenTextures()
-            checkGLErrors()
+    init {
+        require(width < LimitsGL.MaxTextureSize)
+        require(height < LimitsGL.MaxTextureSize)
 
-            return ColorBufferGL(
-                when(multisample) {
-                    MultiSample.None -> GL_TEXTURE_2D
-                    else -> GL_TEXTURE_2D_MULTISAMPLE
-                },
-                texture,
-                format,
-                multisample,
-                width,
-                height
-            ).apply {
-                bound {
-                    if(levels != MipMapLevel.None) {
-                        glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels.levels - 1)
-                    }
+        texture = glGenTextures()
+        checkGLErrors()
 
-                    when(multisample) {
-                        MultiSample.None -> glTexImage2D(target, 0, colorFormat.internalFormat, width, height, 0, colorFormat.glFormat, format.glType, null as ByteBuffer?)
-                        else -> glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), colorFormat.internalFormat, width, height, false)
-                    }
-                }
+        target = when(samples) {
+            MultiSample.None -> GL_TEXTURE_2D
+            else -> GL_TEXTURE_2D_MULTISAMPLE
+        }
+
+        bound {
+            if(levels != MipMapLevel.None) {
+                glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels.levels - 1)
+            }
+
+            when(samples) {
+                MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
+                else -> glTexImage2DMultisample(target, samples.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
             }
         }
     }
