@@ -5,4 +5,6 @@ interface ColorBuffer: Bindable, Destroyable {
     val height: Int
 
     //TODO: implement reading and writing
+    fun generateMipMaps()
+    fun filter(minifyingFilter: TextureFilter, magnifyingFilter: TextureFilter)
 }

@@ -1,7 +1,9 @@
 package com.virusbear.tinn.studio
 
-import com.virusbear.tinn.*
+import com.virusbear.tinn.Driver
+import com.virusbear.tinn.VertexFormat
 import com.virusbear.tinn.imgui.ImGuiUIContext
+import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.opengl.checkGLErrors
 import imgui.ImGui
@@ -11,10 +13,10 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL13C.GL_TEXTURE0
 import org.lwjgl.opengl.GL13C.glActiveTexture
+import org.lwjgl.opengl.GL30C.*
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 import java.nio.ByteBuffer
-import org.lwjgl.opengl.GL30C.*
 
 fun main() {
     val window = initOpenGl()
@@ -32,6 +34,9 @@ fun main() {
          0.0f,  0.5f, 0.0f
     )
 
+    val vb = Driver.driver.createVertexBuffer(3, VertexFormat().apply { position() }).apply {
+
+    }
     val vbo = glGenBuffers()
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
@@ -97,9 +102,12 @@ fun main() {
     glBindFramebuffer(GL_FRAMEBUFFER, fb)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0)
 
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) println("Framebuffer ready for use")
+
     glDrawArrays(GL_TRIANGLES, 0, vertices.size)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    glDeleteFramebuffers(fb)
 
     loop(window) {
         context.render {

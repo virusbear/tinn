@@ -1,7 +1,8 @@
 package com.virusbear.tinn.imgui
 
 import com.virusbear.tinn.ui.UIContext
-import imgui.ImGui.*
+import imgui.ImGui.createContext
+import imgui.ImGui.destroyContext
 import imgui.flag.ImGuiConfigFlags
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw

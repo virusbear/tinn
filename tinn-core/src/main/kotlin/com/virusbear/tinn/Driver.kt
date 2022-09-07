@@ -2,8 +2,8 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.shader.*
 
-interface Driver: Destroyable {
-    fun createColorBuffer(
+abstract class Driver: Destroyable {
+    abstract fun createColorBuffer(
         width: Int,
         height: Int,
         format: ColorFormat,
@@ -11,19 +11,36 @@ interface Driver: Destroyable {
         levels: MipMapLevel
     ): ColorBuffer
 
-    fun createDepthBuffer(width: Int, height: Int): DepthBuffer
-    fun createIndexBuffer(size: Int): IndexBuffer
-    fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer
-    fun createRenderTarget(width: Int, height: Int) //TODO: add attachments (colorbuffers, depthbuffers)
-    fun createComputeShader(code: String): ComputeShader
-    fun createEvaluationShader(code: String): EvaluationShader
-    fun createFragmentShader(code: String): FragmentShader
-    fun createGeometryShader(code: String): GeometryShader
-    fun createShaderProgram(): ShaderProgram
-    fun createTesselationControlShader(code: String): TesselationControlShader
-    fun createVertexShader(code: String): VertexShader
+    abstract fun createDepthBuffer(width: Int, height: Int): DepthBuffer
+    abstract fun createIndexBuffer(size: Int): IndexBuffer
+    abstract fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer
+    abstract fun createRenderTarget(width: Int, height: Int) //TODO: add attachments (colorbuffers, depthbuffers)
+    abstract fun createComputeShader(code: String): ComputeShader
+    abstract fun createEvaluationShader(code: String): EvaluationShader
+    abstract fun createFragmentShader(code: String): FragmentShader
+    abstract fun createGeometryShader(code: String): GeometryShader
+    abstract fun createShaderProgram(): ShaderProgram
+    abstract fun createTesselationControlShader(code: String): TesselationControlShader
+    abstract fun createVertexShader(code: String): VertexShader
     //TODO: add loadShader(binary: ShaderBinary): Shader?
     //TODO: add loadShaderProgram(binary: ShaderProgramBinary): ShaderProgram?
+
+    final override var destroyed: Boolean = false
+        private set
+    private val tracked = mutableSetOf<Trackable>()
+
+    fun track(trackable: Trackable) {
+        tracked += trackable
+    }
+    fun untrack(trackable: Trackable) {
+        tracked -= trackable
+    }
+
+    override fun destroy() {
+        tracked.forEach(Trackable::destroy)
+
+        destroyed = true
+    }
 
     companion object {
         private var instance: Driver? = null

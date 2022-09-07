@@ -1,5 +1,6 @@
 package com.virusbear.tinn.opengl
 
+import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.VertexBuffer
 import com.virusbear.tinn.VertexFormat
 import org.lwjgl.opengl.GL30C.*
@@ -7,7 +8,7 @@ import org.lwjgl.opengl.GL30C.*
 class VertexBufferGL internal constructor(
     override val size: Int,
     override val format: VertexFormat
-): VertexBuffer {
+): VertexBuffer, Trackable() {
     private val vao: Int
     private val vbo: Int
 
@@ -53,13 +54,14 @@ class VertexBufferGL internal constructor(
         checkGLErrors()
     }
 
-    override var destroyed: Boolean = false
-        private set
-
     override fun destroy() {
+        if(destroyed)
+            return
+
         glDeleteVertexArrays(vao)
         glDeleteBuffers(vbo)
         checkGLErrors()
-        destroyed = true
+
+        super.destroy()
     }
 }

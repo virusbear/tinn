@@ -3,16 +3,7 @@ package com.virusbear.tinn.opengl
 import com.virusbear.tinn.*
 import com.virusbear.tinn.shader.*
 
-class DriverGL: Driver {
-    override var destroyed: Boolean = false
-    private set
-
-    override fun destroy() {
-        //TODO: destroy driver here
-
-        destroyed = true
-    }
-
+class DriverGL: Driver() {
     override fun createColorBuffer(
         width: Int,
         height: Int,
@@ -26,18 +17,22 @@ class DriverGL: Driver {
             format,
             multisample,
             levels
-        )
+        ).apply { track(this) }
 
     override fun createDepthBuffer(width: Int, height: Int): DepthBuffer {
         TODO("Not yet implemented")
     }
 
-    override fun createIndexBuffer(size: Int): IndexBuffer {
-        TODO("Not yet implemented")
-    }
+    override fun createIndexBuffer(size: Int): IndexBuffer =
+        IndexBufferGL(
+            size
+        ).apply { track(this) }
 
     override fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer =
-        VertexBufferGL(size, format)
+        VertexBufferGL(
+            size,
+            format
+        ).apply { track(this) }
 
     override fun createRenderTarget(width: Int, height: Int) {
         TODO("Not yet implemented")

@@ -1,6 +1,6 @@
 package com.virusbear.tinn
 
-import java.util.LinkedList
+import java.util.*
 
 class VertexFormat {
     private val attributes: MutableList<VertexAttribute> = LinkedList()

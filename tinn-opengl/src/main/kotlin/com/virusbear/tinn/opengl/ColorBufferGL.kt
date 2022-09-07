@@ -1,9 +1,6 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.ColorFormat
-import com.virusbear.tinn.MipMapLevel
-import com.virusbear.tinn.MultiSample
+import com.virusbear.tinn.*
 import org.lwjgl.opengl.GL33C.*
 import java.nio.ByteBuffer
 
@@ -11,9 +8,9 @@ class ColorBufferGL internal constructor(
     override val width: Int,
     override val height: Int,
     private val format: ColorFormat,
-    samples: MultiSample,
-    levels: MipMapLevel
-): ColorBuffer {
+    private val samples: MultiSample,
+    private val levels: MipMapLevel
+): ColorBuffer, Trackable() {
     private val target: Int
     private val texture: Int
 
@@ -41,8 +38,22 @@ class ColorBufferGL internal constructor(
         }
     }
 
-    override var destroyed: Boolean = false
-    private set
+    override fun generateMipMaps() {
+        require(samples == MultiSample.None) { "Multisampled mipmaps not supported" }
+        if(levels == MipMapLevel.None)
+            return
+
+        bound {
+            glGenerateMipmap(target)
+        }
+    }
+
+    override fun filter(minifyingFilter: TextureFilter, magnifyingFilter: TextureFilter) {
+        bound {
+            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minifyingFilter.gl)
+            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magnifyingFilter.gl)
+        }
+    }
 
     override fun bind() {
         require(!destroyed) { "ColorBuffer is destroyed" }
@@ -63,6 +74,7 @@ class ColorBufferGL internal constructor(
 
         glDeleteTextures(texture)
         checkGLErrors()
-        destroyed = true
+
+        super.destroy()
     }
 }

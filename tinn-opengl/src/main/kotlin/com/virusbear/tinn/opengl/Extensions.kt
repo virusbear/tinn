@@ -1,9 +1,6 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.ColorFormat
-import com.virusbear.tinn.PixelFormat
-import com.virusbear.tinn.PixelType
-import com.virusbear.tinn.VertexComponentType
+import com.virusbear.tinn.*
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_LUMINANCE
 import org.lwjgl.opengl.GL30C.*
@@ -72,4 +69,10 @@ val VertexComponentType.gl: Int
         VertexComponentType.USHORT -> GL_UNSIGNED_SHORT
         VertexComponentType.INT -> GL_INT
         VertexComponentType.UINT -> GL_UNSIGNED_INT
+    }
+
+val TextureFilter.gl: Int
+    get() = when(this) {
+        TextureFilter.NEAREST -> GL_NEAREST
+        TextureFilter.LINEAR -> GL_LINEAR
     }

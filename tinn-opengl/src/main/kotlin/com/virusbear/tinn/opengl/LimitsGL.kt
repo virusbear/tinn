@@ -1,7 +1,5 @@
 package com.virusbear.tinn.opengl
 
-import org.lwjgl.opengl.GL30C.*
-import org.lwjgl.opengl.GL31C.*
 import org.lwjgl.opengl.GL32C.GL_MAX_SERVER_WAIT_TIMEOUT
 import org.lwjgl.opengl.GL32C.GL_MAX_VERTEX_OUTPUT_COMPONENTS
 import org.lwjgl.opengl.GL41C.*
@@ -244,11 +242,4 @@ object LimitsGL {
     val MaxViewportDims by lazy {
         glGetInteger(GL_MAX_VIEWPORT_DIMS)
     }
-
-    //TODO:
-    /*
-
-        GL_MAX_VERTEX_UNIFORM_VECTORS
-        GL_MAX_VIEWPORT_DIMS
-     */
 }
