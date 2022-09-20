@@ -17,25 +17,25 @@ class DriverGL: Driver() {
             format,
             multisample,
             levels
-        ).apply { track(this) }
+        )
 
     override fun createDepthBuffer(width: Int, height: Int): DepthBuffer {
-        TODO("Not yet implemented")
+        TODO("Prio 5")
     }
 
     override fun createIndexBuffer(size: Int): IndexBuffer =
         IndexBufferGL(
             size
-        ).apply { track(this) }
+        )
 
     override fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer =
         VertexBufferGL(
             size,
             format
-        ).apply { track(this) }
+        )
 
     override fun createRenderTarget(width: Int, height: Int) {
-        TODO("Not yet implemented")
+        TODO("Prio 4")
     }
 
     override fun createComputeShader(code: String): ComputeShader {
@@ -47,7 +47,7 @@ class DriverGL: Driver() {
     }
 
     override fun createFragmentShader(code: String): FragmentShader {
-        TODO("Not yet implemented")
+        TODO("Prio 2")
     }
 
     override fun createGeometryShader(code: String): GeometryShader {
@@ -55,7 +55,7 @@ class DriverGL: Driver() {
     }
 
     override fun createShaderProgram(): ShaderProgram {
-        TODO("Not yet implemented")
+        TODO("Prio 3")
     }
 
     override fun createTesselationControlShader(code: String): TesselationControlShader {
@@ -63,6 +63,6 @@ class DriverGL: Driver() {
     }
 
     override fun createVertexShader(code: String): VertexShader {
-        TODO("Not yet implemented")
+        TODO("Prio 1")
     }
 }

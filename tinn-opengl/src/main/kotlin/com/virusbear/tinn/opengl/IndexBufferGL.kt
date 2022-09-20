@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL15C.*
 class IndexBufferGL(
     override val size: Int
 ): IndexBuffer, Trackable() {
-
     private val ebo: Int
 
     init {

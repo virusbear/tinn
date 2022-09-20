@@ -37,6 +37,8 @@ val Vec2.yyx: Vec3
     get() = Vec3(y, y, x)
 val Vec2.yyy: Vec3
     get() = Vec3(y, y, y)
+val Vec3.xy0: Vec3
+    get() = Vec3(x, y, 0.0)
 
 // IVec2 -> IVec3
 val IVec2.xxx: IVec3
@@ -55,6 +57,8 @@ val IVec2.yyx: IVec3
     get() = IVec3(y, y, x)
 val IVec2.yyy: IVec3
     get() = IVec3(y, y, y)
+val IVec3.xy0: IVec3
+    get() = IVec3(x, y, 0)
 
 //Vec3 -> Vec2
 val Vec3.xx: Vec2
