@@ -1,6 +1,6 @@
 package com.virusbear.tinn
 
-interface VertexBuffer: Bindable, Destroyable {
+interface VertexBuffer: Buffer, Bindable, Destroyable {
     val size: Int
     val format: VertexFormat
 

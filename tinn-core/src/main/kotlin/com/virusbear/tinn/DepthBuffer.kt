@@ -1,6 +1,6 @@
 package com.virusbear.tinn
 
-interface DepthBuffer: Bindable, Destroyable {
+interface DepthBuffer: Buffer, Bindable, Destroyable {
     val width: Int
     val height: Int
 

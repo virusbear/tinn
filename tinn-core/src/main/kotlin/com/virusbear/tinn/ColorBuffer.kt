@@ -1,6 +1,6 @@
 package com.virusbear.tinn
 
-interface ColorBuffer: Bindable, Destroyable {
+interface ColorBuffer: Buffer, Bindable, Destroyable {
     val width: Int
     val height: Int
 
