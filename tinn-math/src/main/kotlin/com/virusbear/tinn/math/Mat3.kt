@@ -30,7 +30,11 @@ data class Mat3(
 
     val inverse: Mat3
         get() {
-            require(determinant != 0.0) { "Unable to inverse matrix with determinant=0"}
+            if (this == IDENTITY) {
+                return this
+            }
+
+            require(determinant != 0.0) { "Unable to inverse matrix with determinant=0" }
 
             val invDet = 1.0 / determinant
 
