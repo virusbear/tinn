@@ -12,19 +12,52 @@ abstract class Mat<T: Mat<T>>(
     }
 
     operator fun plus(other: T): T {
-        TODO("Not yet implemented")
+        val result = create()
+
+        for(i in matrix.indices) {
+            result.matrix[i] = matrix[i] + other.matrix[i]
+        }
+
+        return result
     }
 
     operator fun minus(other: T): T {
-        TODO("Not yet implemented")
+        val result = create()
+
+        for(i in matrix.indices) {
+            result.matrix[i] = matrix[i] - other.matrix[i]
+        }
+
+        return result
     }
 
     operator fun times(other: T): T {
-        TODO("Not yet implemented")
+        val result = create()
+
+        for(c in 0 until dim) {
+            for(r in 0 until dim) {
+                var value = 0.0
+
+                for(n in 0 until dim) {
+                    value += this[n, r] * other[c, n]
+                }
+
+                result[c, r] = value
+            }
+        }
+
+        return result
     }
 
     operator fun times(scale: Number): T {
-        TODO("Not yet implemented")
+        val value = scale.toDouble()
+        val result = create()
+
+        for(i in matrix.indices) {
+            result.matrix[i] = matrix[i] * value
+        }
+
+        return result
     }
 
     operator fun div(scale: Number): T =
@@ -33,10 +66,10 @@ abstract class Mat<T: Mat<T>>(
     //TODO: How to implement multiplication with vector with this base implementation?
     //TODO: How to define static INDENTITY & ZERO constants
 
-    val T: T = transpose()
-    val trace: Double = trace()
-    val determinant: Double = determinant()
-    val inverse: T = invert()
+    val T: T by lazy { transpose() }
+    val trace: Double by lazy { trace() }
+    val determinant: Double by lazy { determinant() }
+    val inverse: T by lazy { invert() }
 
     protected abstract fun create(): T
     protected abstract fun create(matrix: DoubleArray): T
@@ -63,8 +96,41 @@ abstract class Mat<T: Mat<T>>(
         return result
     }
 
-    private fun determinant(): Double {
-        TODO("Not yet implemented")
+    private fun determinant(): Double =
+        determinant(matrix, 0, 0, dim)
+
+    private fun determinant(matrix: DoubleArray, cOffset: Int, rOffset: Int, dim: Int): Double {
+        if(dim == 1) {
+            return matrix[0]
+        }
+
+        var determinant = 0.0
+        var sign = 1
+
+        val temp = DoubleArray((dim - 1) * (dim - 1))
+
+        for(n in 0 until dim) {
+            calculateCofactor(matrix, 0, n, dim, temp)
+            val c = cOffset % dim
+            val r = (rOffset + n) % dim
+            determinant += sign * matrix[r * dim + c] * determinant(temp, cOffset + 1, (rOffset + (n + 1) % dim), dim - 1)
+
+            sign = -sign
+        }
+
+        return determinant
+    }
+
+    private fun calculateCofactor(matrix: DoubleArray, cOffset: Int, rOffset: Int, dim: Int, cofactor: DoubleArray) {
+        var i = 0
+
+        for(r in 0 until dim) {
+            for(c in 0 until dim) {
+                if(c != cOffset && r != rOffset) {
+                    cofactor[i++] = matrix[r * dim + c]
+                }
+            }
+        }
     }
 
     private fun invert(): T {
@@ -76,15 +142,20 @@ abstract class Mat<T: Mat<T>>(
     }
 }
 
-class Mat4 private constructor(
+class Mat4(
     matrix: DoubleArray
-): Mat<Mat4>(4, matrix) {
+): Mat<Mat4>(3, matrix) {
     constructor(matrix: Mat4): this(matrix.matrix.clone())
-    constructor(): this(DoubleArray(16))
+    constructor(): this(DoubleArray(9))
 
     override fun create(): Mat4 =
-        create(DoubleArray(16))
+        create(DoubleArray(9))
 
     override fun create(matrix: DoubleArray): Mat4 =
         Mat4(matrix)
+}
+
+
+fun main() {
+    println(Mat4(doubleArrayOf(5.0, 3.0, 7.0, 2.0, 4.0, 9.0, 3.0, 6.0, 4.0)).determinant)
 }
