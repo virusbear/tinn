@@ -96,6 +96,8 @@ abstract class Mat<T: Mat<T>>(
         return result
     }
 
+    //https://www.geeksforgeeks.org/java-program-to-find-the-determinant-of-a-matrix/
+    //https://quickmath.com/webMathematica3/quickmath/matrices/determinant/basic.jsp
     private fun determinant(): Double =
         determinant(matrix, 0, 0, dim)
 
