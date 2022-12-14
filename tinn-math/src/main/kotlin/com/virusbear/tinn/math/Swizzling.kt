@@ -100,5 +100,114 @@ val IVec3.zy: IVec2
 val IVec3.yz: IVec2
     get() = IVec2(y, z)
 
-//TODO: Vec3 -> Vec3
-//TODO: IVec3 -> IVec3
+//Vec3 -> Vec3
+val Vec3.xxx: Vec3
+    get() = Vec3(x, x, x)
+val Vec3.xxy: Vec3
+    get() = Vec3(x, x, y)
+val Vec3.xxz: Vec3
+    get() = Vec3(x, x, z)
+val Vec3.xyx: Vec3
+    get() = Vec3(x, y, x)
+val Vec3.xyy: Vec3
+    get() = Vec3(x, y, y)
+val Vec3.xyz: Vec3
+    get() = Vec3(x, y, z)
+val Vec3.xzx: Vec3
+    get() = Vec3(x, z, x)
+val Vec3.xzy: Vec3
+    get() = Vec3(x, z, y)
+val Vec3.xzz: Vec3
+    get() = Vec3(x, z, z)
+val Vec3.yxx: Vec3
+    get() = Vec3(y, x, x)
+val Vec3.yxy: Vec3
+    get() = Vec3(y, x, y)
+val Vec3.yxz: Vec3
+    get() = Vec3(y, x, z)
+val Vec3.yyx: Vec3
+    get() = Vec3(y, y, x)
+val Vec3.yyy: Vec3
+    get() = Vec3(y, y, y)
+val Vec3.yyz: Vec3
+    get() = Vec3(y, y, z)
+val Vec3.yzx: Vec3
+    get() = Vec3(y, z, x)
+val Vec3.yzy: Vec3
+    get() = Vec3(y, z, y)
+val Vec3.yzz: Vec3
+    get() = Vec3(y, z, z)
+val Vec3.zxx: Vec3
+    get() = Vec3(z, x, x)
+val Vec3.zxy: Vec3
+    get() = Vec3(z, x, y)
+val Vec3.zxz: Vec3
+    get() = Vec3(z, x, z)
+val Vec3.zyx: Vec3
+    get() = Vec3(z, y, x)
+val Vec3.zyy: Vec3
+    get() = Vec3(z, y, y)
+val Vec3.zyz: Vec3
+    get() = Vec3(z, y, z)
+val Vec3.zzx: Vec3
+    get() = Vec3(z, z, x)
+val Vec3.zzy: Vec3
+    get() = Vec3(z, z, y)
+val Vec3.zzz: Vec3
+    get() = Vec3(z, z, z)
+
+//IVec3 -> IVec3
+val IVec3.xxx: IVec3
+    get() = IVec3(x, x, x)
+val IVec3.xxy: IVec3
+    get() = IVec3(x, x, y)
+val IVec3.xxz: IVec3
+    get() = IVec3(x, x, z)
+val IVec3.xyx: IVec3
+    get() = IVec3(x, y, x)
+val IVec3.xyy: IVec3
+    get() = IVec3(x, y, y)
+val IVec3.xyz: IVec3
+    get() = IVec3(x, y, z)
+val IVec3.xzx: IVec3
+    get() = IVec3(x, z, x)
+val IVec3.xzy: IVec3
+    get() = IVec3(x, z, y)
+val IVec3.xzz: IVec3
+    get() = IVec3(x, z, z)
+val IVec3.yxx: IVec3
+    get() = IVec3(y, x, x)
+val IVec3.yxy: IVec3
+    get() = IVec3(y, x, y)
+val IVec3.yxz: IVec3
+    get() = IVec3(y, x, z)
+val IVec3.yyx: IVec3
+    get() = IVec3(y, y, x)
+val IVec3.yyy: IVec3
+    get() = IVec3(y, y, y)
+val IVec3.yyz: IVec3
+    get() = IVec3(y, y, z)
+val IVec3.yzx: IVec3
+    get() = IVec3(y, z, x)
+val IVec3.yzy: IVec3
+    get() = IVec3(y, z, y)
+val IVec3.yzz: IVec3
+    get() = IVec3(y, z, z)
+val IVec3.zxx: IVec3
+    get() = IVec3(z, x, x)
+val IVec3.zxy: IVec3
+    get() = IVec3(z, x, y)
+val IVec3.zxz: IVec3
+    get() = IVec3(z, x, z)
+val IVec3.zyx: IVec3
+    get() = IVec3(z, y, x)
+val IVec3.zyy: IVec3
+    get() = IVec3(z, y, y)
+val IVec3.zyz: IVec3
+    get() = IVec3(z, y, z)
+val IVec3.zzx: IVec3
+    get() = IVec3(z, z, x)
+val IVec3.zzy: IVec3
+    get() = IVec3(z, z, y)
+val IVec3.zzz: IVec3
+    get() = IVec3(z, z, z)
