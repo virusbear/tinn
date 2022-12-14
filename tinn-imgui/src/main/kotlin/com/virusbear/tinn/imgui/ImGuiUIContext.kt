@@ -1,17 +1,27 @@
 package com.virusbear.tinn.imgui
 
+import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.Window
+import com.virusbear.tinn.opengl.ColorBufferGL
 import com.virusbear.tinn.ui.UIContext
-import imgui.ImGui.createContext
-import imgui.ImGui.destroyContext
+import imgui.ImGui.*
+import imgui.ImVec2
 import imgui.flag.ImGuiConfigFlags
+import imgui.flag.ImGuiDockNodeFlags
+import imgui.flag.ImGuiStyleVar
+import imgui.flag.ImGuiWindowFlags
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
 import imgui.internal.ImGui
 import imgui.internal.ImGuiContext
+import imgui.type.ImBoolean
+import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL40
 import java.util.*
 
-class ImGuiUIContext(private val glslVersion: String, private val window: Long): UIContext {
+class ImGuiUIContext(private val glslVersion: String, private val window: Window): UIContext {
     private val contextStack = Stack<ImGuiContext>()
     private val context: ImGuiContext
         get() =
@@ -33,8 +43,12 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Long):
 
     override fun init() {
         push()
+
+        val io = ImGui.getIO()
+        io.configFlags = io.configFlags or ImGuiConfigFlags.DockingEnable
+
         gl3.init(glslVersion)
-        glfw.init(window, true)
+        glfw.init(window.native, true)
     }
 
     override fun dispose() {
@@ -57,10 +71,10 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Long):
         gl3.renderDrawData(ImGui.getDrawData())
 
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-            val backupWindowPtr = GLFW.glfwGetCurrentContext();
-            ImGui.updatePlatformWindows();
-            ImGui.renderPlatformWindowsDefault();
-            GLFW.glfwMakeContextCurrent(backupWindowPtr);
+            val backupWindowPtr = GLFW.glfwGetCurrentContext()
+            ImGui.updatePlatformWindows()
+            ImGui.renderPlatformWindowsDefault()
+            GLFW.glfwMakeContextCurrent(backupWindowPtr)
         }
     }
 
@@ -77,4 +91,14 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Long):
 
     override fun checkbox(label: String, checked: Boolean): Boolean =
         ImGui.checkbox(label, checked)
+
+    override fun image(colorBuffer: ColorBuffer) {
+        colorBuffer.bound {
+            val id = IntArray(1)
+            GL11.glGetIntegerv(GL11.GL_TEXTURE_BINDING_2D, id)
+            println("TextureId: ${colorBuffer.textureId}")
+            println("Id: ${id[0]}")
+            ImGui.image(id[0], colorBuffer.width.toFloat(), colorBuffer.height.toFloat())
+        }
+    }
 }

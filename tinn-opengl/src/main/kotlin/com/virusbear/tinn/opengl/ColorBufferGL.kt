@@ -12,13 +12,13 @@ class ColorBufferGL internal constructor(
     private val levels: MipMapLevel
 ): ColorBuffer, Trackable() {
     private val target: Int
-    private val texture: Int
+    override val textureId: Int
 
     init {
         require(width < LimitsGL.MaxTextureSize)
         require(height < LimitsGL.MaxTextureSize)
 
-        texture = glGenTextures()
+        textureId = glGenTextures()
         checkGLErrors()
 
         target = when(samples) {
@@ -35,6 +35,7 @@ class ColorBufferGL internal constructor(
                 MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
                 else -> glTexImage2DMultisample(target, samples.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
             }
+            checkGLErrors()
         }
     }
 
@@ -59,7 +60,7 @@ class ColorBufferGL internal constructor(
         require(!destroyed) { "ColorBuffer is destroyed" }
 
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(target, texture)
+        glBindTexture(target, textureId)
         checkGLErrors()
     }
 
@@ -72,7 +73,7 @@ class ColorBufferGL internal constructor(
         if(destroyed)
             return
 
-        glDeleteTextures(texture)
+        glDeleteTextures(textureId)
         checkGLErrors()
 
         super.destroy()

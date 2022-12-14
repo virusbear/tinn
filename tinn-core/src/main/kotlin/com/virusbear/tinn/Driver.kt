@@ -3,6 +3,16 @@ package com.virusbear.tinn
 import com.virusbear.tinn.shader.*
 
 abstract class Driver: Destroyable {
+    abstract fun init()
+
+    abstract fun createWindow(
+        width: Int,
+        height: Int,
+        title: String,
+        resizable: Boolean,
+        vsync: Boolean
+    ): Window
+
     abstract fun createColorBuffer(
         width: Int,
         height: Int,
@@ -56,6 +66,9 @@ abstract class Driver: Destroyable {
 
             instance = driver
         }
+
+        fun <T> use(block: Driver.() -> T): T =
+            driver.block()
     }
 }
 

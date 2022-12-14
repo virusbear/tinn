@@ -1,6 +1,10 @@
 package com.virusbear.tinn.ui
 
-interface Panel {
+import com.virusbear.tinn.Destroyable
+
+interface Panel: Destroyable {
     val name: String
+
     fun render(context: UIContext)
+    fun init(context: UIContext) {}
 }

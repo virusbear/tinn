@@ -2,8 +2,36 @@ package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
 import com.virusbear.tinn.shader.*
+import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.glfwTerminate
+import org.lwjgl.glfw.GLFWErrorCallback
 
 class DriverGL: Driver() {
+    override fun init() {
+        GLFWErrorCallback.createPrint(System.err).set()
+        if (!GLFW.glfwInit()) {
+            throw IllegalStateException("Unable to initialize GLFW")
+        }
+    }
+
+    override fun destroy() {
+        if(destroyed)
+            return
+
+        super.destroy()
+
+        glfwTerminate()
+    }
+
+    override fun createWindow(
+        width: Int,
+        height: Int,
+        title: String,
+        resizable: Boolean,
+        vsync: Boolean
+    ): Window =
+        WindowGL.create(width, height, title, resizable, vsync)
+
     override fun createColorBuffer(
         width: Int,
         height: Int,
