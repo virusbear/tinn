@@ -23,6 +23,7 @@ class WindowGL(
             }
 
             glfwSetKeyCallback(window) { window, key, scancode, action, mods ->
+                //TODO: provide possibility to fire events from here. do not close application
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                     glfwSetWindowShouldClose(window, true)
             }

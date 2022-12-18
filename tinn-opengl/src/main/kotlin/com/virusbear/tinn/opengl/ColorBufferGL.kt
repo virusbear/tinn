@@ -7,9 +7,9 @@ import java.nio.ByteBuffer
 class ColorBufferGL internal constructor(
     override val width: Int,
     override val height: Int,
-    private val format: ColorFormat,
-    private val samples: MultiSample,
-    private val levels: MipMapLevel
+    val format: ColorFormat,
+    val samples: MultiSample,
+    val levels: MipMapLevel
 ): ColorBuffer, Trackable() {
     private val target: Int
     override val textureId: Int

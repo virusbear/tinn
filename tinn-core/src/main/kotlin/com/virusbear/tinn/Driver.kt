@@ -47,7 +47,12 @@ abstract class Driver: Destroyable {
     }
 
     override fun destroy() {
-        tracked.forEach(Trackable::destroy)
+        while(true) {
+            when(val e = tracked.firstOrNull()) {
+                null -> break
+                else -> e.destroy()
+            }
+        }
 
         destroyed = true
     }

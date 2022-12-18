@@ -1,8 +1,10 @@
 package com.virusbear.tinn.imgui
 
 import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.MultiSample
 import com.virusbear.tinn.Window
 import com.virusbear.tinn.opengl.ColorBufferGL
+import com.virusbear.tinn.opengl.checkGLErrors
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui.*
 import imgui.ImVec2
@@ -18,6 +20,9 @@ import imgui.type.ImBoolean
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11C
+import org.lwjgl.opengl.GL32C.*
+import org.lwjgl.opengl.GL33C
 import org.lwjgl.opengl.GL40
 import java.util.*
 
@@ -93,12 +98,10 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         ImGui.checkbox(label, checked)
 
     override fun image(colorBuffer: ColorBuffer) {
-        colorBuffer.bound {
-            val id = IntArray(1)
-            GL11.glGetIntegerv(GL11.GL_TEXTURE_BINDING_2D, id)
-            println("TextureId: ${colorBuffer.textureId}")
-            println("Id: ${id[0]}")
-            ImGui.image(id[0], colorBuffer.width.toFloat(), colorBuffer.height.toFloat())
+        if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
+            error("ImGUI does not support multisample image rendering.")
         }
+
+        ImGui.image(colorBuffer.textureId, colorBuffer.width.toFloat(), colorBuffer.height.toFloat())
     }
 }
