@@ -25,7 +25,6 @@ class ViewPort: Panel, BaseDestroyable() {
             checkGLErrors()
         }
 
-
         cb = viewPort
         context.image(viewPort)
     }

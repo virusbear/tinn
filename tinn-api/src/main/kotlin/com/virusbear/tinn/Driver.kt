@@ -24,7 +24,7 @@ abstract class Driver: Destroyable {
     abstract fun createDepthBuffer(width: Int, height: Int): DepthBuffer
     abstract fun createIndexBuffer(size: Int): IndexBuffer
     abstract fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer
-    abstract fun createRenderTarget(width: Int, height: Int) //TODO: add attachments (colorbuffers, depthbuffers)
+    abstract fun createRenderTarget(width: Int, height: Int): RenderTarget
     abstract fun createComputeShader(code: String): ComputeShader
     abstract fun createEvaluationShader(code: String): EvaluationShader
     abstract fun createFragmentShader(code: String): FragmentShader

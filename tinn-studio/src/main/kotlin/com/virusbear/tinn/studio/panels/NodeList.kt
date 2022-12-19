@@ -14,36 +14,20 @@ class NodeList: Panel, BaseDestroyable() {
     override val name: String = "Nodes"
 
     override fun render(context: UIContext) {
-        render(NodeManager.hierarchy.root)
+        render(context, NodeManager.hierarchy.root)
     }
 
-    private fun render(element: NodeCategoryTree.Element) {
-        //TODO: implement keyboard navigation
-        //TODO: implement selection of items
-        if(ImGui.treeNode(element.category.name)) {
-            element.children.forEach { (_, e) ->
-                render(e)
+    private fun render(context: UIContext, element: NodeCategoryTree.Element) {
+        context.treeView(element.category.name) {
+            element.children.forEach { _, e ->
+                render(context, e)
             }
 
-            element.nodes.forEach {
-                if(ImGui.treeNodeEx(it.name, ImGuiTreeNodeFlags.Leaf)) {
-                    ImGui.treePop()
-
-                    ImGui.getMousePos()
-
-                    if(ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
-                        val mousePos = ImGui.getMousePos()
-                        val rectMin = ImGui.getItemRectMin()
-                        val rectMax = ImGui.getItemRectMax()
-
-                        if(mousePos.x in rectMin.x .. rectMax.x && mousePos.y in rectMin.y .. rectMax.y) {
-                            Nodespace.current += it.new()
-                        }
-                    }
+            element.nodes.forEach { node ->
+                context.treeLeaf(node.name) {
+                    Nodespace.current += node.new()
                 }
             }
-
-            ImGui.treePop()
         }
     }
 }

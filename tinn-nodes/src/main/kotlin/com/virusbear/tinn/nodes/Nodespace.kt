@@ -1,9 +1,9 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.BaseDestroyable
-import java.util.BitSet
+import org.jgrapht.graph.DirectedAcyclicGraph
 import java.util.Stack
-import kotlin.reflect.KProperty
+import java.util.function.Supplier
 
 class Nodespace: BaseDestroyable() {
     companion object {
@@ -24,15 +24,28 @@ class Nodespace: BaseDestroyable() {
         }
     }
 
-    val nodeIds = IdPool()
-    val portIds = IdPool()
-    val linkIds = IdPool()
+    private val nodeIds = IdPool()
+    private val portIds = IdPool()
+    private val linkIds = IdPool()
 
     val nodes = mutableSetOf<Node>()
     val links = mutableSetOf<Link>()
+    private val graph = DirectedAcyclicGraph<Node, Link>({ null }, { null }, false, true)
+    fun evaluate() {
+        for(node in graph) {
+            node.process()
+
+            node.ports.filter { port -> port.direction == PortDirection.Output }.forEach { port ->
+                links.filter { link -> link.start == port }.forEach {
+                    it.propagate()
+                }
+            }
+        }
+    }
 
     operator fun plusAssign(node: Node) {
         nodes += node
+        graph.addVertex(node)
         node.onAttach(this)
     }
 
@@ -42,16 +55,19 @@ class Nodespace: BaseDestroyable() {
         }.forEach { this -= it }
 
         links += link
+        graph.addEdge(link.start.node, link.end.node, link)
         link.onAttach(this)
     }
 
     operator fun minusAssign(node: Node) {
         nodes -= node
+        graph.removeVertex(node)
         node.onDetach(this)
     }
 
     operator fun minusAssign(link: Link) {
         links -= link
+        graph.removeEdge(link)
         link.onDetach(this)
     }
 
@@ -86,25 +102,5 @@ class Nodespace: BaseDestroyable() {
         nodeIds.free()
         portIds.free()
         linkIds.free()
-    }
-}
-
-class IdPool {
-    private val ids = BitSet()
-    fun acquire(): Int =
-        synchronized(ids) {
-            ids.nextClearBit(0).also {
-                ids.set(it)
-            }
-        }
-
-    fun release(id: Int) {
-        synchronized(ids) {
-            ids.clear(id)
-        }
-    }
-
-    fun free() {
-        ids.clear()
     }
 }

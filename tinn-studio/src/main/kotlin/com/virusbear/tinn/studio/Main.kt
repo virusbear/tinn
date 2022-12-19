@@ -1,37 +1,17 @@
 package com.virusbear.tinn.studio
 
 import com.virusbear.tinn.Driver
+import com.virusbear.tinn.Program
 import com.virusbear.tinn.Window
 import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
-import com.virusbear.tinn.nodes.FrameSizeNode
-import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.NodeManager
-import com.virusbear.tinn.nodes.Register
+import com.virusbear.tinn.nodes.Nodespace
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
-import io.github.classgraph.ClassGraph
-import io.github.classgraph.ClassInfo
-import org.lwjgl.glfw.GLFW
 
 fun main() {
-    val nodes = ClassGraph().enableAllInfo().scan().let { result ->
-        result.getClassesWithAnnotation(Register::class.java) intersect result.getSubclasses(NodeIdentifier::class.java)
-    }
-
-    nodes.mapNotNull {
-        it.loadClass().kotlin.objectInstance as? NodeIdentifier
-    }.forEach {
-        NodeManager.register(it)
-    }
-
-    NodeManager.walk({
-        println(it.name)
-    }) {
-        println(it.name)
-    }
-
     Driver.use(DriverGL())
 
     val window: Window = Driver.use {
@@ -41,6 +21,9 @@ fun main() {
 
     val context = ImGuiUIContext("#version 130", window)
     context.init()
+
+    NodeManager.load()
+    println(Program.current)
 
     val panels = listOf(
         Controls(),
@@ -64,6 +47,8 @@ fun main() {
                     it.render(ctx)
                 ImGui.end()
             }
+
+            Program.current.update()
 
             ImGui.begin("Properties")
             ImGui.end()

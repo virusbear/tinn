@@ -6,7 +6,7 @@ class DecomposeVec2: BaseNode("Decompose Vec2") {
     @Register
     companion object : NodeIdentifier("Vec2", NodeCategory.Decompose, ::DecomposeVec2)
 
-    val input: Vec2 by input("Input")
+    val input: Vec2 by input("Input", default = Vec2.ZERO)
     var x: Double by output("X")
     var y: Double by output("Y")
 

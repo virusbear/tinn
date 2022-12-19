@@ -1,6 +1,7 @@
 package com.virusbear.tinn.studio.panels
 
 import com.virusbear.tinn.BaseDestroyable
+import com.virusbear.tinn.Program
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui
@@ -15,6 +16,9 @@ class Controls: Panel, BaseDestroyable() {
 
     override fun render(context: UIContext) {
         //TODO: render buttons
+        if(ImGui.button("Step")) {
+            Program.current.step()
+        }
         ImGui.inputInt("##Controls_StartFrame", startFrame)
         ImGui.inputInt("##Controls_EndFrame", endFrame)
         ImGui.sliderInt("##Controls_CurrentFrame", currentFrame, startFrame.get(), endFrame.get())

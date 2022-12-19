@@ -25,7 +25,7 @@ abstract class BaseNode(
             )
         )
 
-    protected inline fun <reified T: Any> output(
+    protected inline fun <reified T: Any?> output(
         name: String,
         default: T? = null
     ): PortDelegate<T> =
@@ -38,10 +38,10 @@ abstract class BaseNode(
             )
         )
 
-    protected fun <T: Any> port(
+    protected fun <T: Any?> port(
         direction: PortDirection,
         name: String,
-        type: KClass<T>,
+        type: KClass<*>,
         default: T?
     ): Port =
         Port(

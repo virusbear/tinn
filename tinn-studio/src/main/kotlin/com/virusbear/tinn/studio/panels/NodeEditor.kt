@@ -19,70 +19,52 @@ class NodeEditor: Panel, BaseDestroyable() {
     override fun init(context: UIContext) {
         ImNodes.createContext()
         ImNodes.pushAttributeFlag(ImNodesAttributeFlags.EnableLinkDetachWithDragClick or ImNodesAttributeFlags.EnableLinkCreationOnSnap)
-        Nodespace.push(Nodespace())
+        //TODO: inject nodespace from somewhere outside of nodeeditor
     }
 
     override fun render(context: UIContext) {
-        ImNodes.beginNodeEditor()
-
-        Nodespace.current.nodes.filter { it.id >= 0 }.forEach {
-            ImNodes.beginNode(it.id)
-
-            ImNodes.beginNodeTitleBar()
-            ImGui.textUnformatted(it.name)
-            ImNodes.endNodeTitleBar()
-
-            it.ports.filter { it.id >= 0 }.filter { it.direction == PortDirection.Input }.forEach {
-                ImNodes.beginInputAttribute(it.id)
-                ImGui.textUnformatted(it.name)
-                ImNodes.endInputAttribute()
-            }
-
-            it.ports.filter { it.id >= 0 }.filter { it.direction == PortDirection.Output }.forEach {
-                ImNodes.beginOutputAttribute(it.id)
-                ImGui.textUnformatted(it.name)
-                ImNodes.endOutputAttribute()
-            }
-
-            ImNodes.endNode()
-        }
-
-        Nodespace.current.links.filter { it.id >= 0 }.forEach {
-            ImNodes.link(it.id, it.start.id, it.end.id)
-        }
-
-        ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.TopRight)
-        ImNodes.endNodeEditor()
-
-        val startNodeId = ImInt()
-        val startPortId = ImInt()
-        val endNodeId = ImInt()
-        val endPortId = ImInt()
-        if(ImNodes.isLinkCreated(startNodeId, startPortId, endNodeId, endPortId, ImBoolean())) {
-            val startNode = Nodespace.current.nodes.firstOrNull { it.id == startNodeId.get() }
-            val endNode = Nodespace.current.nodes.firstOrNull { it.id == endNodeId.get() }
-
-            val startPort = startNode?.ports?.firstOrNull { it.id == startPortId.get() }
-            val endPort = endNode?.ports?.firstOrNull { it.id == endPortId.get() }
-
-            if(startPort != null && endPort != null) {
-                if(startPort.type == endPort.type) {
-                    when(startPort.direction) {
-                        endPort.direction -> null
-                        PortDirection.Input -> Link(endPort, startPort)
-                        PortDirection.Output -> Link(startPort, endPort)
-                    }?.let {
-                        Nodespace.current += it
+        context.nodeEditor(
+            onLinkCreated = ::createLink,
+            onLinkDestroyed = ::destroyLink
+        ) {
+            Nodespace.current.nodes.filter { it.id >= 0 }.forEach {
+                node(it.id, it.name) {
+                    it.ports.forEach {
+                        when(it.direction) {
+                            PortDirection.Input -> input(it.id, it.name)
+                            PortDirection.Output -> output(it.id, it.name)
+                        }
                     }
                 }
             }
-        }
 
-        val linkId = ImInt()
-        if(ImNodes.isLinkDestroyed(linkId)) {
-            Nodespace.current.links.firstOrNull { it.id == linkId.get() }?.let {
-                Nodespace.current -= it
+            Nodespace.current.links.filter { it.id >= 0 }.forEach {
+                link(it.id, it.start.id, it.end.id)
             }
+        }
+    }
+
+    private fun createLink(startAttribute: Int, endAttribute: Int) {
+        val allPorts = Nodespace.current.nodes.flatMap { it.ports }
+        val startPort = allPorts.firstOrNull { it.id == startAttribute }
+        val endPort = allPorts.firstOrNull { it.id == endAttribute }
+
+        if(startPort != null && endPort != null) {
+            if(endPort.type.java.isAssignableFrom(startPort.type.java)) {
+                when(startPort.direction) {
+                    endPort.direction -> null
+                    PortDirection.Input -> Link(endPort, startPort)
+                    PortDirection.Output -> Link(startPort, endPort)
+                }?.let {
+                    Nodespace.current += it
+                }
+            }
+        }
+    }
+
+    private fun destroyLink(linkId: Int) {
+        Nodespace.current.links.firstOrNull { it.id == linkId }?.let {
+            Nodespace.current -= it
         }
     }
 

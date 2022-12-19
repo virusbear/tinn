@@ -24,7 +24,7 @@ val lwjglNatives = Pair(
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation(project(":tinn-core"))
+    implementation(project(":tinn-api"))
     implementation(project(":tinn-math"))
     implementation(project(":tinn-color"))
 

@@ -62,7 +62,7 @@ class DriverGL: Driver() {
             format
         )
 
-    override fun createRenderTarget(width: Int, height: Int) {
+    override fun createRenderTarget(width: Int, height: Int): RenderTarget {
         TODO("Prio 4")
     }
 

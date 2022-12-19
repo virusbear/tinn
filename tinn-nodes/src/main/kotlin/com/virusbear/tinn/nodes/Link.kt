@@ -8,7 +8,7 @@ class Link(
     private set
 
     init {
-        require(start.type == end.type) { "Unable to link ports with different types" }
+        require(end.type.java.isAssignableFrom(start.type.java)) { "Unable to link ports with different types" }
     }
 
     fun onAttach(nodespace: Nodespace) {
@@ -18,5 +18,11 @@ class Link(
     fun onDetach(nodespace: Nodespace) {
         nodespace.releaseLinkId(id)
         id = -1
+
+        end.reset()
+    }
+
+    fun propagate() {
+        end.value = start.value
     }
 }

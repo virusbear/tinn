@@ -4,26 +4,21 @@ import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.MultiSample
 import com.virusbear.tinn.Window
 import com.virusbear.tinn.opengl.ColorBufferGL
-import com.virusbear.tinn.opengl.checkGLErrors
+import com.virusbear.tinn.ui.NodeEditorUIContext
+import com.virusbear.tinn.ui.NodeUIContext
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui.*
-import imgui.ImVec2
+import imgui.extension.imnodes.ImNodes
+import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.flag.ImGuiConfigFlags
-import imgui.flag.ImGuiDockNodeFlags
-import imgui.flag.ImGuiStyleVar
-import imgui.flag.ImGuiWindowFlags
+import imgui.flag.ImGuiMouseButton
+import imgui.flag.ImGuiTreeNodeFlags
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
 import imgui.internal.ImGui
 import imgui.internal.ImGuiContext
-import imgui.type.ImBoolean
-import org.lwjgl.BufferUtils
+import imgui.type.ImInt
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11C
-import org.lwjgl.opengl.GL32C.*
-import org.lwjgl.opengl.GL33C
-import org.lwjgl.opengl.GL40
 import java.util.*
 
 class ImGuiUIContext(private val glslVersion: String, private val window: Window): UIContext {
@@ -103,5 +98,81 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         }
 
         ImGui.image(colorBuffer.textureId, colorBuffer.width.toFloat(), colorBuffer.height.toFloat())
+    }
+
+    override fun treeView(label: String, children: () -> Unit) {
+        if(ImGui.treeNode(label)) {
+            children()
+            ImGui.treePop()
+        }
+    }
+
+    override fun treeLeaf(label: String, onSelect: () -> Unit) {
+        if(ImGui.treeNodeEx(label, ImGuiTreeNodeFlags.Leaf)) {
+            ImGui.treePop()
+
+            if(ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                onSelect()
+            }
+        }
+    }
+
+    override fun nodeEditor(showMinimap: Boolean, onLinkCreated: (startAttribute: Int, endAttribute: Int) -> Unit, onLinkDestroyed: (link: Int) -> Unit, block: NodeEditorUIContext.() -> Unit) {
+        ImNodes.beginNodeEditor()
+
+        ImGuiNodeEditorUIContext().apply(block)
+
+        if(showMinimap) {
+            ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.TopRight)
+        }
+        ImNodes.endNodeEditor()
+
+        val startAttrId = ImInt()
+        val endAttrId = ImInt()
+
+        if(ImNodes.isLinkCreated(startAttrId, endAttrId)) {
+            onLinkCreated(startAttrId.get(), endAttrId.get())
+        }
+
+        val linkId = ImInt()
+        if(ImNodes.isLinkDestroyed(linkId)) {
+            onLinkDestroyed(linkId.get())
+        }
+    }
+
+    override fun sameLine() {
+        ImGui.sameLine()
+    }
+}
+
+class ImGuiNodeEditorUIContext: NodeEditorUIContext {
+    override fun node(id: Int, label: String, block: NodeUIContext.() -> Unit) {
+        ImNodes.beginNode(id)
+
+        ImNodes.beginNodeTitleBar()
+        ImGui.textUnformatted(label)
+        ImNodes.endNodeTitleBar()
+
+        ImGuiNodeUIContext().apply(block)
+
+        ImNodes.endNode()
+    }
+
+    override fun link(id: Int, startAttribute: Int, endAttribute: Int) {
+        ImNodes.link(id, startAttribute, endAttribute)
+    }
+}
+
+class ImGuiNodeUIContext: NodeUIContext {
+    override fun input(id: Int, label: String) {
+        ImNodes.beginInputAttribute(id)
+        ImGui.textUnformatted(label)
+        ImNodes.endInputAttribute()
+    }
+
+    override fun output(id: Int, label: String) {
+        ImNodes.beginOutputAttribute(id)
+        ImGui.textUnformatted(label)
+        ImNodes.endOutputAttribute()
     }
 }
