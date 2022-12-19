@@ -4,10 +4,10 @@ import java.util.*
 import kotlin.reflect.KClass
 
 abstract class BaseNode(
-    //TODO: make property
     override val name: String
 ): Node {
-    override val id: Int = 0//TODO("Use ID Generator to generate unique port id")
+    final override var id: Int = -1
+    private set
 
     private val _ports = LinkedList<Port>()
     override val ports: List<Port>
@@ -45,7 +45,6 @@ abstract class BaseNode(
         default: T?
     ): Port =
         Port(
-            0,//TODO("Use ID Generator to generate unique port id"),
             this,
             direction,
             name,
@@ -54,4 +53,21 @@ abstract class BaseNode(
         ).also { port ->
             _ports += port
         }
+
+    override fun onAttach(nodespace: Nodespace) {
+        id = nodespace.acquireNodeId()
+
+        ports.forEach {
+            it.onAttach(nodespace)
+        }
+    }
+
+    override fun onDetach(nodespace: Nodespace) {
+        ports.forEach {
+            it.onDetach(nodespace)
+        }
+
+        nodespace.releaseNodeId(id)
+        id = -1
+    }
 }

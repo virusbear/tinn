@@ -4,9 +4,19 @@ class Link(
     val start: Port,
     val end: Port
 ) {
-    val id: Int = TODO("Use ID Generator to generate unique port id")
+    var id: Int = -1
+    private set
 
     init {
         require(start.type == end.type) { "Unable to link ports with different types" }
+    }
+
+    fun onAttach(nodespace: Nodespace) {
+        id = nodespace.acquireLinkId()
+    }
+
+    fun onDetach(nodespace: Nodespace) {
+        nodespace.releaseLinkId(id)
+        id = -1
     }
 }

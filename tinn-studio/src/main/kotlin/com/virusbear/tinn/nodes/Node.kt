@@ -5,4 +5,7 @@ interface Node {
     val ports: List<Port>
     val name: String
     fun process()
+
+    fun onAttach(nodespace: Nodespace)
+    fun onDetach(nodespace: Nodespace)
 }

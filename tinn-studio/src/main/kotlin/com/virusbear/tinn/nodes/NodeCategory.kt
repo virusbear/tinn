@@ -3,39 +3,56 @@ package com.virusbear.tinn.nodes
 data class NodeCategory(
     val parent: NodeCategory?,
     val name: String
-)
+) {
+    companion object {
+        val Root = NodeCategory(
+            parent = null,
+            name = "All"
+        )
 
-val RootNodeCategory = NodeCategory(
-    parent = null,
-    name = "All"
-)
+        val Math = NodeCategory(
+            parent = Root,
+            name = "Math"
+        )
 
-val MathNodeCategory = NodeCategory(
-    parent = RootNodeCategory,
-    name = "Math"
-)
+        val Convert = NodeCategory(
+            parent = Math,
+            name = "Convert"
+        )
 
-val ConvertNodeCategory = NodeCategory(
-    parent = MathNodeCategory,
-    name = "Convert"
-)
+        val Utility = NodeCategory(
+            parent = Root,
+            name = "Utility"
+        )
 
-val ShaderNodeCategory = NodeCategory(
-    parent = RootNodeCategory,
-    name = "Shader"
-)
+        val Compose = NodeCategory(
+            parent = Utility,
+            name = "Compose"
+        )
 
-val ComputeShaderNodeCategory = NodeCategory(
-    parent = ShaderNodeCategory,
-    name = "Compute"
-)
+        val Decompose = NodeCategory(
+            parent = Utility,
+            name = "Decompose"
+        )
 
-val ParticleNodeCategory = NodeCategory(
-    parent = RootNodeCategory,
-    name = "Particle"
-)
+        val Shader = NodeCategory(
+            parent = Root,
+            name = "Shader"
+        )
 
-val SystemNodeCategory = NodeCategory(
-    parent = RootNodeCategory,
-    name = "System"
-)
+        val Compute = NodeCategory(
+            parent = Shader,
+            name = "Compute"
+        )
+
+        val Particle = NodeCategory(
+            parent = Root,
+            name = "Particle"
+        )
+
+        val System = NodeCategory(
+            parent = Root,
+            name = "System"
+        )
+    }
+}

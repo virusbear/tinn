@@ -13,6 +13,7 @@ import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
+import org.lwjgl.glfw.GLFW
 
 fun main() {
     val nodes = ClassGraph().enableAllInfo().scan().let { result ->

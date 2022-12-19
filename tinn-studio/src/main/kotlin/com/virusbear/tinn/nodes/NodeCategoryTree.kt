@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes
 
 class NodeCategoryTree {
-    val root = Element(RootNodeCategory)
+    val root = Element(NodeCategory.Root)
 
     operator fun plusAssign(nodeIdentifier: NodeIdentifier) {
         val element = getElement(nodeIdentifier.category) ?: addElement(nodeIdentifier.category)
@@ -19,7 +19,7 @@ class NodeCategoryTree {
     }
 
     private fun getElement(nodeCategory: NodeCategory): Element? {
-        if(nodeCategory == RootNodeCategory) {
+        if(nodeCategory == NodeCategory.Root) {
             return root
         }
 

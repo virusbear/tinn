@@ -27,11 +27,19 @@ class NodeList: Panel, BaseDestroyable() {
 
             element.nodes.forEach {
                 if(ImGui.treeNodeEx(it.name, ImGuiTreeNodeFlags.Leaf)) {
-                    if(ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
-                        Nodespace.current += it.new()
-                    }
-
                     ImGui.treePop()
+
+                    ImGui.getMousePos()
+
+                    if(ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                        val mousePos = ImGui.getMousePos()
+                        val rectMin = ImGui.getItemRectMin()
+                        val rectMax = ImGui.getItemRectMax()
+
+                        if(mousePos.x in rectMin.x .. rectMax.x && mousePos.y in rectMin.y .. rectMax.y) {
+                            Nodespace.current += it.new()
+                        }
+                    }
                 }
             }
 
