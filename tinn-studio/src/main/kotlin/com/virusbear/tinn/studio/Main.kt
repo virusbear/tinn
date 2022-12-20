@@ -6,7 +6,6 @@ import com.virusbear.tinn.Window
 import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
 import com.virusbear.tinn.nodes.NodeManager
-import com.virusbear.tinn.nodes.Nodespace
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
@@ -23,18 +22,20 @@ fun main() {
     context.init()
 
     NodeManager.load()
-    println(Program.current)
 
     val panels = listOf(
         Controls(),
         NodeEditor(),
         ViewPort(),
-        NodeList()
+        NodeList(),
+        Properties()
     )
 
     val dockSpace = DockSpace()
     dockSpace.init(context)
     panels.forEach { it.init(context) }
+
+    val program = Program().also { it.makeCurrent() }
 
     loop(window) {
         context.render { ctx ->
@@ -48,10 +49,7 @@ fun main() {
                 ImGui.end()
             }
 
-            Program.current.update()
-
-            ImGui.begin("Properties")
-            ImGui.end()
+            program.update()
         }
     }
 
@@ -59,6 +57,8 @@ fun main() {
         it.destroy()
     }
     dockSpace.destroy()
+
+    program.destroy()
 
     Driver.driver.destroy()
 }

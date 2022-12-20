@@ -2,7 +2,6 @@ package com.virusbear.tinn.studio.panels
 
 import com.virusbear.tinn.BaseDestroyable
 import com.virusbear.tinn.imgui.ImGuiPanel
-import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui
 import imgui.flag.ImGuiDockNodeFlags

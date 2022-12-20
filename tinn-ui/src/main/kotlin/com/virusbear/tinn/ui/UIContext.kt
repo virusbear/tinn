@@ -19,6 +19,8 @@ interface UIContext {
 
     fun button(label: String): Boolean
     fun text(text: String)
+    fun int(label: String, setter: (Int) -> Unit, getter: () -> Int)
+    fun double(label: String, setter: (Double) -> Unit, getter: () -> Double)
     fun separator()
     fun checkbox(label: String, checked: Boolean): Boolean
 

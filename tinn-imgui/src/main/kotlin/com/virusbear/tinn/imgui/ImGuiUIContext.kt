@@ -7,7 +7,8 @@ import com.virusbear.tinn.opengl.ColorBufferGL
 import com.virusbear.tinn.ui.NodeEditorUIContext
 import com.virusbear.tinn.ui.NodeUIContext
 import com.virusbear.tinn.ui.UIContext
-import imgui.ImGui.*
+import imgui.ImGui.createContext
+import imgui.ImGui.destroyContext
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.flag.ImGuiConfigFlags
@@ -17,6 +18,7 @@ import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
 import imgui.internal.ImGui
 import imgui.internal.ImGuiContext
+import imgui.type.ImDouble
 import imgui.type.ImInt
 import org.lwjgl.glfw.GLFW
 import java.util.*
@@ -83,6 +85,20 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
 
     override fun text(text: String) {
         ImGui.text(text)
+    }
+
+    override fun int(label: String, setter: (Int) -> Unit, getter: () -> Int) {
+        val value = ImInt(getter())
+        if(ImGui.inputInt(label, value)) {
+            setter(value.get())
+        }
+    }
+
+    override fun double(label: String, setter: (Double) -> Unit, getter: () -> Double) {
+        val value = ImDouble(getter())
+        if(ImGui.inputDouble(label, value)) {
+            setter(value.get())
+        }
     }
 
     override fun separator() {

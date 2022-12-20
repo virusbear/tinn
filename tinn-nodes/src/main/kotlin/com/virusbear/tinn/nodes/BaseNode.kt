@@ -12,6 +12,16 @@ abstract class BaseNode(
     private val _ports = LinkedList<Port>()
     override val ports: List<Port>
         get() = _ports
+
+    private var _nodespace: Nodespace? = null
+
+    override val nodespace: Nodespace
+        get() {
+            val nodespace = _nodespace
+            require(nodespace != null) { "Node is not yet attached to any nodespace or was already detached previously" }
+
+            return nodespace
+        }
     protected inline fun <reified T: Any> input(
         name: String,
         default: T? = null
@@ -55,6 +65,7 @@ abstract class BaseNode(
         }
 
     override fun onAttach(nodespace: Nodespace) {
+        _nodespace = nodespace
         id = nodespace.acquireNodeId()
 
         ports.forEach {

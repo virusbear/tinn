@@ -24,7 +24,7 @@ object NodeManager {
         nodes.mapNotNull {
             it.loadClass().kotlin.objectInstance as? NodeIdentifier
         }.forEach {
-            NodeManager.register(it)
+            register(it)
         }
     }
 }

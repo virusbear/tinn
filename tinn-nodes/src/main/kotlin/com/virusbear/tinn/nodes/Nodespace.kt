@@ -1,29 +1,11 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.BaseDestroyable
+import com.virusbear.tinn.EventBus
+import com.virusbear.tinn.events.NodespaceActivateEvent
 import org.jgrapht.graph.DirectedAcyclicGraph
-import java.util.Stack
-import java.util.function.Supplier
 
 class Nodespace: BaseDestroyable() {
-    companion object {
-        val current: Nodespace
-            get() {
-                require(nodespaces.isNotEmpty()) { "No nodespace in current context" }
-
-                return nodespaces.peek()
-            }
-
-        private val nodespaces = Stack<Nodespace>()
-
-        fun push(nodespace: Nodespace) {
-            nodespaces.push(nodespace)
-        }
-        fun pop() {
-            nodespaces.pop()
-        }
-    }
-
     private val nodeIds = IdPool()
     private val portIds = IdPool()
     private val linkIds = IdPool()
@@ -42,6 +24,22 @@ class Nodespace: BaseDestroyable() {
             }
         }
     }
+
+    fun makeCurrent() {
+        EventBus.publish(NodespaceActivateEvent(this))
+    }
+
+    fun nodeByIdOrNull(nodeId: Int): Node? =
+        nodes.firstOrNull { it.id == nodeId }
+
+    fun linkByIdOrNull(linkId: Int): Link? =
+        links.firstOrNull { it.id == linkId }
+
+    fun linksForPort(port: Port): List<Link> =
+        when(port.direction) {
+            PortDirection.Input -> links.filter { it.end == port }
+            PortDirection.Output -> links.filter { it.start == port }
+        }
 
     operator fun plusAssign(node: Node) {
         nodes += node

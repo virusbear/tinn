@@ -1,6 +1,5 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.Bindable
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.Window
 import org.lwjgl.glfw.GLFW.*
