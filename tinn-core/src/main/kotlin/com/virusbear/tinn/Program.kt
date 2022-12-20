@@ -7,7 +7,6 @@ import kotlin.time.Duration
 class Program: BaseDestroyable() {
     val nodespace: Nodespace = Nodespace()
 
-    //val target: RenderTarget = Driver.driver.createRenderTarget(0, 0)
     var frame: Long = 0
         private set
     var time: Duration = Duration.ZERO

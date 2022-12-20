@@ -26,7 +26,7 @@ fun main() {
     val panels = listOf(
         Controls(),
         NodeEditor(),
-        ViewPort(),
+        ViewPort,
         NodeList(),
         Properties()
     )

@@ -3,6 +3,7 @@ package com.virusbear.tinn.imgui
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.MultiSample
 import com.virusbear.tinn.Window
+import com.virusbear.tinn.math.*
 import com.virusbear.tinn.opengl.ColorBufferGL
 import com.virusbear.tinn.ui.NodeEditorUIContext
 import com.virusbear.tinn.ui.NodeUIContext
@@ -20,6 +21,7 @@ import imgui.internal.ImGui
 import imgui.internal.ImGuiContext
 import imgui.type.ImDouble
 import imgui.type.ImInt
+import imgui.type.ImString
 import org.lwjgl.glfw.GLFW
 import java.util.*
 
@@ -87,6 +89,13 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         ImGui.text(text)
     }
 
+    override fun textInput(label: String, setter: (String) -> Unit, getter: () -> String) {
+        val value = ImString(getter(), 250)
+        if(ImGui.inputText(label, value)) {
+            setter(value.get())
+        }
+    }
+
     override fun int(label: String, setter: (Int) -> Unit, getter: () -> Int) {
         val value = ImInt(getter())
         if(ImGui.inputInt(label, value)) {
@@ -98,6 +107,72 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         val value = ImDouble(getter())
         if(ImGui.inputDouble(label, value)) {
             setter(value.get())
+        }
+    }
+
+    override fun iVec2(label: String, setter: (IVec2) -> Unit, getter: () -> IVec2) {
+        val value = IntArray(2)
+        value[0] = getter().x
+        value[1] = getter().y
+
+        if(ImGui.inputInt2(label, value)) {
+            setter(IVec2(value[0], value[1]))
+        }
+    }
+
+    override fun iVec3(label: String, setter: (IVec3) -> Unit, getter: () -> IVec3) {
+        val value = IntArray(3)
+        value[0] = getter().x
+        value[1] = getter().y
+        value[2] = getter().z
+
+        if(ImGui.inputInt3(label, value)) {
+            setter(IVec3(value[0], value[1], value[2]))
+        }
+    }
+
+    override fun iVec4(label: String, setter: (IVec4) -> Unit, getter: () -> IVec4) {
+        val value = IntArray(4)
+        value[0] = getter().x
+        value[1] = getter().y
+        value[2] = getter().z
+        value[3] = getter().w
+
+        if(ImGui.inputInt4(label, value)) {
+            setter(IVec4(value[0], value[1], value[2], value[3]))
+        }
+    }
+
+    override fun vec2(label: String, setter: (Vec2) -> Unit, getter: () -> Vec2) {
+        val value = FloatArray(2)
+        value[0] = getter().x.toFloat()
+        value[1] = getter().y.toFloat()
+
+        if(ImGui.inputFloat2(label, value)) {
+            setter(Vec2(value[0].toDouble(), value[1].toDouble()))
+        }
+    }
+
+    override fun vec3(label: String, setter: (Vec3) -> Unit, getter: () -> Vec3) {
+        val value = FloatArray(3)
+        value[0] = getter().x.toFloat()
+        value[1] = getter().y.toFloat()
+        value[2] = getter().z.toFloat()
+
+        if(ImGui.inputFloat3(label, value)) {
+            setter(Vec3(value[0].toDouble(), value[1].toDouble(), value[2].toDouble()))
+        }
+    }
+
+    override fun vec4(label: String, setter: (Vec4) -> Unit, getter: () -> Vec4) {
+        val value = FloatArray(4)
+        value[0] = getter().x.toFloat()
+        value[1] = getter().y.toFloat()
+        value[2] = getter().z.toFloat()
+        value[3] = getter().w.toFloat()
+
+        if(ImGui.inputFloat4(label, value)) {
+            setter(Vec4(value[0].toDouble(), value[1].toDouble(), value[2].toDouble(), value[3].toDouble()))
         }
     }
 

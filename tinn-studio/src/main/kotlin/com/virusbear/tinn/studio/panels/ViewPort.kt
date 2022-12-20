@@ -1,31 +1,31 @@
 package com.virusbear.tinn.studio.panels
 
-import com.virusbear.tinn.*
-import com.virusbear.tinn.opengl.checkGLErrors
+import com.virusbear.tinn.BaseDestroyable
+import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.internal.ImGui
 
-class ViewPort: Panel, BaseDestroyable() {
+object ViewPort: Panel, BaseDestroyable() {
     override val name: String = "Viewport"
 
     private var cb: ColorBuffer? = null
 
+    var size: IVec2 = IVec2.ZERO
+        private set
+
     override fun render(context: UIContext) {
-        if(cb == null) {
-            cb = Driver.driver.createColorBuffer(ImGui.getContentRegionAvail().x.toInt(), ImGui.getContentRegionAvail().y.toInt(), ColorFormat.RGBA8, MultiSample.None, MipMapLevel.None)
-            checkGLErrors()
+        if(cb == null) return
+
+        if(size.x != ImGui.getContentRegionAvail().x.toInt() || size.y != ImGui.getContentRegionAvail().y.toInt()) {
+            size = IVec2(ImGui.getContentRegionAvail().x.toInt().coerceAtLeast(0), ImGui.getContentRegionAvail().y.toInt().coerceAtLeast(0))
         }
 
-        var viewPort: ColorBuffer = cb ?: return
+        cb?.let { context.image(it) }
+    }
 
-        if(viewPort.width != ImGui.getContentRegionAvail().x.toInt() || viewPort.height != ImGui.getContentRegionAvail().y.toInt()) {
-            viewPort.destroy()
-            viewPort = Driver.driver.createColorBuffer(ImGui.getContentRegionAvail().x.toInt().coerceAtLeast(0), ImGui.getContentRegionAvail().y.toInt().coerceAtLeast(0), ColorFormat.RGBA8, MultiSample.None, MipMapLevel.None)
-            checkGLErrors()
-        }
-
-        cb = viewPort
-        context.image(viewPort)
+    fun show(colorBuffer: ColorBuffer) {
+        cb = colorBuffer
     }
 }

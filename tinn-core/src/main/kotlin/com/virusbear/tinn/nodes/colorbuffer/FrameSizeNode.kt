@@ -1,7 +1,11 @@
-package com.virusbear.tinn.nodes
+package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
+import com.virusbear.tinn.nodes.Register
 
 class FrameSizeNode: BaseNode("Frame size") {
     @Register
