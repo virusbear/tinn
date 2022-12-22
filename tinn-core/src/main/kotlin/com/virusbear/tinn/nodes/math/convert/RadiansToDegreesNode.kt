@@ -17,15 +17,3 @@ class RadiansToDegreesNode: BaseNode("Rad to Deg") {
         degrees = radians * 180 / PI
     }
 }
-
-class DegreesToRadiansNode: BaseNode("Deg to Rad") {
-    @Register
-    companion object: NodeIdentifier("Deg to Rad", NodeCategory.Convert, ::DegreesToRadiansNode)
-
-    val degrees: Double by input("Degrees", default = 0.0)
-    var radians: Double by output("Radians", default = 0.0)
-
-    override fun process() {
-        radians = degrees * PI / 180
-    }
-}

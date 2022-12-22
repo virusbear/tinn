@@ -22,7 +22,7 @@ object ViewPort: Panel, BaseDestroyable() {
             size = IVec2(ImGui.getContentRegionAvail().x.toInt().coerceAtLeast(0), ImGui.getContentRegionAvail().y.toInt().coerceAtLeast(0))
         }
 
-        cb?.let { context.image(it) }
+        cb?.let { context.image("##viewport", it) }
     }
 
     fun show(colorBuffer: ColorBuffer) {

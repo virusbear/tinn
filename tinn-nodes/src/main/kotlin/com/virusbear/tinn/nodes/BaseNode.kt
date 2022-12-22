@@ -1,6 +1,7 @@
 package com.virusbear.tinn.nodes
 
 import java.util.*
+import kotlin.collections.HashSet
 import kotlin.reflect.KClass
 
 abstract class BaseNode(
@@ -9,9 +10,9 @@ abstract class BaseNode(
     final override var id: Int = -1
     private set
 
-    private val _ports = LinkedList<Port>()
+    private val _ports = HashSet<Port>()
     override val ports: List<Port>
-        get() = _ports
+        get() = _ports.toList()
 
     private var _nodespace: Nodespace? = null
 
@@ -63,6 +64,10 @@ abstract class BaseNode(
         ).also { port ->
             _ports += port
         }
+
+    protected operator fun minusAssign(port: Port) {
+        _ports -= port
+    }
 
     override fun onAttach(nodespace: Nodespace) {
         _nodespace = nodespace

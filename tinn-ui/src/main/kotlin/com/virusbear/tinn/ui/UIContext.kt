@@ -18,7 +18,9 @@ interface UIContext {
     fun beginFrame()
     fun endFrame()
 
-    fun button(label: String): Boolean
+    fun button(label: String, text: String, onClick: () -> Unit)
+    fun imageButton(label: String, colorBuffer: ColorBuffer, onClick: () -> Unit)
+    fun comboBox(label: String, options: List<String>, idx: Int, onSelect: (Int) -> Unit)
     fun text(text: String)
     fun textInput(label: String, setter: (String) -> Unit, getter: () -> String)
     fun int(label: String, setter: (Int) -> Unit, getter: () -> Int)
@@ -30,9 +32,9 @@ interface UIContext {
     fun vec3(label: String, setter: (Vec3) -> Unit, getter: () -> Vec3)
     fun vec4(label: String, setter: (Vec4) -> Unit, getter: () -> Vec4)
     fun separator()
-    fun checkbox(label: String, checked: Boolean): Boolean
+    fun checkbox(label: String, checked: Boolean, onCheck: (Boolean) -> Unit)
 
-    fun image(colorBuffer: ColorBuffer)
+    fun image(label: String, colorBuffer: ColorBuffer)
 
     fun treeView(label: String, children: () -> Unit)
     fun treeLeaf(label: String, onSelect: () -> Unit)

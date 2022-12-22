@@ -82,8 +82,31 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         }
     }
 
-    override fun button(label: String): Boolean =
-        ImGui.button(label)
+    override fun button(label: String, text: String, onClick: () -> Unit) {
+        ImGui.pushID(label)
+        if(ImGui.button(label)) onClick()
+        ImGui.popID()
+    }
+
+    override fun imageButton(label: String, colorBuffer: ColorBuffer, onClick: () -> Unit) {
+        if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
+            error("ImGUI does not support multisample image rendering.")
+        }
+
+        ImGui.pushID(label)
+        if(ImGui.imageButton(colorBuffer.textureId, colorBuffer.width.toFloat(), colorBuffer.height.toFloat())) {
+            onClick()
+        }
+        ImGui.popID()
+    }
+
+    override fun comboBox(label: String, options: List<String>, idx: Int, onSelect: (Int) -> Unit) {
+        val index = ImInt(idx)
+        ImGui.combo(label, index, options.toTypedArray())
+        if(index.get() != idx) {
+            onSelect(index.get())
+        }
+    }
 
     override fun text(text: String) {
         ImGui.text(text)
@@ -180,15 +203,18 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
         ImGui.separator()
     }
 
-    override fun checkbox(label: String, checked: Boolean): Boolean =
-        ImGui.checkbox(label, checked)
+    override fun checkbox(label: String, checked: Boolean, onCheck: (Boolean) -> Unit) {
+        onCheck(ImGui.checkbox(label, checked))
+    }
 
-    override fun image(colorBuffer: ColorBuffer) {
+    override fun image(label: String, colorBuffer: ColorBuffer) {
         if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
             error("ImGUI does not support multisample image rendering.")
         }
 
+        ImGui.pushID(label)
         ImGui.image(colorBuffer.textureId, colorBuffer.width.toFloat(), colorBuffer.height.toFloat())
+        ImGui.popID()
     }
 
     override fun treeView(label: String, children: () -> Unit) {
