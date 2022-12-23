@@ -1,11 +1,12 @@
 package com.virusbear.tinn
 
 import com.virusbear.tinn.events.ProgramActivateEvent
+import com.virusbear.tinn.nodes.NodeManager
 import com.virusbear.tinn.nodes.Nodespace
 import kotlin.time.Duration
 
-class Program: BaseDestroyable() {
-    val nodespace: Nodespace = Nodespace()
+class Program(val name: String = "Program"): BaseDestroyable() {
+    val nodespace: Nodespace = Nodespace(name)
 
     var frame: Long = 0
         private set

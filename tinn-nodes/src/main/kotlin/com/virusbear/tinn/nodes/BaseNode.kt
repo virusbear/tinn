@@ -1,7 +1,10 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.EventBus
+import com.virusbear.tinn.events.NodeMovedEvent
+import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.math.Vec2
 import java.util.*
-import kotlin.collections.HashSet
 import kotlin.reflect.KClass
 
 abstract class BaseNode(
@@ -10,11 +13,22 @@ abstract class BaseNode(
     final override var id: Int = -1
     private set
 
-    private val _ports = HashSet<Port>()
+    final override var position: IVec2 = IVec2.ZERO
+        private set
+
+    private val _ports = LinkedList<Port>()
     override val ports: List<Port>
         get() = _ports.toList()
 
     private var _nodespace: Nodespace? = null
+
+    init {
+        EventBus.subscribe<NodeMovedEvent> {
+            if(it.node == this) {
+                position = it.position
+            }
+        }
+    }
 
     override val nodespace: Nodespace
         get() {

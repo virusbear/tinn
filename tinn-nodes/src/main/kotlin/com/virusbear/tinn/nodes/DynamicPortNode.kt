@@ -10,7 +10,7 @@ abstract class DynamicPortNode(
     val dynamicPorts: List<Port>
         get() = _dynamicPorts.toList()
 
-    fun <T: Any?> addPort(
+    open fun <T: Any?> addPort(
         direction: PortDirection,
         name: String,
         type: KClass<*>,
@@ -25,7 +25,7 @@ abstract class DynamicPortNode(
         _dynamicPorts += it
     }
 
-    fun removePort(
+    open fun removePort(
         port: Port
     ) {
         this -= port

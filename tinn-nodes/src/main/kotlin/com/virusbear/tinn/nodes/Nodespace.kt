@@ -5,7 +5,7 @@ import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodespaceActivateEvent
 import org.jgrapht.graph.DirectedAcyclicGraph
 
-class Nodespace: BaseDestroyable() {
+class Nodespace(val name: String): BaseDestroyable() {
     private val nodeIds = IdPool()
     private val portIds = IdPool()
     private val linkIds = IdPool()

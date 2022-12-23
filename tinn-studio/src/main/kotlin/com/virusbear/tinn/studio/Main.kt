@@ -28,7 +28,8 @@ fun main() {
         NodeEditor(),
         ViewPort,
         NodeList(),
-        Properties()
+        Properties(),
+        NodespaceStack()
     )
 
     val dockSpace = DockSpace()
