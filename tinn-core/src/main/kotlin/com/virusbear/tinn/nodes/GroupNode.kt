@@ -4,15 +4,15 @@ import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
 import kotlin.reflect.KClass
 
-class GroupNode: DynamicPortNode("Group") {
+open class GroupNode(name: String = "Group"): DynamicPortNode(name) {
     @Register
     companion object: NodeIdentifier("Group", NodeCategory.Utility, ::GroupNode)
 
-    private val contentNodespace: Nodespace = Nodespace(name)
-    private val inputNode = InputNode().also { contentNodespace += it }
-    private val outputNode = OutputNode().also { contentNodespace += it }
+    protected val contentNodespace: Nodespace = Nodespace(name)
+    protected val inputNode = InputNode().also { contentNodespace += it }
+    protected val outputNode = OutputNode().also { contentNodespace += it }
 
-    private val propagationMatrix = HashMap<Port, Port>()
+    protected val propagationMatrix = HashMap<Port, Port>()
 
     override fun <T> addPort(direction: PortDirection, name: String, type: KClass<*>, default: T?): Port {
         val port = super.addPort(direction, name, type, default)
@@ -55,18 +55,27 @@ class GroupNode: DynamicPortNode("Group") {
     }
 
     override fun process() {
-        ports.filter { it.direction == PortDirection.Input }.forEach { input ->
-            propagationMatrix[input]?.let { output ->
-                if(output.direction == PortDirection.Output) {
+        propagateInputs()
+
+        contentNodespace.evaluate()
+
+        propagateOutputs()
+    }
+
+    protected fun propagateOutputs() {
+        propagationMatrix.keys.filter { it.direction == PortDirection.Output }.forEach { output ->
+            propagationMatrix[output]?.let { input ->
+                if (output.direction == PortDirection.Input) {
                     output.value = input.value
                 }
             }
         }
-        contentNodespace.evaluate()
+    }
 
-        ports.filter { it.direction == PortDirection.Output }.forEach { output ->
-            propagationMatrix[output]?.let { input ->
-                if(output.direction == PortDirection.Input) {
+    protected fun propagateInputs() {
+        propagationMatrix.keys.filter { it.direction == PortDirection.Input }.forEach { input ->
+            propagationMatrix[input]?.let { output ->
+                if (output.direction == PortDirection.Output) {
                     output.value = input.value
                 }
             }

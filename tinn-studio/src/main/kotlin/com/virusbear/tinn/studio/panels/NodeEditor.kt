@@ -18,18 +18,26 @@ import imgui.extension.imnodes.ImNodesContext
 import imgui.extension.imnodes.flag.ImNodesAttributeFlags
 import imgui.flag.ImGuiButtonFlags
 import imgui.flag.ImGuiHoveredFlags
+import imgui.flag.ImGuiKey
 import imgui.flag.ImGuiMouseButton
 
 class NodeEditor: Panel, BaseDestroyable() {
     override val name: String = "Node Editor"
 
     private var nodespace: Nodespace? = null
+    //TODO: make list of nodes to support multiselection
     private var selected: Node? = null
     private val nodespaceContext = HashMap<Nodespace, ImNodesContext>()
 
     init {
         EventBus.subscribe<NodespaceActivateEvent> {
             nodespace = it.nodespace
+        }
+        EventBus.subscribe<NodeAddedEvent> {
+            if(it.nodespace == nodespace) {
+                //ImNodes.editorGetPanning().ivec2 wait for this in spair imgui release
+                //TODO: Set position of node to center of current nodespace
+            }
         }
     }
 
@@ -53,8 +61,6 @@ class NodeEditor: Panel, BaseDestroyable() {
         ) {
             nodespace?.let {
                 it.nodes.filter { it.id >= 0 }.forEach {
-                    ImNodes.setNodeGridSpacePos(it.id, it.position.x.toFloat(), it.position.y.toFloat())
-
                     node(it.id, it.name) {
                         it.ports.forEach {
                             when(it.direction) {
@@ -62,15 +68,6 @@ class NodeEditor: Panel, BaseDestroyable() {
                                 PortDirection.Output -> output(it.id, it.name)
                             }
                         }
-                    }
-
-                    val pos = ImVec2()
-                    ImNodes.getNodeGridSpacePos(it.id, pos)
-                    println("X:" + (pos.x - it.position.x))
-                    println("Y:" + (pos.y - it.position.y))
-
-                    if(ImGui.isItemHovered() && ImGui.isMouseDragging(ImGuiMouseButton.Left) && ImGui.getIO().mouseDelta.ivec2 != IVec2.ZERO) {
-                        //EventBus.publish(NodeMovedEvent(it, it.position + ImGui.getIO().mouseDelta.ivec2))
                     }
 
                     if(ImGui.isItemClicked() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
@@ -86,6 +83,16 @@ class NodeEditor: Panel, BaseDestroyable() {
 
         val nodeIds = IntArray(ImNodes.numSelectedNodes())
         ImNodes.getSelectedNodes(nodeIds)
+        for(id in nodeIds) {
+            val node = nodespace?.nodeByIdOrNull(id) ?: continue
+
+            val pos = ImVec2()
+            ImNodes.getNodeGridSpacePos(id, pos)
+            if(pos.ivec2 != node.position) {
+                EventBus.publish(NodeMovedEvent(node, pos.ivec2))
+            }
+        }
+
         if(nodeIds.size == 1) {
             nodespace?.let {
                 val node = it.nodeByIdOrNull(nodeIds.first())
@@ -101,6 +108,16 @@ class NodeEditor: Panel, BaseDestroyable() {
                 }
             }
         }
+
+        fun updateNodePositions() {
+            nodespace?.nodes?.let {
+                it.forEach {
+                    ImNodes.setNodeGridSpacePos(it.id, it.position.x.toFloat(), it.position.y.toFloat())
+                }
+            }
+        }
+        updateNodePositions()
+
     }
 
     private fun onCreateLink(nodespace: Nodespace?): (Int, Int) -> Unit = { startAttribute, endAttribute ->

@@ -11,7 +11,7 @@ class Port(
 ) {
     init {
         if(default != null)
-            require(default::class == type) { "Default value does not match port type" }
+            require(type.java.isAssignableFrom(default::class.java)) { "Default value does not match port type" }
     }
 
     var id: Int = -1

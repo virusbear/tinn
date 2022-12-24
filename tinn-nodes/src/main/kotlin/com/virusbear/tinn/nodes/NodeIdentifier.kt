@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-abstract class NodeIdentifier(
+open class NodeIdentifier(
     val name: String,
     val category: NodeCategory,
     private val factory: NodeFactory

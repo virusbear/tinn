@@ -2,6 +2,7 @@ package com.virusbear.tinn.studio.panels
 
 import com.virusbear.tinn.BaseDestroyable
 import com.virusbear.tinn.EventBus
+import com.virusbear.tinn.events.NodeAddedEvent
 import com.virusbear.tinn.events.NodespaceActivateEvent
 import com.virusbear.tinn.nodes.NodeCategoryTree
 import com.virusbear.tinn.nodes.NodeManager
@@ -32,8 +33,8 @@ class NodeList: Panel, BaseDestroyable() {
 
             element.nodes.forEach { node ->
                 context.treeLeaf(node.name) {
-                    nodespace?.let {
-                        it += node.new()
+                    nodespace?.let { ns ->
+                        ns += node.new().also { EventBus.publish(NodeAddedEvent(ns, it)) }
                     }
                 }
             }
