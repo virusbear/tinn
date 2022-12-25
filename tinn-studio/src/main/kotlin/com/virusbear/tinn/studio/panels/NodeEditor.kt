@@ -20,6 +20,8 @@ import imgui.flag.ImGuiButtonFlags
 import imgui.flag.ImGuiHoveredFlags
 import imgui.flag.ImGuiKey
 import imgui.flag.ImGuiMouseButton
+import imgui.flag.ImGuiPopupFlags
+import org.lwjgl.glfw.GLFW
 
 class NodeEditor: Panel, BaseDestroyable() {
     override val name: String = "Node Editor"
@@ -31,6 +33,7 @@ class NodeEditor: Panel, BaseDestroyable() {
 
     init {
         EventBus.subscribe<NodespaceActivateEvent> {
+            //FIXME: selected nodes are shifted upong removing nodespace from stack
             nodespace = it.nodespace
         }
         EventBus.subscribe<NodeAddedEvent> {
@@ -93,6 +96,16 @@ class NodeEditor: Panel, BaseDestroyable() {
             }
         }
 
+        if(ImGui.isKeyReleased(GLFW.GLFW_KEY_DELETE)) {
+            nodespace?.let { ns ->
+                nodeIds.map {
+                    ns.nodeByIdOrNull(it)
+                }.filterNotNull().forEach { node ->
+                    ns -= node
+                }
+            }
+        }
+
         if(nodeIds.size == 1) {
             nodespace?.let {
                 val node = it.nodeByIdOrNull(nodeIds.first())
@@ -117,7 +130,6 @@ class NodeEditor: Panel, BaseDestroyable() {
             }
         }
         updateNodePositions()
-
     }
 
     private fun onCreateLink(nodespace: Nodespace?): (Int, Int) -> Unit = { startAttribute, endAttribute ->

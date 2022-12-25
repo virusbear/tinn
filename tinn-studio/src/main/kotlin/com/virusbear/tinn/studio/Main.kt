@@ -1,14 +1,13 @@
 package com.virusbear.tinn.studio
 
-import com.virusbear.tinn.Driver
-import com.virusbear.tinn.Program
-import com.virusbear.tinn.Window
+import com.virusbear.tinn.*
 import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
 import com.virusbear.tinn.nodes.NodeManager
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
+import org.lwjgl.glfw.GLFW
 
 fun main() {
     Driver.use(DriverGL())
@@ -50,6 +49,11 @@ fun main() {
                 ImGui.end()
             }
 
+            //Back button (Logitech MX Master 3S)
+            if(ImGui.isMouseClicked(GLFW.GLFW_MOUSE_BUTTON_4)) {
+                EventBus.publish(NodespacePopEvent)
+            }
+
             program.update()
         }
     }
@@ -75,3 +79,5 @@ private fun loop(window: Window, block: () -> Unit) {
         }
     }
 }
+
+object NodespacePopEvent: Event

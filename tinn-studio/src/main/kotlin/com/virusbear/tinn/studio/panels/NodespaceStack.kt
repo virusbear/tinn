@@ -4,6 +4,7 @@ import com.virusbear.tinn.BaseDestroyable
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodespaceActivateEvent
 import com.virusbear.tinn.nodes.Nodespace
+import com.virusbear.tinn.studio.NodespacePopEvent
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui
@@ -28,6 +29,14 @@ class NodespaceStack: Panel, BaseDestroyable() {
                 }
             } else {
                 nodespaceStack.push(it.nodespace)
+            }
+        }
+
+        EventBus.subscribe<NodespacePopEvent> {
+            if(nodespaceStack.size > 1) {
+                //FIXME: when this event is called the nodeeditor is stuck in a panning state causing it to start auto panning
+                nodespaceStack.pop()
+                EventBus.publish(NodespaceActivateEvent(nodespaceStack.peek()))
             }
         }
     }
