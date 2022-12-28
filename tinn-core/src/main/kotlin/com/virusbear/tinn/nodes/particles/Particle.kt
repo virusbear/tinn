@@ -23,7 +23,8 @@ class ParticleNode: BaseNode("Particle") {
     var velocity: Vec3 by output("Velocity", default = Vec3.ZERO)
     var acceleration: Vec3 by output("Acceleration", default = Vec3.ZERO)
     var size: Double by output("Size", default = 0.0)
-    var age: Double by output("Size", default = 0.0)
+    var age: Double by output("Age", default = 0.0)
+
     override fun process() {
         particle?.let {
             pos = it.position

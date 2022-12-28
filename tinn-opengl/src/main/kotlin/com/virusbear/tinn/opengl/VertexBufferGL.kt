@@ -1,5 +1,6 @@
 package com.virusbear.tinn.opengl
 
+import com.virusbear.tinn.BufferProxy
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.VertexBuffer
 import com.virusbear.tinn.VertexFormat
@@ -11,6 +12,9 @@ class VertexBufferGL internal constructor(
 ): VertexBuffer, Trackable() {
     private val vao: Int
     private val vbo: Int
+
+    override val proxy: BufferProxy
+        get() = TODO("Not yet implemented")
 
     init {
         vbo = glGenBuffers()

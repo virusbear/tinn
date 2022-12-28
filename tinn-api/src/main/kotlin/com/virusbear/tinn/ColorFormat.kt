@@ -1,6 +1,9 @@
 package com.virusbear.tinn
 
 class ColorFormat(val format: PixelFormat, val type: PixelType, val channels: Int, val isFloatingPoint: Boolean) {
+    val pixelBytes: Int
+        get() = type.bytes * channels
+
     companion object {
         val R8 = ColorFormat(PixelFormat.R, PixelType.I8, 1, false)
         val R16 = ColorFormat(PixelFormat.R, PixelType.I16, 1, false)

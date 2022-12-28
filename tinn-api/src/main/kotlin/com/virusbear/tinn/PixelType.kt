@@ -1,9 +1,9 @@
 package com.virusbear.tinn
 
-enum class PixelType {
-    I8,
-    I16,
-    I32,
-    F16,
-    F32
+enum class PixelType(val bytes: Int) {
+    I8(1),
+    I16(2),
+    I32(4),
+    F16(2),
+    F32(4)
 }

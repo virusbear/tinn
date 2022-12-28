@@ -1,4 +1,4 @@
-package com.virusbear.tinn.nodes.colorbuffer
+package com.virusbear.tinn
 
 abstract class BufferPool<DESCRIPTOR, ELEMENT>(
     private val allocator: (DESCRIPTOR) -> ELEMENT,

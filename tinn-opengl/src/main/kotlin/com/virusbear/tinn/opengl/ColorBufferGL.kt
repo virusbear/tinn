@@ -1,9 +1,7 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
-import org.lwjgl.opengl.GL11C
 import org.lwjgl.opengl.GL33C.*
-import org.lwjgl.stb.STBImage
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryStack
 import java.io.File
@@ -17,8 +15,10 @@ class ColorBufferGL internal constructor(
     val samples: MultiSample,
     val levels: MipMapLevel
 ): ColorBuffer, Trackable() {
-    private val target: Int
+    internal val target: Int
     override val textureId: Int
+
+    override val proxy: ColorBufferProxy = ColorBufferProxyGL(this)
 
     init {
         require(width < LimitsGL.MaxTextureSize)

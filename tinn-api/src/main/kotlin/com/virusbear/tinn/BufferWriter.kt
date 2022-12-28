@@ -12,11 +12,16 @@ interface BufferWriter {
     fun write(v: Double)
     fun write(v: IVec2)
     fun write(v: IVec3)
+    fun write(v: IVec4)
     fun write(v: Vec2)
     fun write(v: Vec3)
+    fun write(v: Vec4)
     fun write(v: Mat3)
     fun write(v: Mat4)
-    fun write(v: Color)
+    fun write(v: Color, format: ColorFormat)
 
     var position: Int
+    val limit: Int
+    val capacity: Int
+    val remaining: Int
 }

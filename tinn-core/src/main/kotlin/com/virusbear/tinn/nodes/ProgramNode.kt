@@ -27,7 +27,9 @@ class ProgramNode(private val program: Program): SynchronizingPortNode("Program"
         EventBus.publish(NodeAddedEvent(program.nodespace, nextStateNode))
 
         EventBus.subscribe<NodeEnteredEvent> {
-            program.nodespace.makeCurrent()
+            if(it.node == this) {
+                program.nodespace.makeCurrent()
+            }
         }
 
     }
