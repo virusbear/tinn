@@ -20,6 +20,14 @@ abstract class BufferPool<DESCRIPTOR, ELEMENT>(
         return element
     }
 
+    operator fun set(index: String, element: ELEMENT) {
+        if(index in objects) {
+            recycle(index)
+        }
+
+        objects[index] = element
+    }
+
     fun recycle(index: String) {
         objects[index]?.let { element ->
             deallocator(element)

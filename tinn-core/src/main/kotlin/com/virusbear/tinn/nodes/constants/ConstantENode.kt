@@ -1,4 +1,4 @@
-package com.virusbear.tinn.nodes.math.constants
+package com.virusbear.tinn.nodes.constants
 
 import com.virusbear.tinn.nodes.*
 

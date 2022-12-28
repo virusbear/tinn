@@ -1,14 +1,14 @@
 package com.virusbear.tinn.color
 
-//TODO: how to implement multiple color formats?
-//TODO: one type for each format like ColorRgba in openrndr?
 data class Color(
-    val r: Double,
-    val g: Double,
-    val b: Double,
-    val a: Double
+    val r: Double = 0.0,
+    val g: Double = 0.0,
+    val b: Double = 0.0,
+    val a: Double = 1.0
 ) {
-    init {
-        TODO("Not yet implemented")
+    companion object {
+        val TRANSPARENT = Color(0.0, 0.0, 0.0, 0.0)
+        val BLACK = Color(0.0, 0.0, 0.0, 1.0)
+        val WHITE = Color(1.0, 1.0, 1.0, 0.0)
     }
 }

@@ -1,9 +1,12 @@
 package com.virusbear.tinn.studio
 
 import com.virusbear.tinn.*
+import com.virusbear.tinn.events.ProgramControlEvent
 import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
 import com.virusbear.tinn.nodes.NodeManager
+import com.virusbear.tinn.nodes.Nodespace
+import com.virusbear.tinn.nodes.ProgramNode
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
@@ -14,7 +17,7 @@ fun main() {
 
     val window: Window = Driver.use {
         init()
-        createWindow(800, 600, "Hello tinn!", resizable = true, vsync = true)
+        createWindow(800, 600, "tinn", resizable = true, vsync = true)
     }
 
     val context = ImGuiUIContext("#version 130", window)
@@ -35,7 +38,20 @@ fun main() {
     dockSpace.init(context)
     panels.forEach { it.init(context) }
 
-    val program = Program().also { it.makeCurrent() }
+    val program = Program()
+
+    EventBus.subscribe<ProgramControlEvent> {
+        when(it) {
+            ProgramControlEvent.Pause -> program.stop()
+            ProgramControlEvent.Reset -> program.reset()
+            ProgramControlEvent.Start -> program.start()
+            ProgramControlEvent.Step -> program.step()
+            ProgramControlEvent.Stop -> {
+                program.stop()
+                program.reset()
+            }
+        }
+    }
 
     loop(window) {
         context.render { ctx ->

@@ -15,8 +15,8 @@ open class FloatOpNode(private val op: (Double) -> Double, name: String): BaseNo
 @Register val SqrtNode = NodeIdentifier("Sqrt", NodeCategory.Math) { FloatOpNode(::sqrt, "Sqrt") }
 @Register val FloorNode = NodeIdentifier("Floor", NodeCategory.Math) { FloatOpNode(::floor, "Floor") }
 @Register val CeilNode = NodeIdentifier("Ceil", NodeCategory.Math) { FloatOpNode(::ceil, "Ceil") }
-@Register val SinNode = NodeIdentifier("Sin", NodeCategory.Trigonometry) { FloatOpNode(::sin, "Sin") }
-@Register val CosNode = NodeIdentifier("Cos", NodeCategory.Trigonometry) { FloatOpNode(::cos, "Cos") }
+@Register val SinNode = NodeIdentifier("Sin", NodeCategory.Math) { FloatOpNode(::sin, "Sin") }
+@Register val CosNode = NodeIdentifier("Cos", NodeCategory.Math) { FloatOpNode(::cos, "Cos") }
 @Register val AbsNode = NodeIdentifier("Abs", NodeCategory.Math) { FloatOpNode(::abs, "Abs") }
 @Register val ExpNode = NodeIdentifier("Exp", NodeCategory.Math) { FloatOpNode(::exp, "Exp") }
 @Register val TanNode = NodeIdentifier("Tan", NodeCategory.Math) { FloatOpNode(::tan, "Tan") }

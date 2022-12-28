@@ -1,6 +1,8 @@
 package com.virusbear.tinn
 
 import com.virusbear.tinn.shader.*
+import java.awt.Color
+import java.io.File
 
 abstract class Driver: Destroyable {
     abstract fun init()
@@ -19,6 +21,10 @@ abstract class Driver: Destroyable {
         format: ColorFormat,
         multisample: MultiSample,
         levels: MipMapLevel
+    ): ColorBuffer
+    abstract fun loadImage(
+        file: File,
+        format: ColorFormat
     ): ColorBuffer
 
     abstract fun createDepthBuffer(width: Int, height: Int): DepthBuffer

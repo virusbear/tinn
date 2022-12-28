@@ -5,6 +5,7 @@ import com.virusbear.tinn.shader.*
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.glfw.GLFWErrorCallback
+import java.io.File
 
 class DriverGL: Driver() {
     override fun init() {
@@ -46,6 +47,9 @@ class DriverGL: Driver() {
             multisample,
             levels
         )
+
+    override fun loadImage(file: File, format: ColorFormat): ColorBuffer =
+        ColorBufferGL.loadImage(file, format)
 
     override fun createDepthBuffer(width: Int, height: Int): DepthBuffer {
         TODO("Prio 5")

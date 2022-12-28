@@ -4,7 +4,6 @@ import com.virusbear.tinn.BaseDestroyable
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.*
 import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.nodes.Link
 import com.virusbear.tinn.nodes.Node
 import com.virusbear.tinn.nodes.Nodespace
@@ -16,11 +15,7 @@ import imgui.ImVec2
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.ImNodesContext
 import imgui.extension.imnodes.flag.ImNodesAttributeFlags
-import imgui.flag.ImGuiButtonFlags
-import imgui.flag.ImGuiHoveredFlags
-import imgui.flag.ImGuiKey
 import imgui.flag.ImGuiMouseButton
-import imgui.flag.ImGuiPopupFlags
 import org.lwjgl.glfw.GLFW
 
 class NodeEditor: Panel, BaseDestroyable() {
@@ -38,11 +33,14 @@ class NodeEditor: Panel, BaseDestroyable() {
         }
         EventBus.subscribe<NodeAddedEvent> {
             if(it.nodespace == nodespace) {
-                //ImNodes.editorGetPanning().ivec2 wait for this in spair imgui release
-                //TODO: Set position of node to center of current nodespace
+                val panning = ImVec2()
+                ImNodes.editorContextGetPanning(panning)
+                EventBus.publish(NodeMovedEvent(it.node, panning.ivec2 + nodeEditorSize / 2))
             }
         }
     }
+
+    private var nodeEditorSize: IVec2 = IVec2.ZERO
 
     override fun init(context: UIContext) {
         ImNodes.createContext()
@@ -57,6 +55,8 @@ class NodeEditor: Panel, BaseDestroyable() {
                 ImNodes.editorContextSet(it)
             }
         }
+
+        nodeEditorSize = ImGui.getContentRegionAvail().ivec2
 
         context.nodeEditor(
             onLinkCreated = onCreateLink(nodespace),

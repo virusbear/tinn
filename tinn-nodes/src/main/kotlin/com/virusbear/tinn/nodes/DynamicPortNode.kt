@@ -3,8 +3,11 @@ package com.virusbear.tinn.nodes
 import kotlin.reflect.KClass
 
 abstract class DynamicPortNode(
-    override val name: String
-): BaseNode(name) {
+    override val name: String,
+    deletable: Boolean = true,
+    val dynamicInputsAllowed: Boolean = true,
+    val dynamicOutputsAllowed: Boolean = true
+): BaseNode(name, deletable) {
     private val _dynamicPorts = HashSet<Port>()
 
     val dynamicPorts: List<Port>
@@ -21,6 +24,10 @@ abstract class DynamicPortNode(
         type,
         default
     ).also {
+        when(direction) {
+            PortDirection.Input -> if(!dynamicInputsAllowed) return@also
+            PortDirection.Output -> if(!dynamicOutputsAllowed) return@also
+        }
         it.onAttach(nodespace)
         _dynamicPorts += it
     }

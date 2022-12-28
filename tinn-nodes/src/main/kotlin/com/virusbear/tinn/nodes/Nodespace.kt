@@ -16,6 +16,8 @@ class Nodespace(val name: String): BaseDestroyable() {
     val links: Set<Link> = graph.edgeSet()
 
     fun evaluate() {
+        //TODO: Skip Nodes that do not link to any other node.
+        //TODO: how to identify start and end of graph
         for(node in graph) {
             node.process()
 

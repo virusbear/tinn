@@ -9,6 +9,7 @@ interface Node {
     val name: String
     val nodespace: Nodespace
     val position: IVec2
+    val deletable: Boolean
 
     fun process()
 

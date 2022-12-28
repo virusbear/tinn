@@ -68,11 +68,15 @@ class Properties: Panel, BaseDestroyable() {
         }
 
         if(node is DynamicPortNode) {
-            context.separator()
-            showDynamicPorts(context, node, node.dynamicPorts, PortDirection.Input)
+            if(node.dynamicInputsAllowed) {
+                context.separator()
+                showDynamicPorts(context, node, node.dynamicPorts, PortDirection.Input)
+            }
 
-            context.separator()
-            showDynamicPorts(context, node, node.dynamicPorts, PortDirection.Output)
+            if(node.dynamicOutputsAllowed) {
+                context.separator()
+                showDynamicPorts(context, node, node.dynamicPorts, PortDirection.Output)
+            }
         }
     }
 

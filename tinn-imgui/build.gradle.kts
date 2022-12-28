@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-val imguiVersion = "1.86.4"
+val imguiVersion = "1.86.6"
 
 dependencies {
     implementation(kotlin("stdlib"))

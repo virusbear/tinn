@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-val libraries = listOf("", "-glfw", "-nanovg", "-nfd", "-opengl")
+val libraries = listOf("", "-glfw", "-nanovg", "-nfd", "-opengl", "-stb")
 val lwjglVersion = "3.3.1"
 
 val lwjglNatives = Pair(

@@ -1,4 +1,4 @@
-package com.virusbear.tinn.nodes.math
+package com.virusbear.tinn.nodes.random
 
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory

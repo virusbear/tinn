@@ -1,4 +1,4 @@
-package com.virusbear.tinn.nodes.math.convert
+package com.virusbear.tinn.nodes.convert
 
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory

@@ -8,7 +8,8 @@ import java.util.*
 import kotlin.reflect.KClass
 
 abstract class BaseNode(
-    override val name: String
+    override val name: String,
+    override val deletable: Boolean = true
 ): Node {
     final override var id: Int = -1
     private set

@@ -1,6 +1,4 @@
-package com.virusbear.tinn.nodes.math
-
-import com.virusbear.tinn.nodes.*
+package com.virusbear.tinn.nodes
 
 class ForeachNode: GroupNode("Foreach") {
     @Register
@@ -13,7 +11,7 @@ class ForeachNode: GroupNode("Foreach") {
     val elementOutputPort: Port = outputNode.addPort(PortDirection.Input, "Element", Any::class, null)
 
     override fun process() {
-        propagateInputs()
+        propagate()
 
         result = list.map {
             elementInputPort.value = it
@@ -21,6 +19,6 @@ class ForeachNode: GroupNode("Foreach") {
             elementOutputPort.value
         }
 
-        propagateOutputs()
+        outputNode.propagate()
     }
 }

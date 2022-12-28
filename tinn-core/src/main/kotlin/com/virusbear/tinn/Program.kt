@@ -1,12 +1,16 @@
 package com.virusbear.tinn
 
-import com.virusbear.tinn.events.ProgramActivateEvent
-import com.virusbear.tinn.nodes.NodeManager
 import com.virusbear.tinn.nodes.Nodespace
+import com.virusbear.tinn.nodes.ProgramNode
 import kotlin.time.Duration
 
+//TODO: run nodeeditor only once initially to create program instance.
+//TODO: run content nodespace for each frame.
+//TODO: pass in any initially created state 
 class Program(val name: String = "Program"): BaseDestroyable() {
     val nodespace: Nodespace = Nodespace(name)
+    val initializationNodespace: Nodespace = Nodespace("Init $name")
+    val programNode = ProgramNode(this)
 
     var frame: Long = 0
         private set
@@ -15,15 +19,19 @@ class Program(val name: String = "Program"): BaseDestroyable() {
     var running: Boolean = false
         private set
 
-    fun makeCurrent() {
-        EventBus.publish(ProgramActivateEvent(this))
-        nodespace.makeCurrent()
+    private var steps: Int = 0
+
+    init {
+        initializationNodespace += programNode
+        initializationNodespace.makeCurrent()
     }
+
+    //TODO: Program.makeCurrent?
 
     fun step() {
         if(destroyed) return
 
-        nodespace.evaluate()
+        steps++
     }
 
     fun start() {
@@ -40,6 +48,7 @@ class Program(val name: String = "Program"): BaseDestroyable() {
         if(destroyed) return
 
         frame = 0
+        initializationNodespace.evaluate()
     }
 
     //TODO: how to handle time?
@@ -47,8 +56,9 @@ class Program(val name: String = "Program"): BaseDestroyable() {
     fun update() {
         if(destroyed) return
 
-        if(running) {
-            step()
+        if(running || steps > 0) {
+            if(steps > 0) steps--
+            nodespace.evaluate()
         }
     }
 
@@ -56,6 +66,7 @@ class Program(val name: String = "Program"): BaseDestroyable() {
         super.destroy()
 
         nodespace.destroy()
+        initializationNodespace.destroy()
         frame = 0
         time = Duration.ZERO
         running = false
