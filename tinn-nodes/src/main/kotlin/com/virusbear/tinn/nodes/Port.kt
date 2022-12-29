@@ -2,6 +2,7 @@ package com.virusbear.tinn.nodes
 
 import kotlin.reflect.KClass
 
+//TODO: add mandatory flag to better visualize optional and required ports
 class Port(
     val node: Node,
     val direction: PortDirection,

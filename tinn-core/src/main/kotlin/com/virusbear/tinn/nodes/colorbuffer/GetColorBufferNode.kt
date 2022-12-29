@@ -21,17 +21,7 @@ class GetColorBufferNode: BaseNode("Get ColorBuffer") {
             return
         }
 
-        val element = ColorBufferPool[index]
-        output = if(element == null) {
-            ColorBufferPool[index, ColorBufferPool.Descriptor(size)]
-        } else {
-            if(IVec2(element.width, element.height) != size) {
-                ColorBufferPool.recycle(index)
-                ColorBufferPool[index, ColorBufferPool.Descriptor(size)]
-            } else {
-                element
-            }
-        }
+        output = ColorBufferPool[index, ColorBufferPool.Descriptor(size)]
     }
 }
 

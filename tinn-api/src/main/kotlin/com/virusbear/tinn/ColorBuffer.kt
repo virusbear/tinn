@@ -1,5 +1,7 @@
 package com.virusbear.tinn
 
+import java.io.File
+
 interface ColorBuffer: Buffer, Bindable, Destroyable {
     val textureId: Int
     val width: Int
@@ -9,4 +11,5 @@ interface ColorBuffer: Buffer, Bindable, Destroyable {
     //TODO: implement reading and writing
     fun generateMipMaps()
     fun filter(minifyingFilter: TextureFilter, magnifyingFilter: TextureFilter)
+    fun save(file: File)
 }

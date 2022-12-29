@@ -1,5 +1,6 @@
 package com.virusbear.tinn.math.internal
 
+//TODO: use this in actual Mat3 and Mat4 implementations
 abstract class Mat<T: Mat<T>>(
     private val dim: Int,
     protected val matrix: DoubleArray

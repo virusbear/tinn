@@ -3,6 +3,8 @@ package com.virusbear.tinn.opengl
 import com.virusbear.tinn.*
 import org.lwjgl.opengl.GL33C.*
 import org.lwjgl.stb.STBImage.*
+import org.lwjgl.stb.STBImageWrite
+import org.lwjgl.stb.STBImageWrite.stbi_write_png
 import org.lwjgl.system.MemoryStack
 import java.io.File
 import java.nio.ByteBuffer
@@ -64,6 +66,13 @@ class ColorBufferGL internal constructor(
         }
     }
 
+    override fun save(file: File) {
+        val proxy = proxy.also { it.download() } as ColorBufferProxyGL
+        val imageBuffer = proxy.buffer ?: return
+
+        stbi_write_png(file.absolutePath, width, height, format.channels, imageBuffer, width * format.pixelBytes)
+    }
+
     override fun bind() {
         require(!destroyed) { "ColorBuffer is destroyed" }
 
@@ -89,7 +98,7 @@ class ColorBufferGL internal constructor(
 
     companion object {
         fun loadImage(file: File, format: ColorFormat = ColorFormat.RGB8): ColorBuffer {
-            val stack = MemoryStack.create()
+            val stack = MemoryStack.stackPush()
 
             val w = stack.mallocInt(1)
             val h = stack.mallocInt(1)

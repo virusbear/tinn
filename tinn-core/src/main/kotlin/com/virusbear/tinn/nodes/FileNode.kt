@@ -10,11 +10,6 @@ class FileNode: BaseNode("File") {
     var file: File? by output("Output", default = null)
 
     override fun process() {
-        val f = File(path)
-        file = if(!f.exists()) {
-            null
-        } else {
-            f
-        }
+        file = File(path)
     }
 }

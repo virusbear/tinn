@@ -8,7 +8,8 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 class ColorBufferProxyGL(private val colorBuffer: ColorBufferGL): ColorBufferProxy, BaseDestroyable() {
-    private var buffer: ByteBuffer? = null
+    internal var buffer: ByteBuffer? = null
+        private set
 
     override fun download() {
         if(destroyed) return
@@ -21,7 +22,7 @@ class ColorBufferProxyGL(private val colorBuffer: ColorBufferGL): ColorBufferPro
         buffer = MemoryUtil.memAlloc(bufferSize)
 
         colorBuffer.bound {
-            glGetTexImage(colorBuffer.textureId, 0, colorBuffer.format.glFormat, colorBuffer.format.glType, buffer!!)
+            glGetTexImage(colorBuffer.target, 0, colorBuffer.format.glFormat, colorBuffer.format.glType, buffer!!)
         }
     }
 

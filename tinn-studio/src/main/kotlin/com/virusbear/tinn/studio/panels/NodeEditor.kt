@@ -30,6 +30,7 @@ class NodeEditor: Panel, BaseDestroyable() {
         EventBus.subscribe<NodespaceActivateEvent> {
             //FIXME: selected nodes are shifted upong removing nodespace from stack
             nodespace = it.nodespace
+            selected = null
         }
         EventBus.subscribe<NodeAddedEvent> {
             if(it.nodespace == nodespace) {
