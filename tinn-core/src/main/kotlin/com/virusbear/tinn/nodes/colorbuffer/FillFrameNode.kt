@@ -8,9 +8,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
 //DRAFT
-class FillFrameNode: BaseNode("Fill Frame") {
+class FillFrameNode: BaseNode("Fill Frame", FillFrameNode) {
     @Register
-    companion object: NodeIdentifier("Fill Frame", NodeCategory.Utility, ::FillFrameNode)
+    companion object: NodeIdentifier("Fill Frame", NodeCategory.Utility, { FillFrameNode() })
 
     val frame: ColorBuffer? by input("Frame", default = null)
     val fillColor: Color by input("Color", default = Color.TRANSPARENT)

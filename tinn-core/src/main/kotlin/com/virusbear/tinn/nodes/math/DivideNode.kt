@@ -5,9 +5,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class DivideNode: BaseNode("Divide") {
+class DivideNode: BaseNode("Divide", DivideNode) {
     @Register
-    companion object: NodeIdentifier("Divide", NodeCategory.Math, ::DivideNode)
+    companion object: NodeIdentifier("Divide", NodeCategory.Math, { DivideNode() })
 
     val a: Double by input("A", default = 0.0)
     val b: Double by input("B", default = 0.0)

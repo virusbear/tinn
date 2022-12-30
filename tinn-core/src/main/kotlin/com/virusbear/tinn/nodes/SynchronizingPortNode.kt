@@ -4,10 +4,11 @@ import kotlin.reflect.KClass
 
 open class SynchronizingPortNode(
     name: String,
+    identifier: NodeIdentifier,
     deletable: Boolean = true,
     dynamicInputsAllowed: Boolean = true,
     dynamicOutputsAllowed: Boolean = true
-): DynamicPortNode(name, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) {
+): DynamicPortNode(name, identifier, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) {
 
     private var syncInputNode: DynamicPortNode? = null
     private var syncOutputNode: DynamicPortNode? = null

@@ -7,9 +7,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class GetColorBufferNode: BaseNode("Get ColorBuffer") {
+class GetColorBufferNode: BaseNode("Get ColorBuffer", GetColorBufferNode) {
     @Register
-    companion object: NodeIdentifier("Get ColorBuffer", NodeCategory.System, ::GetColorBufferNode)
+    companion object: NodeIdentifier("Get ColorBuffer", NodeCategory.System, { GetColorBufferNode() })
 
     val index: String by input("Id", default = "")
     val size: IVec2 by input("Size", IVec2.ZERO)

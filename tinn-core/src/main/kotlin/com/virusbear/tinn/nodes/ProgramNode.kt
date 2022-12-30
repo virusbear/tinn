@@ -6,10 +6,10 @@ import com.virusbear.tinn.events.NodeAddedEvent
 import com.virusbear.tinn.events.NodeEnteredEvent
 import com.virusbear.tinn.events.ProgramControlEvent
 
-class ProgramNode(private val program: Program): SynchronizingPortNode("Program", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false) {
-    private val globalStateNode = SynchronizingPortNode("Globals", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
-    private val lastStateNode = SynchronizingPortNode("Last State", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
-    private val nextStateNode = SynchronizingPortNode("Next State", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false)
+class ProgramNode(private val program: Program): SynchronizingPortNode("Program", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false) {
+    private val globalStateNode = SynchronizingPortNode("Globals", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
+    private val lastStateNode = SynchronizingPortNode("Last State", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
+    private val nextStateNode = SynchronizingPortNode("Next State", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false)
 
     init {
         synchronizeInputsWith(globalStateNode)

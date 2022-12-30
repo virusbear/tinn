@@ -7,9 +7,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class PerlinNoiseNode: BaseNode("Perlin Noise") {
+class PerlinNoiseNode: BaseNode("Perlin Noise", PerlinNoiseNode) {
     @Register
-    companion object: NodeIdentifier("Perlin Noise", NodeCategory.Utility, ::PerlinNoiseNode)
+    companion object: NodeIdentifier("Perlin Noise", NodeCategory.Utility, { PerlinNoiseNode() })
 
     val octaves: Int by input("Octaves", default = 1)
     val frequency: Double by input("Frequency", default = 1.0)

@@ -9,9 +9,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import java.io.File
 
-class LoadImageNode: BaseNode("Load Image") {
+class LoadImageNode: BaseNode("Load Image", LoadImageNode) {
     @Register
-    companion object: NodeIdentifier("Load Image", NodeCategory.Utility, ::LoadImageNode)
+    companion object: NodeIdentifier("Load Image", NodeCategory.Utility, { LoadImageNode() })
 
     val file: File? by input("File", default = null)
     val format: ColorFormat by input("Color Format", default = ColorFormat.RGB8)

@@ -7,9 +7,9 @@ import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.nodes.*
 
-class CalculatePixelNode: GroupNode("Calculate Pixel") {
+class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
     @Register
-    companion object: NodeIdentifier("Calculate Pixel", NodeCategory.Utility, ::CalculatePixelNode)
+    companion object: NodeIdentifier("Calculate Pixel", NodeCategory.Utility, { CalculatePixelNode() })
 
     val image: ColorBuffer? by input("Image", default = null)
     var output: ColorBuffer? by output("Output", default = null)

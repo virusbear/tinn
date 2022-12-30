@@ -4,9 +4,9 @@ import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.studio.panels.ViewPort
 
-class ViewPortNode: BaseNode("Viewport") {
+class ViewPortNode: BaseNode("Viewport", ViewPortNode) {
     @Register
-    companion object: NodeIdentifier("Viewport", NodeCategory.Utility, ::ViewPortNode)
+    companion object: NodeIdentifier("Viewport", NodeCategory.Utility, { ViewPortNode() })
 
     private val frame: ColorBuffer? by input("Frame")
     private var size: IVec2 by output("Size")

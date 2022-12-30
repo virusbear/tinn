@@ -5,9 +5,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class TextNode: BaseNode("Text") {
+class TextNode: BaseNode("Text", TextNode) {
     @Register
-    companion object: NodeIdentifier("Text", NodeCategory.Utility, ::TextNode)
+    companion object: NodeIdentifier("Text", NodeCategory.Utility, { TextNode() })
 
     val input: String by input("Input", default = "")
     var output: String by output("Output")

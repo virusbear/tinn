@@ -10,8 +10,8 @@ open class GroupNode(name: String = "Group", identifier: NodeIdentifier): Synchr
     companion object: NodeIdentifier("Group", NodeCategory.Utility, { GroupNode(identifier = it) })
 
     protected val contentNodespace: Nodespace = Nodespace(name)
-    protected val inputNode = SynchronizingPortNode("Input", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true).also { contentNodespace += it }
-    protected val outputNode = SynchronizingPortNode("Output", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false).also { contentNodespace += it }
+    protected val inputNode = SynchronizingPortNode("Input", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true).also { contentNodespace += it }
+    protected val outputNode = SynchronizingPortNode("Output", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false).also { contentNodespace += it }
 
     init {
         synchronizeInputsWith(inputNode)

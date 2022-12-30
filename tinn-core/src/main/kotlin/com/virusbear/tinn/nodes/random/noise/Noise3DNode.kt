@@ -8,9 +8,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import jdk.jfr.Registered
 
-class Noise3DNode: BaseNode("Sample Noise 3D") {
+class Noise3DNode: BaseNode("Sample Noise 3D", Noise3DNode) {
     @Register
-    companion object: NodeIdentifier("Sample Noise 3D", NodeCategory.Utility, ::Noise3DNode)
+    companion object: NodeIdentifier("Sample Noise 3D", NodeCategory.Utility, { Noise3DNode() })
 
     val noise: Noise3D? by input("Noise", default = null)
     val pos: Vec3 by input("Position", default = Vec3.ZERO)

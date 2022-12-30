@@ -5,9 +5,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class MultiplyNode: BaseNode("Multiply") {
+class MultiplyNode: BaseNode("Multiply", MultiplyNode) {
     @Register
-    companion object: NodeIdentifier("Multiply", NodeCategory.Math, ::MultiplyNode)
+    companion object: NodeIdentifier("Multiply", NodeCategory.Math, { MultiplyNode() })
 
     val a: Double by input("A", default = 0.0)
     val b: Double by input("B", default = 0.0)

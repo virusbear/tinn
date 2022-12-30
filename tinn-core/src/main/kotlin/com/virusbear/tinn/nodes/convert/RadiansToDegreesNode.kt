@@ -6,9 +6,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import kotlin.math.PI
 
-class RadiansToDegreesNode: BaseNode("Rad to Deg") {
+class RadiansToDegreesNode: BaseNode("Rad to Deg", RadiansToDegreesNode) {
     @Register
-    companion object: NodeIdentifier("Rad to Deg", NodeCategory.Convert, ::RadiansToDegreesNode)
+    companion object: NodeIdentifier("Rad to Deg", NodeCategory.Convert, { RadiansToDegreesNode() })
 
     val radians: Double by input("Radians", default = 0.0)
     var degrees: Double by output("Degrees", default = 0.0)

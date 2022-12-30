@@ -14,9 +14,9 @@ data class Particle(
     val age: Double
 )
 
-class ParticleNode: BaseNode("Particle") {
+class ParticleNode: BaseNode("Particle", ParticleNode) {
     @Register
-    companion object: NodeIdentifier("Particle", NodeCategory.Utility, ::ParticleNode)
+    companion object: NodeIdentifier("Particle", NodeCategory.Utility, { ParticleNode() })
 
     val particle: Particle? by input("Particle", default = null)
     var pos: Vec3 by output("Position", default = Vec3.ZERO)

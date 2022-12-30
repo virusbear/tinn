@@ -5,9 +5,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class FloatNode: BaseNode("Float") {
+class FloatNode: BaseNode("Float", FloatNode) {
     @Register
-    companion object: NodeIdentifier("Float", NodeCategory.Math, ::FloatNode)
+    companion object: NodeIdentifier("Float", NodeCategory.Math, { FloatNode() })
 
     val input: Double by input("Input", default = 0.0)
     var output: Double by output("Output")

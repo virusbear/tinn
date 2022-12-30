@@ -1,7 +1,6 @@
 package com.virusbear.tinn.nodes
 
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty
 
 //TODO: add mandatory flag to better visualize optional and required ports
 class Port(
@@ -25,18 +24,6 @@ class Port(
     fun onDetach(nodespace: Nodespace) {
         nodespace.releasePortId(id)
         id = -1
-    }
-
-    inline operator fun <reified T: Any?> getValue(thisRef: Any?, property: KProperty<*>): T {
-        require(T::class == type) { "Invalid type. Unable to delegate value" }
-
-        return (value as? T) ?: default as T
-    }
-
-    inline operator fun <reified T: Any?> setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        require(T::class == type) { "Invalid type. Unable to delegate value" }
-
-        this.value = value
     }
 
     fun reset() {

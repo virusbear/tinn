@@ -41,26 +41,30 @@ abstract class BaseNode(
 
             return nodespace
         }
-    protected inline fun <reified T: Any> input(
+    protected inline fun <reified T: Any?> input(
         name: String,
         default: T? = null
-    ): Port =
-        port(
-            PortDirection.Input,
-            name,
-            T::class,
-            default
+    ): PortDelegate<T> =
+        PortDelegate(
+            port(
+                PortDirection.Input,
+                name,
+                T::class,
+                default
+            )
         )
 
     protected inline fun <reified T: Any?> output(
         name: String,
         default: T? = null
-    ): Port =
-        port(
-            PortDirection.Output,
-            name,
-            T::class,
-            default
+    ): PortDelegate<T> =
+        PortDelegate(
+            port(
+                PortDirection.Output,
+                name,
+                T::class,
+                default
+            )
         )
 
     protected fun <T: Any?> port(
