@@ -6,9 +6,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import kotlin.math.pow
 
-class PowNode: BaseNode("Pow") {
+class PowNode: BaseNode("Pow", PowNode) {
     @Register
-    companion object: NodeIdentifier("Pow", NodeCategory.Math, ::PowNode)
+    companion object: NodeIdentifier("Pow", NodeCategory.Math, { PowNode() })
 
     val base: Double by input("Base", 0.0)
     val exponent: Double by input("Exponent", 1.0)

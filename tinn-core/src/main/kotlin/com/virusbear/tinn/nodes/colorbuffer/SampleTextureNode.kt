@@ -10,9 +10,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class SampleTextureNode: BaseNode("Sample Texture") {
+class SampleTextureNode: BaseNode("Sample Texture", SampleTextureNode) {
     @Register
-    companion object: NodeIdentifier("Sample Texture", NodeCategory.Utility, ::SampleTextureNode)
+    companion object: NodeIdentifier("Sample Texture", NodeCategory.Utility, { SampleTextureNode() })
 
     val texture: ColorBuffer? by input("Texture", default = null)
     val textureCoords: IVec2 by input("Coordinates", default = IVec2.ZERO)

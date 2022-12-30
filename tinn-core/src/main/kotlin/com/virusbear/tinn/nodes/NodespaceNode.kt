@@ -2,10 +2,11 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
+import com.virusbear.tinn.events.NodeRemovedEvent
 
-class NodespaceNode: BaseNode("Nodespace") {
+class NodespaceNode: BaseNode("Nodespace", NodespaceNode) {
     @Register
-    companion object: NodeIdentifier("Nodespace", NodeCategory.Utility, ::NodespaceNode)
+    companion object: NodeIdentifier("Nodespace", NodeCategory.Utility, { NodespaceNode() })
 
     val output: Nodespace by output("Nodespace", Nodespace(name))
 
@@ -16,12 +17,11 @@ class NodespaceNode: BaseNode("Nodespace") {
             }
         }
 
-        /*TODO:
         EventBus.subscribe<NodeRemovedEvent> {
             if(it.node == this) {
-                contentNodespace.destroy()
+                output.destroy()
             }
-        }*/
+        }
     }
 
     override fun process() { }

@@ -5,9 +5,9 @@ import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 
-class LerpNode: BaseNode("Lerp") {
+class LerpNode: BaseNode("Lerp", LerpNode) {
     @Register
-    companion object: NodeIdentifier("Lerp", NodeCategory.Math, ::LerpNode)
+    companion object: NodeIdentifier("Lerp", NodeCategory.Math, { LerpNode() })
 
     val start: Double by input("Start", 0.0)
     val end: Double by input("End", 0.0)

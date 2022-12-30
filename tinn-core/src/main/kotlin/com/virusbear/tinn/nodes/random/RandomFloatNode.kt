@@ -6,9 +6,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import kotlin.random.Random
 
-class RandomFloatNode: BaseNode("Random Float") {
+class RandomFloatNode: BaseNode("Random Float", RandomFloatNode) {
     @Register
-    companion object: NodeIdentifier("Random Float", NodeCategory.Math, ::RandomFloatNode)
+    companion object: NodeIdentifier("Random Float", NodeCategory.Math, { RandomFloatNode() })
 
     var output: Double by output("Output", default = 0.0)
     val minimum: Double by input("Minimum", default = Double.MIN_VALUE)

@@ -2,7 +2,13 @@ package com.virusbear.tinn.nodes
 
 import kotlin.reflect.KClass
 
-open class SynchronizingPortNode(name: String, deletable: Boolean = true, dynamicInputsAllowed: Boolean = true, dynamicOutputsAllowed: Boolean = true): DynamicPortNode(name, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) {
+open class SynchronizingPortNode(
+    name: String,
+    deletable: Boolean = true,
+    dynamicInputsAllowed: Boolean = true,
+    dynamicOutputsAllowed: Boolean = true
+): DynamicPortNode(name, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) {
+
     private var syncInputNode: DynamicPortNode? = null
     private var syncOutputNode: DynamicPortNode? = null
 

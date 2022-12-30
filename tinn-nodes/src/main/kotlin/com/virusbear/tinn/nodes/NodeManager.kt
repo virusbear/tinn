@@ -2,14 +2,8 @@ package com.virusbear.tinn.nodes
 
 import io.github.classgraph.ClassGraph
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotations
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.staticProperties
-import kotlin.reflect.jvm.kotlinFunction
-import kotlin.reflect.jvm.kotlinProperty
 
-typealias Factory<T> = () -> T
-typealias NodeFactory = Factory<Node>
+typealias NodeFactory = (NodeIdentifier) -> Node
 
 object NodeManager {
     val hierarchy = NodeCategoryTree()
@@ -27,6 +21,18 @@ object NodeManager {
 
     fun registerPortType(type: KClass<*>) {
         _portTypes += type
+    }
+
+    fun resolveNodeIdentifier(category: String, name: String): NodeIdentifier? {
+        var identifier: NodeIdentifier? = null
+        val nodeCategory = NodeCategory.fromString(category)
+        hierarchy.walk({}) {
+            if(it.category == nodeCategory && it.name == name) {
+                identifier = it
+            }
+        }
+
+        return identifier
     }
 
     fun walk(onCategory: (NodeCategory) -> Unit, onNode: (NodeIdentifier) -> Unit) {

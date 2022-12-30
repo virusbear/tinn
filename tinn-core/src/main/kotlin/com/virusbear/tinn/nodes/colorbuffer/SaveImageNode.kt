@@ -7,9 +7,9 @@ import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.nodes.Register
 import java.io.File
 
-class SaveImageNode: BaseNode("Save Image") {
+class SaveImageNode: BaseNode("Save Image", SaveImageNode) {
     @Register
-    companion object: NodeIdentifier("Save Image", NodeCategory.Utility, ::SaveImageNode)
+    companion object: NodeIdentifier("Save Image", NodeCategory.Utility, { SaveImageNode() })
 
     val file: File? by input("File", default = null)
     val image: ColorBuffer? by input("Image", default = null)

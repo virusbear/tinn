@@ -12,6 +12,12 @@ class IdPool {
             }
         }
 
+    fun acquire(id: Int) {
+        synchronized(ids) {
+            ids.set(id)
+        }
+    }
+
     fun release(id: Int) {
         synchronized(ids) {
             ids.clear(id)

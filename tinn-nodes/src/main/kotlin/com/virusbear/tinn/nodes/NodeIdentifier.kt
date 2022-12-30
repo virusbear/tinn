@@ -6,7 +6,7 @@ open class NodeIdentifier(
     private val factory: NodeFactory
 ) {
     fun new(): Node =
-        factory()
+        factory(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

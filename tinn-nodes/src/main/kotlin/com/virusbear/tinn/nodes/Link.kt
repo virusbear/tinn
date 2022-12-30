@@ -4,6 +4,10 @@ class Link(
     val start: Port,
     val end: Port
 ) {
+    internal constructor(id: Int, start: Port, end: Port): this(start, end) {
+        this.id = id
+    }
+
     var id: Int = -1
     private set
 
@@ -12,7 +16,8 @@ class Link(
     }
 
     fun onAttach(nodespace: Nodespace) {
-        id = nodespace.acquireLinkId()
+        if(id == -1)
+            id = nodespace.acquireLinkId()
     }
 
     fun onDetach(nodespace: Nodespace) {

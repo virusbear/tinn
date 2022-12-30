@@ -1,11 +1,27 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.BaseDestroyable
-import com.virusbear.tinn.EventBus
+import com.virusbear.tinn.*
 import com.virusbear.tinn.events.NodespaceActivateEvent
 import org.jgrapht.graph.DirectedAcyclicGraph
 
 class Nodespace(val name: String): BaseDestroyable() {
+    private constructor(name: String, nodes: Iterable<Node>, links: Iterable<Link>): this(name) {
+        nodes.forEach {
+            graph.addVertex(it)
+            nodeIds.acquire(it.id)
+            it.ports.forEach {
+                portIds.acquire(it.id)
+            }
+            it.onAttach(this)
+        }
+
+        links.forEach {
+            graph.addEdge(it.start.node, it.end.node, it)
+            linkIds.acquire(it.id)
+            it.onAttach(this)
+        }
+    }
+
     private val nodeIds = IdPool()
     private val portIds = IdPool()
     private val linkIds = IdPool()
@@ -94,6 +110,21 @@ class Nodespace(val name: String): BaseDestroyable() {
         linkIds.release(id)
     }
 
+    fun save(writer: SceneWriter) {
+        writer.write("version", SCENE_VERSION)
+        writer.write("name", name)
+        writer.writeList("nodes", nodes) {
+            write("_node_category", it.identifier.category.toString())
+            write("_node_name", it.identifier.name)
+            it.save(this)
+        }
+        writer.writeList("links", links) {
+            write("id", it.id)
+            write("start", it.start.id)
+            write("end", it.end.id)
+        }
+    }
+
     override fun destroy() {
         super.destroy()
 
@@ -105,5 +136,36 @@ class Nodespace(val name: String): BaseDestroyable() {
         nodeIds.free()
         portIds.free()
         linkIds.free()
+    }
+
+    companion object {
+        private const val SCENE_VERSION = "0.0.1"
+
+        fun load(reader: SceneReader): Nodespace {
+            val version = reader.string("version")
+            require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load Nodespace" }
+            val name = reader.string("name")
+            val nodes = reader.list("nodes") {
+                val nodeCategory = string("_node_category")
+                val nodeName = string("_node_name")
+                val nodeIdentifier: NodeIdentifier? = NodeManager.resolveNodeIdentifier(nodeCategory, nodeName)
+                nodeIdentifier?.new()?.also { it.load(this) }
+            }.filterNotNull()
+            val allPorts = nodes.flatMap { it.ports }
+            val links = reader.list("links") {
+                val id = reader.int("id")
+                val startPortId = reader.int("start")
+                val endPortId = reader.int("end")
+                val startPort = allPorts.firstOrNull { it.id == startPortId }
+                val endPort = allPorts.firstOrNull { it.id == endPortId }
+                if(startPort != null && endPort != null) {
+                    Link(id, startPort, endPort)
+                } else {
+                    null
+                }
+            }.filterNotNull()
+
+            return Nodespace(name, nodes, links)
+        }
     }
 }

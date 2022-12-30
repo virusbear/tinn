@@ -33,6 +33,7 @@ fun main() {
         Properties(),
         NodespaceStack()
     )
+    val menuBar = MainMenuBar()
 
     val dockSpace = DockSpace()
     dockSpace.init(context)
@@ -55,6 +56,8 @@ fun main() {
 
     loop(window) {
         context.render { ctx ->
+            menuBar.render(ctx)
+
             if(ImGui.begin(dockSpace.name, (dockSpace as ImGuiPanel).windowFlags()))
                 dockSpace.render(ctx)
             ImGui.end()

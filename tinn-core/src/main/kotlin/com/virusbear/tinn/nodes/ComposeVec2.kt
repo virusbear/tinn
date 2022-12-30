@@ -30,7 +30,7 @@ class ComposeIVec2: BaseNode("Compose IVec2") {
 
 class ComposeVec3: BaseNode("Compose Vec3") {
     @Register
-    companion object: NodeIdentifier("Vec3", NodeCategory.Compose, ::ComposeVec3)
+    companion object: NodeIdentifier("Vec3", NodeCategory.Compose, ComposeVec3::class, ::ComposeVec3)
 
     val x: Double by input("X", default = 0.0)
     val y: Double by input("Y", default = 0.0)

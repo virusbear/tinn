@@ -4,9 +4,10 @@ import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
 import kotlin.reflect.KClass
 
-open class GroupNode(name: String = "Group"): SynchronizingPortNode(name) {
+open class GroupNode(name: String = "Group", identifier: NodeIdentifier): SynchronizingPortNode(name, identifier) {
+
     @Register
-    companion object: NodeIdentifier("Group", NodeCategory.Utility, ::GroupNode)
+    companion object: NodeIdentifier("Group", NodeCategory.Utility, { GroupNode(identifier = it) })
 
     protected val contentNodespace: Nodespace = Nodespace(name)
     protected val inputNode = SynchronizingPortNode("Input", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true).also { contentNodespace += it }
