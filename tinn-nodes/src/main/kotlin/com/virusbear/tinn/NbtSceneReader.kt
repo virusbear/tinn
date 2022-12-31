@@ -134,8 +134,16 @@ class NbtSceneReader(private val root: CompoundTag): SceneReader {
 
     //TODO: how to read non compound lists
     override fun <T> list(key: String, block: SceneReader.() -> T): List<T> =
-        root.getList<CompoundTag>(key).map { NbtSceneReader(it).block() }
+        if(key !in this) {
+            emptyList()
+        } else {
+            root.getList<CompoundTag>(key).map { NbtSceneReader(it).block() }
+        }
+
 
     override fun <T> compound(key: String, block: SceneReader.() -> T): T =
         NbtSceneReader(root.getCompound(key)).block()
+
+    override fun contains(key: String): Boolean =
+        root.contains(key)
 }

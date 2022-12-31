@@ -33,13 +33,13 @@ fun main() {
         Properties(),
         NodespaceStack()
     )
-    val menuBar = MainMenuBar()
 
     val dockSpace = DockSpace()
     dockSpace.init(context)
     panels.forEach { it.init(context) }
 
     val program = Program()
+    val menuBar = MainMenuBar(program)
 
     EventBus.subscribe<ProgramControlEvent> {
         when(it) {

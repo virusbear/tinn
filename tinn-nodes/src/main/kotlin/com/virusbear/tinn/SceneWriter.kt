@@ -2,6 +2,7 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.*
+import java.io.File
 
 interface SceneWriter {
     fun write(key: String, value: Byte)
@@ -24,6 +25,8 @@ interface SceneWriter {
     fun write(key: String, value: ByteArray)
     fun write(key: String, value: IntArray)
     fun write(key: String, value: LongArray)
-    fun <T> writeList(key: String, value: Iterable<T>, block: SceneWriter.(T) -> Unit)
+    fun <T> writeList(key: String, value: Collection<T>, block: SceneWriter.(T) -> Unit)
     fun <T> writeCompound(key: String, value: T, block: SceneWriter.(T) -> Unit)
+
+    fun saveAs(file: File)
 }

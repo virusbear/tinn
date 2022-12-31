@@ -5,23 +5,6 @@ import com.virusbear.tinn.events.NodespaceActivateEvent
 import org.jgrapht.graph.DirectedAcyclicGraph
 
 class Nodespace(val name: String): BaseDestroyable() {
-    private constructor(name: String, nodes: Iterable<Node>, links: Iterable<Link>): this(name) {
-        nodes.forEach {
-            graph.addVertex(it)
-            nodeIds.acquire(it.id)
-            it.ports.forEach {
-                portIds.acquire(it.id)
-            }
-            it.onAttach(this)
-        }
-
-        links.forEach {
-            graph.addEdge(it.start.node, it.end.node, it)
-            linkIds.acquire(it.id)
-            it.onAttach(this)
-        }
-    }
-
     private val nodeIds = IdPool()
     private val portIds = IdPool()
     private val linkIds = IdPool()
@@ -55,6 +38,9 @@ class Nodespace(val name: String): BaseDestroyable() {
     fun linkByIdOrNull(linkId: Int): Link? =
         links.firstOrNull { it.id == linkId }
 
+    fun portByIdOrNull(portId: Int): Port? =
+        nodes.flatMap { it.ports }.firstOrNull { it.id == portId }
+
     fun linksForPort(port: Port): List<Link> =
         when(port.direction) {
             PortDirection.Input -> links.filter { it.end == port }
@@ -63,6 +49,12 @@ class Nodespace(val name: String): BaseDestroyable() {
 
     operator fun plusAssign(node: Node) {
         graph.addVertex(node)
+        if(node.id != -1) {
+            nodeIds.acquire(node.id)
+        }
+        node.ports.filter { it.id != -1 }.forEach {
+            portIds.acquire(it.id)
+        }
         node.onAttach(this)
     }
 
@@ -70,6 +62,10 @@ class Nodespace(val name: String): BaseDestroyable() {
         links.filter {
             it.end == link.end
         }.forEach { this -= it }
+
+        if(link.id != -1) {
+            linkIds.acquire(link.id)
+        }
 
         graph.addEdge(link.start.node, link.end.node, link)
         link.onAttach(this)
@@ -113,9 +109,9 @@ class Nodespace(val name: String): BaseDestroyable() {
     fun save(writer: SceneWriter) {
         writer.write("version", SCENE_VERSION)
         writer.write("name", name)
-        writer.writeList("nodes", nodes) {
-            write("_node_category", it.identifier.category.toString())
-            write("_node_name", it.identifier.name)
+        writer.writeList("nodes", nodes.filter { it.identifier != null }) {
+            write("_node_category", it.identifier!!.category.toString())
+            write("_node_name", it.identifier!!.name)
             it.save(this)
         }
         writer.writeList("links", links) {
@@ -145,27 +141,31 @@ class Nodespace(val name: String): BaseDestroyable() {
             val version = reader.string("version")
             require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load Nodespace" }
             val name = reader.string("name")
-            val nodes = reader.list("nodes") {
+            val nodespace = Nodespace(name)
+
+            reader.list("nodes") {
                 val nodeCategory = string("_node_category")
                 val nodeName = string("_node_name")
                 val nodeIdentifier: NodeIdentifier? = NodeManager.resolveNodeIdentifier(nodeCategory, nodeName)
-                nodeIdentifier?.new()?.also { it.load(this) }
-            }.filterNotNull()
-            val allPorts = nodes.flatMap { it.ports }
-            val links = reader.list("links") {
+                nodeIdentifier?.new()?.let {
+                    it.load(this, nodespace)
+                    nodespace += it
+                }
+            }
+            reader.list("links") {
                 val id = reader.int("id")
                 val startPortId = reader.int("start")
                 val endPortId = reader.int("end")
-                val startPort = allPorts.firstOrNull { it.id == startPortId }
-                val endPort = allPorts.firstOrNull { it.id == endPortId }
+                val startPort = nodespace.portByIdOrNull(startPortId)
+                val endPort = nodespace.portByIdOrNull(endPortId)
                 if(startPort != null && endPort != null) {
                     Link(id, startPort, endPort)
                 } else {
                     null
                 }
-            }.filterNotNull()
+            }
 
-            return Nodespace(name, nodes, links)
+            return nodespace
         }
     }
 }

@@ -2,7 +2,9 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.*
+import dev.dewy.nbt.Nbt
 import dev.dewy.nbt.tags.collection.CompoundTag
+import java.io.File
 
 class NbtSceneWriter(private val root: CompoundTag = CompoundTag("root")): SceneWriter {
 
@@ -120,11 +122,16 @@ class NbtSceneWriter(private val root: CompoundTag = CompoundTag("root")): Scene
         root.putLongArray(key, value)
     }
 
-    override fun <T> writeList(key: String, value: Iterable<T>, block: SceneWriter.(T) -> Unit) {
-        root.putList(key, value.map { NbtSceneWriter().apply { block(it) }.root })
+    override fun <T> writeList(key: String, value: Collection<T>, block: SceneWriter.(T) -> Unit) {
+        if(value.isNotEmpty())
+            root.putList(key, value.map { NbtSceneWriter().apply { block(it) }.root })
     }
 
     override fun <T> writeCompound(key: String, value: T, block: SceneWriter.(T) -> Unit) {
         root.putCompound(key, NbtSceneWriter().apply { block(value) }.root.value)
+    }
+
+    override fun saveAs(file: File) {
+        Nbt().toFile(root, file)
     }
 }

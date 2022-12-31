@@ -26,4 +26,6 @@ interface SceneReader {
     fun longArray(key: String): LongArray
     fun <T> list(key: String, block: SceneReader.() -> T): List<T>
     fun <T> compound(key: String, block: SceneReader.() -> T): T
+
+    operator fun contains(key: String): Boolean
 }

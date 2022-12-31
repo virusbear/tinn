@@ -6,7 +6,7 @@ import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
 
 interface Node {
-    val identifier: NodeIdentifier
+    val identifier: NodeIdentifier?
     val id: Int
     val ports: List<Port>
     val name: String
@@ -19,6 +19,6 @@ interface Node {
     fun onAttach(nodespace: Nodespace)
     fun onDetach(nodespace: Nodespace)
 
-    fun load(reader: SceneReader)
+    fun load(reader: SceneReader, nodespace: Nodespace)
     fun save(writer: SceneWriter)
 }

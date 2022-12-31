@@ -16,7 +16,7 @@ class DockSpace: ImGuiPanel, BaseDestroyable() {
         ImGui.setNextWindowViewport(viewport.id)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f)
-        return ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoTitleBar or ImGuiWindowFlags.NoCollapse or ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or ImGuiWindowFlags.NoBringToFrontOnFocus or ImGuiWindowFlags.NoNavFocus
+        return ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoTitleBar or ImGuiWindowFlags.NoCollapse or ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or ImGuiWindowFlags.NoBringToFrontOnFocus or ImGuiWindowFlags.NoNavFocus
     }
 
     override val name: String = "##DockSpace"

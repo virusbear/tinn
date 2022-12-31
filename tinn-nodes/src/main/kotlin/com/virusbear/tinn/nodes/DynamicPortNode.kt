@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 
 abstract class DynamicPortNode(
     override val name: String,
-    identifier: NodeIdentifier,
+    identifier: NodeIdentifier? = null,
     deletable: Boolean = true,
     dynamicInputsAllowed: Boolean = true,
     dynamicOutputsAllowed: Boolean = true
@@ -47,8 +47,8 @@ abstract class DynamicPortNode(
         _dynamicPorts -= port
     }
 
-    override fun load(reader: SceneReader) {
-        super.load(reader)
+    override fun load(reader: SceneReader, nodespace: Nodespace) {
+        super.load(reader, nodespace)
         val version = reader.string("version")
         require(SCENE_VERSION >= version) { "Unsupported file version. Unable to load DynamicPortNode" }
 
@@ -78,7 +78,7 @@ abstract class DynamicPortNode(
             write("name", it.name)
             write("id", it.id)
             write("type", it.type.qualifiedName!!)
-            write("direciton", it.direction.toString())
+            write("direction", it.direction.toString())
         }
     }
 

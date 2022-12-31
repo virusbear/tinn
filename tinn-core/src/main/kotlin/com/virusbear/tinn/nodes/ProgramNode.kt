@@ -2,14 +2,15 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.Program
+import com.virusbear.tinn.SceneWriter
 import com.virusbear.tinn.events.NodeAddedEvent
 import com.virusbear.tinn.events.NodeEnteredEvent
 import com.virusbear.tinn.events.ProgramControlEvent
 
-class ProgramNode(private val program: Program): SynchronizingPortNode("Program", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false) {
-    private val globalStateNode = SynchronizingPortNode("Globals", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
-    private val lastStateNode = SynchronizingPortNode("Last State", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
-    private val nextStateNode = SynchronizingPortNode("Next State", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false)
+class ProgramNode(private val program: Program): SynchronizingPortNode("Program", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false) {
+    private val globalStateNode = SynchronizingPortNode("Globals", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
+    private val lastStateNode = SynchronizingPortNode("Last State", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true)
+    private val nextStateNode = SynchronizingPortNode("Next State", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false)
 
     init {
         synchronizeInputsWith(globalStateNode)
@@ -39,5 +40,13 @@ class ProgramNode(private val program: Program): SynchronizingPortNode("Program"
         nextStateNode.propagate()
 
         program.update()
+    }
+
+    override fun save(writer: SceneWriter) {
+        super.save(writer)
+
+        writer.writeCompound("globals", globalStateNode) { it.save(this) }
+        writer.writeCompound("lastState", lastStateNode) { it.save(this) }
+        writer.writeCompound("nextState", nextStateNode) { it.save(this) }
     }
 }

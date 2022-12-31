@@ -37,6 +37,8 @@ class NodeEditor: Panel, BaseDestroyable() {
                 val panning = ImVec2()
                 ImNodes.editorContextGetPanning(panning)
                 EventBus.publish(NodeMovedEvent(it.node, -panning.ivec2 + nodeEditorSize / 2))
+                EventBus.publish(NodeSelectEvent(it.node))
+                selected = it.node
             }
         }
     }

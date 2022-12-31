@@ -4,7 +4,7 @@ import kotlin.reflect.KClass
 
 open class SynchronizingPortNode(
     name: String,
-    identifier: NodeIdentifier,
+    identifier: NodeIdentifier? = null,
     deletable: Boolean = true,
     dynamicInputsAllowed: Boolean = true,
     dynamicOutputsAllowed: Boolean = true

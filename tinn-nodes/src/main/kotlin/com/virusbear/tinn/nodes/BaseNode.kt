@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 
 abstract class BaseNode(
     override val name: String,
-    override val identifier: NodeIdentifier,
+    override val identifier: NodeIdentifier? = null,
     override val deletable: Boolean = true
 ): Node {
     final override var id: Int = -1
@@ -85,6 +85,10 @@ abstract class BaseNode(
             _ports += port
         }
 
+    protected operator fun minusAssign(port: Port) {
+        _ports -= port
+    }
+
     override fun onAttach(nodespace: Nodespace) {
         _nodespace = nodespace
         if(id == -1)
@@ -104,7 +108,7 @@ abstract class BaseNode(
         id = -1
     }
 
-    override fun load(reader: SceneReader) {
+    override fun load(reader: SceneReader, nodespace: Nodespace) {
         val version = reader.string("version")
         require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load BaseNode" }
 
@@ -114,10 +118,21 @@ abstract class BaseNode(
             val portName = string("name")
             val typeName = string("type")
             val type = Class.forName(typeName).kotlin
-            val direction = int("direction")
+            val direction = string("direction")
             val portId = int("id")
-            val default = NodeManager.loadPortValue("default", reader, type)
-            val value = NodeManager.loadPortValue("value", reader, type)
+
+            val port = port(
+                PortDirection.valueOf(direction),
+                portName,
+                Class.forName(typeName).kotlin,
+                NodeManager.loadPortValue("default", type, reader)
+            )
+
+            port.id = portId
+
+            if(direction == PortDirection.Input.toString()) {
+                port.value = NodeManager.loadPortValue("value", type, reader)
+            }
         }
 
         this.id = id
@@ -131,10 +146,13 @@ abstract class BaseNode(
         writer.writeList("ports", ports) {
             write("name", it.name)
             write("type", it.type.qualifiedName!!)
-            write("direction", it.direction.ordinal)
+            write("direction", it.direction.toString())
             write("id", it.id)
-            NodeManager.savePortValue("default", writer, it.type, it.default)
-            NodeManager.savePortValue("value", writer, it.type, it.value)
+            NodeManager.savePortValue("default", it.type, it.default, writer)
+
+            if(it.direction == PortDirection.Input) {
+                NodeManager.savePortValue("value", it.type, it.value, writer)
+            }
         }
     }
 

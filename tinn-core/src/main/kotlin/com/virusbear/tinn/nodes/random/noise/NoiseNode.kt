@@ -19,6 +19,7 @@ class NoiseNode: BaseNode("Sample Noise 1D", NoiseNode) {
     var result: Double by output("Output", default = 0.0)
 
     override fun process() {
-        result = noise?.sample(offset + pos * zoom) ?: 0.0
+        //TODO: optimize zoom calculation
+        result = noise?.sample(offset + pos * (1.0 / zoom)) ?: 0.0
     }
 }
