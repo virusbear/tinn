@@ -2,6 +2,7 @@ package com.virusbear.tinn.imgui
 
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.MultiSample
+import com.virusbear.tinn.TextureFilter
 import com.virusbear.tinn.Window
 import com.virusbear.tinn.math.*
 import com.virusbear.tinn.opengl.ColorBufferGL
@@ -23,6 +24,8 @@ import imgui.type.ImDouble
 import imgui.type.ImInt
 import imgui.type.ImString
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.opengl.GL11C.GL_UNPACK_ROW_LENGTH
+import org.lwjgl.opengl.GL11C.glPixelStorei
 import java.util.*
 
 class ImGuiUIContext(private val glslVersion: String, private val window: Window): UIContext {
@@ -210,6 +213,11 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
     override fun image(label: String, colorBuffer: ColorBuffer) {
         if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
             error("ImGUI does not support multisample image rendering.")
+        }
+
+        colorBuffer.bound {
+            colorBuffer.filter(TextureFilter.LINEAR, TextureFilter.LINEAR)
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
         }
 
         ImGui.pushID(label)

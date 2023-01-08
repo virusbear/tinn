@@ -6,6 +6,9 @@ import com.virusbear.tinn.Context.Key
 interface Context {
     operator fun <E: Element> get(key: Key<E>): E?
 
+    operator fun <E: Element> contains(key: Key<E>): Boolean =
+        get(key) != null
+
     fun <R> fold(initial: R, operation: (R, Element) -> R): R
 
     operator fun plus(context: Context): Context =
