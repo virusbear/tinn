@@ -2,16 +2,16 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
-import kotlin.reflect.KClass
+import com.virusbear.tinn.Context
 
-open class GroupNode(name: String = "Group", identifier: NodeIdentifier): SynchronizingPortNode(name, identifier) {
+open class GroupNode(name: String = "Group", identifier: NodeIdentifier): PortSynchronizingNode(name, identifier) {
 
     @Register
-    companion object: NodeIdentifier("Group", NodeCategory.Utility, { GroupNode(identifier = it) })
+    companion object: NodeIdentifier("Group", NodeCategory.Utility, factory = { GroupNode(identifier = it[NodeIdentifier]!!) })
 
     protected val contentNodespace: Nodespace = Nodespace(name)
-    protected val inputNode = SynchronizingPortNode("Input", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true).also { contentNodespace += it }
-    protected val outputNode = SynchronizingPortNode("Output", NodeIdentifier("", NodeCategory.System, { error("FIXME: This should not happen") }), deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false).also { contentNodespace += it }
+    protected val inputNode = PortSynchronizingNode("Input", deletable = false, dynamicInputsAllowed = false, dynamicOutputsAllowed = true).also { contentNodespace += it }
+    protected val outputNode = PortSynchronizingNode("Output", deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false).also { contentNodespace += it }
 
     init {
         synchronizeInputsWith(inputNode)
@@ -33,10 +33,10 @@ open class GroupNode(name: String = "Group", identifier: NodeIdentifier): Synchr
         }*/
     }
 
-    override fun process() {
+    override fun process(context: Context) {
         propagate()
 
-        contentNodespace.evaluate()
+        contentNodespace.evaluate(context)
 
         outputNode.propagate()
     }

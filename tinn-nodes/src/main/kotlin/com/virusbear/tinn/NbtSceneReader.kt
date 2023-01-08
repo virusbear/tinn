@@ -144,6 +144,9 @@ class NbtSceneReader(private val root: CompoundTag): SceneReader {
     override fun <T> compound(key: String, block: SceneReader.() -> T): T =
         NbtSceneReader(root.getCompound(key)).block()
 
+    override fun compound(key: String): SceneReader =
+        NbtSceneReader(root.getCompound(key))
+
     override fun contains(key: String): Boolean =
         root.contains(key)
 }

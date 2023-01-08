@@ -6,10 +6,11 @@ import com.virusbear.tinn.ColorBufferReader
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 
 class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
     @Register
-    companion object: NodeIdentifier("Calculate Pixel", NodeCategory.Utility, { CalculatePixelNode() })
+    companion object: NodeIdentifier("Calculate Pixel", NodeCategory.Utility, factory = { CalculatePixelNode() })
 
     val image: ColorBuffer? by input("Image", default = null)
     var output: ColorBuffer? by output("Output", default = null)
@@ -20,7 +21,7 @@ class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
     val readerInputPort: Port = inputNode.addPort(PortDirection.Output, "Reader", ColorBufferReader::class, null)
     val pixelOutputPort: Port = outputNode.addPort(PortDirection.Input, "Pixel", Color::class, Color.TRANSPARENT)
 
-    override fun process() {
+    override fun process(context: Context) {
         propagate()
 
         val img = image ?: run {
@@ -40,7 +41,7 @@ class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
             for(y in 0 until img.height) {
                 pixelInputPort.value = reader[x, y]
                 positionInputPort.value = IVec2(x, y)
-                contentNodespace.evaluate()
+                contentNodespace.evaluate(context)
                 writer[x, y] = pixelOutputPort.value as Color
             }
         }

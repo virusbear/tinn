@@ -1,14 +1,12 @@
 package com.virusbear.tinn.nodes.random
 
-import com.virusbear.tinn.nodes.BaseNode
-import com.virusbear.tinn.nodes.NodeCategory
-import com.virusbear.tinn.nodes.NodeIdentifier
-import com.virusbear.tinn.nodes.Register
+import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 import kotlin.random.Random
 
 class RandomIntNode: BaseNode("Random Int", RandomIntNode) {
     @Register
-    companion object: NodeIdentifier("Random Int", NodeCategory.Math, { RandomIntNode() })
+    companion object: NodeIdentifier("Random Int", NodeCategory.Math, factory = { RandomIntNode() })
 
     var output: Int by output("Output", default = 0)
     val minimum: Int by input("Minimum", default = Int.MIN_VALUE)
@@ -16,7 +14,7 @@ class RandomIntNode: BaseNode("Random Int", RandomIntNode) {
 
     private val random = Random(System.currentTimeMillis())
 
-    override fun process() {
+    override fun process(context: Context) {
         output = random.nextInt(minimum, maximum)
     }
 }

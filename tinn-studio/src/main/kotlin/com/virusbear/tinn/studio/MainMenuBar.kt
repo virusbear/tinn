@@ -1,8 +1,6 @@
 package com.virusbear.tinn.studio
 
-import com.virusbear.tinn.BaseDestroyable
-import com.virusbear.tinn.NbtSceneWriter
-import com.virusbear.tinn.Program
+import com.virusbear.tinn.*
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui
@@ -17,7 +15,8 @@ class MainMenuBar(val program: Program): Panel, BaseDestroyable() {
         if(ImGui.beginMainMenuBar()) {
             if(ImGui.beginMenu("File")) {
                 if(ImGui.menuItem("Open", "Ctrl + O")) {
-                    println("Menu open")
+                    val reader = NbtSceneReader(File("C:\\Temp\\TEst.scn"))
+                    program.load(reader, EmptyContext)
                 }
                 if(ImGui.menuItem("Save", "Ctrl + S")) {
                     val writer = NbtSceneWriter()

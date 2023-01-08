@@ -1,14 +1,21 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
 import kotlin.reflect.KClass
 
-open class SynchronizingPortNode(
+open class PortSynchronizingNode(
     name: String,
     identifier: NodeIdentifier? = null,
     deletable: Boolean = true,
     dynamicInputsAllowed: Boolean = true,
     dynamicOutputsAllowed: Boolean = true
-): DynamicPortNode(name, identifier, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) {
+): DynamicPortNode(
+    name,
+    identifier ?: NodeIdentifier(name, NodeCategory.System, internal = true, factory = { PortSynchronizingNode(name, null, deletable, dynamicInputsAllowed, dynamicOutputsAllowed) }),
+    deletable,
+    dynamicInputsAllowed,
+    dynamicOutputsAllowed
+) {
 
     private var syncInputNode: DynamicPortNode? = null
     private var syncOutputNode: DynamicPortNode? = null
@@ -66,5 +73,5 @@ open class SynchronizingPortNode(
         }
     }
 
-    override fun process() {}
+    override fun process(context: Context) {}
 }

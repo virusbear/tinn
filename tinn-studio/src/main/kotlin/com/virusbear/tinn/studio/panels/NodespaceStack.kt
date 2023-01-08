@@ -14,41 +14,33 @@ import java.util.*
 class NodespaceStack: Panel, BaseDestroyable() {
     override val name: String = "Nodespace Stack"
 
-    val nodespaceStack = Stack<Nodespace>()
+    var activeNodespace: Nodespace? = null
+        private set
 
     init {
         EventBus.subscribe<NodespaceActivateEvent> {
-            if(it.nodespace == null) {
-                nodespaceStack.clear()
-                return@subscribe
-            }
-
-            if(it.nodespace in nodespaceStack) {
-                while(nodespaceStack.peek() != it.nodespace) {
-                    nodespaceStack.pop()
-                }
-            } else {
-                nodespaceStack.push(it.nodespace)
-            }
+            activeNodespace = it.nodespace
         }
 
         EventBus.subscribe<NodespacePopEvent> {
-            if(nodespaceStack.size > 1) {
-                //FIXME: when this event is called the nodeeditor is stuck in a panning state causing it to start auto panning
-                nodespaceStack.pop()
-                EventBus.publish(NodespaceActivateEvent(nodespaceStack.peek()))
+            if(activeNodespace != null) {
+                EventBus.publish(NodespaceActivateEvent(activeNodespace!!.parent))
             }
         }
     }
 
     override fun render(context: UIContext) {
-        nodespaceStack.toList().forEach {
-            ImGui.selectable("##nodespace_${Random().nextInt()}", it == nodespaceStack.peek())
+        var nodespace: Nodespace? = activeNodespace
+
+        while(nodespace != null) {
+            ImGui.selectable("##nodespace_${Random().nextInt()}", nodespace == activeNodespace)
             if(ImGui.isItemClicked() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
-                it.makeCurrent()
+                nodespace.makeCurrent()
             }
             ImGui.sameLine()
-            ImGui.text(it.name)
+            ImGui.text(nodespace.name)
+
+            nodespace = nodespace.parent
         }
     }
 }

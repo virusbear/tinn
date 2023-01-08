@@ -1,5 +1,6 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
 import io.github.classgraph.ClassGraph
@@ -7,7 +8,7 @@ import io.github.classgraph.ScanResult
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 
-typealias NodeFactory = (NodeIdentifier) -> Node
+typealias NodeFactory = (Context) -> Node
 
 object NodeManager {
     val hierarchy = NodeCategoryTree()
@@ -21,11 +22,16 @@ object NodeManager {
     fun register(identifier: NodeIdentifier) {
         hierarchy += identifier
 
-        identifier.new().ports.forEach { port ->
-            if(_serializers.none { it.type == port.type }) {
-                //TODO: logging; msg: No serializer defined for type ${port.type.simplename} values for this port will not be stored when saving scene files
+        try {
+            identifier.new(identifier).ports.forEach { port ->
+                if(_serializers.none { it.type == port.type }) {
+                    //TODO: logging; msg: No serializer defined for type ${port.type.simplename} values for this port will not be stored when saving scene files
+                }
+                registerPortType(port.type)
             }
-            registerPortType(port.type)
+        } catch(ex: Exception) {
+            //IGNORED
+            //TODO: find better way to load available port types
         }
     }
 
@@ -33,7 +39,7 @@ object NodeManager {
         if(_serializers.any { it.type == serializer.type }) {
             //TODO: logging; msg: Serializer for type ${serializer.type.simplename} already defined. skipping
         }
-        println("Serializer for ${serializer.type.simpleName} registered")
+
         _serializers += serializer
     }
 

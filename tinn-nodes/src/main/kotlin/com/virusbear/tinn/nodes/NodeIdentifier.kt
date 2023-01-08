@@ -1,12 +1,19 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.AbstractContextElement
+import com.virusbear.tinn.Context
+import com.virusbear.tinn.EmptyContext
+
 open class NodeIdentifier(
     val name: String,
     val category: NodeCategory,
+    val internal: Boolean = false,
     private val factory: NodeFactory
-) {
-    fun new(): Node =
-        factory(this)
+): AbstractContextElement(NodeIdentifier) {
+    companion object Key: Context.Key<NodeIdentifier>
+
+    fun new(context: Context = EmptyContext): Node =
+        factory(context + this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

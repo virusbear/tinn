@@ -22,8 +22,6 @@ class PerlinNoise(
             f *= 2
         }
 
-        println("$pos\t$sample\t$range")
-
         return sample / range
     }
 

@@ -1,18 +1,16 @@
 package com.virusbear.tinn.nodes.primitive
 
-import com.virusbear.tinn.nodes.BaseNode
-import com.virusbear.tinn.nodes.NodeCategory
-import com.virusbear.tinn.nodes.NodeIdentifier
-import com.virusbear.tinn.nodes.Register
+import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 
 class FloatNode: BaseNode("Float", FloatNode) {
     @Register
-    companion object: NodeIdentifier("Float", NodeCategory.Math, { FloatNode() })
+    companion object: NodeIdentifier("Float", NodeCategory.Math, factory = { FloatNode() })
 
     val input: Double by input("Input", default = 0.0)
     var output: Double by output("Output")
 
-    override fun process() {
+    override fun process(context: Context) {
         output = input
     }
 }

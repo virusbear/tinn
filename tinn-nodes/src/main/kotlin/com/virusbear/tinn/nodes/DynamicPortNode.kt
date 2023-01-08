@@ -1,12 +1,13 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
 import kotlin.reflect.KClass
 
 abstract class DynamicPortNode(
     override val name: String,
-    identifier: NodeIdentifier? = null,
+    identifier: NodeIdentifier,
     deletable: Boolean = true,
     dynamicInputsAllowed: Boolean = true,
     dynamicOutputsAllowed: Boolean = true
@@ -47,26 +48,19 @@ abstract class DynamicPortNode(
         _dynamicPorts -= port
     }
 
-    override fun load(reader: SceneReader, nodespace: Nodespace) {
-        super.load(reader, nodespace)
+    override fun load(reader: SceneReader, context: Context) {
+        super.load(reader, context)
+
         val version = reader.string("version")
         require(SCENE_VERSION >= version) { "Unsupported file version. Unable to load DynamicPortNode" }
 
         dynamicOutputsAllowed = reader.byte("dynOutputAllowed") != 0.toByte()
         dynamicInputsAllowed = reader.byte("dynInputAllowed") != 0.toByte()
-        reader.list("dynPorts") {
-            val name = string("name")
-            val id = int("id")
-            val type = string("type")
-            val direction = string("direction")
-
-            addPort(
-                PortDirection.valueOf(direction),
-                name,
-                Class.forName(type).kotlin,
-                null
-            ).id = id
-        }
+        _dynamicPorts.addAll(
+            reader.intArray("dynPorts").map { portId ->
+                context[NodespaceContextElement]?.nodespace?.portByIdOrNull(portId)
+            }.filterNotNull()
+        )
     }
 
     override fun save(writer: SceneWriter) {

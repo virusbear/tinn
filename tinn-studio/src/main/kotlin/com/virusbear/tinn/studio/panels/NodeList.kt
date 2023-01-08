@@ -31,7 +31,7 @@ class NodeList: Panel, BaseDestroyable() {
                 render(context, e)
             }
 
-            element.nodes.forEach { node ->
+            element.nodes.filter { !it.internal }.forEach { node ->
                 context.treeLeaf(node.name) {
                     nodespace?.let { ns ->
                         ns += node.new().also { EventBus.publish(NodeAddedEvent(ns, it)) }

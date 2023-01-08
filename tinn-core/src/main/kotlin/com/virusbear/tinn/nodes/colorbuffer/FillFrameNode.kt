@@ -2,21 +2,19 @@ package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.nodes.BaseNode
-import com.virusbear.tinn.nodes.NodeCategory
-import com.virusbear.tinn.nodes.NodeIdentifier
-import com.virusbear.tinn.nodes.Register
+import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 
 //DRAFT
 class FillFrameNode: BaseNode("Fill Frame", FillFrameNode) {
     @Register
-    companion object: NodeIdentifier("Fill Frame", NodeCategory.Utility, { FillFrameNode() })
+    companion object: NodeIdentifier("Fill Frame", NodeCategory.Utility, factory = { FillFrameNode() })
 
     val frame: ColorBuffer? by input("Frame", default = null)
     val fillColor: Color by input("Color", default = Color.TRANSPARENT)
     var result: ColorBuffer? by output("Result", default = null)
 
-    override fun process() {
+    override fun process(context: Context) {
         if(frame == null) return
 
         //TODO: how to avoid copying frame here?

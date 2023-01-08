@@ -1,18 +1,16 @@
 package com.virusbear.tinn.nodes.primitive
 
-import com.virusbear.tinn.nodes.BaseNode
-import com.virusbear.tinn.nodes.NodeCategory
-import com.virusbear.tinn.nodes.NodeIdentifier
-import com.virusbear.tinn.nodes.Register
+import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 
 class TextNode: BaseNode("Text", TextNode) {
     @Register
-    companion object: NodeIdentifier("Text", NodeCategory.Utility, { TextNode() })
+    companion object: NodeIdentifier("Text", NodeCategory.Utility, factory = { TextNode() })
 
     val input: String by input("Input", default = "")
     var output: String by output("Output")
 
-    override fun process() {
+    override fun process(context: Context) {
         output = input
     }
 }

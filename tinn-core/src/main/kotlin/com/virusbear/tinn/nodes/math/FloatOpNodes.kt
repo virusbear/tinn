@@ -1,37 +1,37 @@
-import com.virusbear.tinn.nodes.BaseNode
-import com.virusbear.tinn.nodes.NodeCategory
-import com.virusbear.tinn.nodes.NodeIdentifier
-import com.virusbear.tinn.nodes.Register
+package com.virusbear.tinn.nodes.math
+
+import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Context
 import kotlin.math.*
 
-open class FloatOpNode(private val op: (Double) -> Double, name: String, identifier: NodeIdentifier): BaseNode(name, identifier) {
+class FloatOpNode(private val op: (Double) -> Double, name: String, identifier: NodeIdentifier): BaseNode(name, identifier) {
     val input: Double by input("Input", 0.0)
     var output: Double by output("Output", 0.0)
 
-    override fun process() {
+    override fun process(context: Context) {
         output = op(input)
     }
 }
 
 @Register
-val SqrtNode = NodeIdentifier("Sqrt", NodeCategory.Math) { FloatOpNode(::sqrt, "Sqrt", it) }
+val SqrtNode = NodeIdentifier("Sqrt", NodeCategory.Math) { FloatOpNode(::sqrt, "Sqrt", it[NodeIdentifier]!!) }
 @Register
-val FloorNode = NodeIdentifier("Floor", NodeCategory.Math) { FloatOpNode(::floor, "Floor", it) }
+val FloorNode = NodeIdentifier("Floor", NodeCategory.Math) { FloatOpNode(::floor, "Floor", it[NodeIdentifier]!!) }
 @Register
-val CeilNode = NodeIdentifier("Ceil", NodeCategory.Math) { FloatOpNode(::ceil, "Ceil", it) }
+val CeilNode = NodeIdentifier("Ceil", NodeCategory.Math) { FloatOpNode(::ceil, "Ceil", it[NodeIdentifier]!!) }
 @Register
-val SinNode = NodeIdentifier("Sin", NodeCategory.Math) { FloatOpNode(::sin, "Sin", it) }
+val SinNode = NodeIdentifier("Sin", NodeCategory.Math) { FloatOpNode(::sin, "Sin", it[NodeIdentifier]!!) }
 @Register
-val CosNode = NodeIdentifier("Cos", NodeCategory.Math) { FloatOpNode(::cos, "Cos", it) }
+val CosNode = NodeIdentifier("Cos", NodeCategory.Math) { FloatOpNode(::cos, "Cos", it[NodeIdentifier]!!) }
 @Register
-val AbsNode = NodeIdentifier("Abs", NodeCategory.Math) { FloatOpNode(::abs, "Abs", it) }
+val AbsNode = NodeIdentifier("Abs", NodeCategory.Math) { FloatOpNode(::abs, "Abs", it[NodeIdentifier]!!) }
 @Register
-val ExpNode = NodeIdentifier("Exp", NodeCategory.Math) { FloatOpNode(::exp, "Exp", it) }
+val ExpNode = NodeIdentifier("Exp", NodeCategory.Math) { FloatOpNode(::exp, "Exp", it[NodeIdentifier]!!) }
 @Register
-val TanNode = NodeIdentifier("Tan", NodeCategory.Math) { FloatOpNode(::tan, "Tan", it) }
+val TanNode = NodeIdentifier("Tan", NodeCategory.Math) { FloatOpNode(::tan, "Tan", it[NodeIdentifier]!!) }
 @Register
-val LnNode = NodeIdentifier("Ln", NodeCategory.Math) { FloatOpNode(::ln, "LN", it) }
+val LnNode = NodeIdentifier("Ln", NodeCategory.Math) { FloatOpNode(::ln, "LN", it[NodeIdentifier]!!) }
 @Register
-val Log10Node = NodeIdentifier("Log 10", NodeCategory.Math) { FloatOpNode(::log10, "Log10", it) }
+val Log10Node = NodeIdentifier("Log 10", NodeCategory.Math) { FloatOpNode(::log10, "Log10", it[NodeIdentifier]!!) }
 @Register
-val Log2Node = NodeIdentifier("Log 2", NodeCategory.Math) { FloatOpNode(::log2, "Log2", it) }
+val Log2Node = NodeIdentifier("Log 2", NodeCategory.Math) { FloatOpNode(::log2, "Log2", it[NodeIdentifier]!!) }

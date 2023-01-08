@@ -1,15 +1,16 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
 import java.io.File
 
 class FileNode: BaseNode("File", FileNode) {
     @Register
-    companion object: NodeIdentifier("File", NodeCategory.Utility, { FileNode() })
+    companion object: NodeIdentifier("File", NodeCategory.Utility, factory = { FileNode() })
 
     val path: String by input("Path", default = "")
     var file: File? by output("Output", default = null)
 
-    override fun process() {
+    override fun process(context: Context) {
         file = File(path)
     }
 }

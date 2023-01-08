@@ -2,9 +2,12 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.*
 import com.virusbear.tinn.events.NodespaceActivateEvent
+import com.virusbear.tinn.Context
 import org.jgrapht.graph.DirectedAcyclicGraph
 
-class Nodespace(val name: String): BaseDestroyable() {
+class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(), SceneSavable {
+    var name: String = name
+        private set
     private val nodeIds = IdPool()
     private val portIds = IdPool()
     private val linkIds = IdPool()
@@ -14,11 +17,11 @@ class Nodespace(val name: String): BaseDestroyable() {
     val nodes: Set<Node> = graph.vertexSet()
     val links: Set<Link> = graph.edgeSet()
 
-    fun evaluate() {
+    fun evaluate(context: Context) {
         //TODO: Skip Nodes that do not link to any other node.
         //TODO: how to identify start and end of graph
         for(node in graph) {
-            node.process()
+            node.process(context)
 
             node.ports.filter { port -> port.direction == PortDirection.Output }.forEach { port ->
                 graph.edgesOf(node).filter { link -> link.start == port }.forEach {
@@ -106,13 +109,25 @@ class Nodespace(val name: String): BaseDestroyable() {
         linkIds.release(id)
     }
 
-    fun save(writer: SceneWriter) {
+    fun clear() {
+        //Nodes are copied to avoid ConcurrentModificationException due to -= removing vertex from graph
+        nodes.toList().forEach {
+            this -= it
+        }
+    }
+
+    override fun save(writer: SceneWriter) {
         writer.write("version", SCENE_VERSION)
         writer.write("name", name)
-        writer.writeList("nodes", nodes.filter { it.identifier != null }) {
-            write("_node_category", it.identifier!!.category.toString())
-            write("_node_name", it.identifier!!.name)
-            it.save(this)
+        writer.writeList("nodeDefinitions", nodes) {
+            write("_node_category", it.identifier.category.toString())
+            write("_node_name", it.identifier.name)
+            write("_node_id", it.id)
+        }
+        nodes.forEach {
+            writer.writeCompound("_node_${it.id}", it) {
+                it.save(this)
+            }
         }
         writer.writeList("links", links) {
             write("id", it.id)
@@ -121,13 +136,56 @@ class Nodespace(val name: String): BaseDestroyable() {
         }
     }
 
+    override fun load(reader: SceneReader, context: Context) {
+        val version = reader.string("version")
+        require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load Nodespace" }
+        clear()
+        name = reader.string("name")
+
+        val newContext = context + NodespaceContextElement(this)
+
+        //TODO: Change loading order
+        // 1. create all nodes in nodespace
+        // 2. load all individual nodes from reader
+        // 3. attach all nodes to nodespace
+        // 4. create links
+        //
+        // this could ensure correct loading behavior of nodes referencing other nodes.
+
+        val nodeConfigReader = reader.compound("nodeConfigurations")
+
+        reader.list("nodeDefinitions") {
+            val nodeCategory = string("_node_category")
+            val nodeName = string("_node_name")
+            val nodeId = int("_node_id")
+            val nodeIdentifier: NodeIdentifier? = NodeManager.resolveNodeIdentifier(nodeCategory, nodeName)
+            nodeId to nodeIdentifier?.new(newContext)
+        }.filter { (_, node) -> node != null }.map { (id, node) -> id to node!! }.onEach { (nodeId, node) ->
+            node.id = nodeId
+            graph.addVertex(node)
+        }.forEach { (nodeId, node) ->
+            node.load(nodeConfigReader.compound("_node_$nodeId"), newContext)
+            this@Nodespace += node
+        }
+        reader.list("links") {
+            val id = int("id")
+            val startPortId = int("start")
+            val endPortId = int("end")
+            val startPort = this@Nodespace.portByIdOrNull(startPortId)
+            val endPort = this@Nodespace.portByIdOrNull(endPortId)
+
+            if(startPort != null && endPort != null) {
+                Link(id, startPort, endPort)
+            } else {
+                null
+            }
+        }
+    }
+
     override fun destroy() {
         super.destroy()
 
-        //Nodes are copied to avoid ConcurrentModificationException due to -= removing vertex from graph
-        nodes.toList().forEach {
-            this -= it
-        }
+        clear()
 
         nodeIds.free()
         portIds.free()
@@ -136,36 +194,14 @@ class Nodespace(val name: String): BaseDestroyable() {
 
     companion object {
         private const val SCENE_VERSION = "0.0.1"
-
-        fun load(reader: SceneReader): Nodespace {
-            val version = reader.string("version")
-            require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load Nodespace" }
-            val name = reader.string("name")
-            val nodespace = Nodespace(name)
-
-            reader.list("nodes") {
-                val nodeCategory = string("_node_category")
-                val nodeName = string("_node_name")
-                val nodeIdentifier: NodeIdentifier? = NodeManager.resolveNodeIdentifier(nodeCategory, nodeName)
-                nodeIdentifier?.new()?.let {
-                    it.load(this, nodespace)
-                    nodespace += it
-                }
-            }
-            reader.list("links") {
-                val id = reader.int("id")
-                val startPortId = reader.int("start")
-                val endPortId = reader.int("end")
-                val startPort = nodespace.portByIdOrNull(startPortId)
-                val endPort = nodespace.portByIdOrNull(endPortId)
-                if(startPort != null && endPort != null) {
-                    Link(id, startPort, endPort)
-                } else {
-                    null
-                }
-            }
-
-            return nodespace
-        }
     }
+}
+
+class NodespaceContextElement(
+    val nodespace: Nodespace
+): AbstractContextElement(NodespaceContextElement) {
+    companion object Key: Context.Key<NodespaceContextElement>
+
+    override fun toString(): String =
+        "Nodespace(${nodespace.name})"
 }

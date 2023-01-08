@@ -1,12 +1,14 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
+
 class ConsoleDebugNode: BaseNode("Console Debug", ConsoleDebugNode) {
     @Register
-    companion object: NodeIdentifier("Console", NodeCategory.System, { ConsoleDebugNode() })
+    companion object: NodeIdentifier("Console", NodeCategory.System, factory = { ConsoleDebugNode() })
 
     val input: Any? by input("Input")
 
-    override fun process() {
+    override fun process(context: Context) {
         input?.let {
             println(it)
         }

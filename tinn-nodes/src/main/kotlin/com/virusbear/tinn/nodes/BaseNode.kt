@@ -1,21 +1,26 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.EventBus
-import com.virusbear.tinn.SceneReader
-import com.virusbear.tinn.SceneWriter
+import com.virusbear.tinn.*
 import com.virusbear.tinn.events.NodeMovedEvent
 import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.version
 import java.util.*
 import kotlin.reflect.KClass
 
 abstract class BaseNode(
     override val name: String,
-    override val identifier: NodeIdentifier? = null,
+    override val identifier: NodeIdentifier,
     override val deletable: Boolean = true
 ): Node {
     final override var id: Int = -1
-        private set
+        set(value) {
+            if(value == -1) {
+                field = value
+                return
+            }
+            require(_nodespace == null) { "Unable to set id of already attached node" }
+
+            field = value
+        }
 
     final override var position: IVec2 = IVec2.ZERO
         private set
@@ -90,9 +95,9 @@ abstract class BaseNode(
     }
 
     override fun onAttach(nodespace: Nodespace) {
-        _nodespace = nodespace
         if(id == -1)
             id = nodespace.acquireNodeId()
+        _nodespace = nodespace
 
         ports.forEach {
             it.onAttach(nodespace)
@@ -108,7 +113,7 @@ abstract class BaseNode(
         id = -1
     }
 
-    override fun load(reader: SceneReader, nodespace: Nodespace) {
+    override fun load(reader: SceneReader, context: Context) {
         val version = reader.string("version")
         require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load BaseNode" }
 
@@ -125,13 +130,13 @@ abstract class BaseNode(
                 PortDirection.valueOf(direction),
                 portName,
                 Class.forName(typeName).kotlin,
-                NodeManager.loadPortValue("default", type, reader)
+                NodeManager.loadPortValue("default", type, this)
             )
 
             port.id = portId
 
             if(direction == PortDirection.Input.toString()) {
-                port.value = NodeManager.loadPortValue("value", type, reader)
+                port.value = NodeManager.loadPortValue("value", type, this)
             }
         }
 
@@ -145,13 +150,13 @@ abstract class BaseNode(
         writer.write("pos", position)
         writer.writeList("ports", ports) {
             write("name", it.name)
-            write("type", it.type.qualifiedName!!)
+            write("type", it.type.java.name)
             write("direction", it.direction.toString())
             write("id", it.id)
-            NodeManager.savePortValue("default", it.type, it.default, writer)
+            NodeManager.savePortValue("default", it.type, it.default, this)
 
             if(it.direction == PortDirection.Input) {
-                NodeManager.savePortValue("value", it.type, it.value, writer)
+                NodeManager.savePortValue("value", it.type, it.value, this)
             }
         }
     }
