@@ -50,13 +50,8 @@ data class Vec3(
     infix fun dot(v: Vec3): Double =
         x * v.x + y * v.y + z * v.z
 
-    fun squaredDistanceTo(other: Vec3): Double {
-        val dx = other.x - x
-        val dy = other.y - y
-        val dz = other.z - z
-
-        return dx * dx + dy * dy + dz * dz
-    }
+    fun squaredDistanceTo(other: Vec3): Double =
+        (other - this).squaredLength
 
     fun distanceTo(other: Vec3): Double =
         sqrt(squaredDistanceTo(other))
