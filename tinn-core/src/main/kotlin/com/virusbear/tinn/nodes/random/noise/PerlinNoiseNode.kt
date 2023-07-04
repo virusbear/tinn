@@ -3,11 +3,11 @@ package com.virusbear.tinn.nodes.random.noise
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.noise.Noise
 import com.virusbear.tinn.math.noise.PerlinNoise
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class PerlinNoiseNode: BaseNode("Perlin Noise", PerlinNoiseNode) {
-    @Register("tinn:noise-perlin")
     companion object: NodeIdentifier("Perlin Noise", NodeCategory.Utility, factory = { PerlinNoiseNode() })
 
     val octaves: Int by input("Octaves", default = 1)

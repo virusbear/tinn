@@ -1,11 +1,11 @@
 package com.virusbear.tinn.nodes.primitive
 
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class TextNode: BaseNode("Text", TextNode) {
-    @Register("tinn:text")
     companion object: NodeIdentifier("Text", NodeCategory.Utility, factory = { TextNode() })
 
     val input: String by input("Input", default = "")

@@ -1,12 +1,12 @@
 package com.virusbear.tinn.nodes.random
 
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 import kotlin.random.Random
 
 class RandomFloatNode: BaseNode("Random Float", RandomFloatNode) {
-    @Register("tinn:random-float")
     companion object: NodeIdentifier("Random Float", NodeCategory.Math, factory = { RandomFloatNode() })
 
     var output: Double by output("Output", default = 0.0)

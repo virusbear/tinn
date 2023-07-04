@@ -3,9 +3,6 @@ package com.virusbear.tinn.nodes
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
-import com.virusbear.tinn.registry.Register
-import io.github.classgraph.ClassGraph
-import io.github.classgraph.ScanResult
 import kotlin.reflect.KClass
 
 typealias NodeFactory = (Context) -> Node
@@ -77,51 +74,5 @@ object NodeManager {
         val serializer = serializers.firstOrNull { it.type == type } ?: return null
 
         return serializer.deserialize(key, reader)
-    }
-
-    fun load() {
-        ClassGraph().enableAllInfo().scan().use { result ->
-            loadPortSerializers(result).forEach {
-                register(it)
-            }
-            loadNodeIdentifiers(result).forEach {
-                register(it)
-            }
-        }
-    }
-
-    private fun loadNodeIdentifiers(result: ScanResult): Set<NodeIdentifier> {
-        val nodeTypes = (result.getClassesWithAnnotation(Register::class.java) intersect result.getSubclasses(NodeIdentifier::class.java)).mapNotNull {
-            it.loadClass().kotlin.objectInstance as? NodeIdentifier
-        }
-        val nodeDefinitions = result.getClassesWithMethodAnnotation(Register::class.java).flatMap {
-            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(
-                Register::class.java) }.map { it.name.substringBefore("$") }
-            it.declaredMethodInfo.filter { it.name in annotatedMethods && it.isStatic && it.isFinal }.map {
-                it.loadClassAndGetMethod()
-            }.filter { it.returnType == NodeIdentifier::class.java }.mapNotNull {
-                it.invoke(null) as? NodeIdentifier?
-            }
-        }
-
-        return nodeTypes union nodeDefinitions
-    }
-
-    private fun loadPortSerializers(result: ScanResult): Set<PortSerializer> {
-        val serializerTypes = (result.getClassesWithAnnotation(Register::class.java) intersect result.getSubclasses(PortSerializer::class.java)).mapNotNull {
-            it.loadClass().kotlin.objectInstance as? PortSerializer
-        }
-
-        val serializerDefinitions = result.getClassesWithMethodAnnotation(Register::class.java).flatMap {
-            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(
-                Register::class.java) }.map { it.name.substringBefore("$") }
-            it.declaredMethodInfo.filter { it.name in annotatedMethods && it.isFinal }.map {
-                it.loadClassAndGetMethod()
-            }.filter { it.returnType == PortSerializer::class.java }.mapNotNull {
-                it.invoke(null) as? PortSerializer?
-            }
-        }.toSet()
-
-        return serializerTypes union serializerDefinitions
     }
 }

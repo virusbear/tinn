@@ -9,6 +9,10 @@ data class IVec4(
     val z: Int,
     val w: Int
 ) {
+    companion object {
+        val ZERO = IVec4(0, 0, 0, 0)
+    }
+
     val length by lazy {
         sqrt(x.toDouble().pow(2) + y.toDouble().pow(2) + z.toDouble().pow(2) + w.toDouble().pow(2))
     }

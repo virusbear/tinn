@@ -1,7 +1,7 @@
 package com.virusbear.tinn.registry
 
-class Registry<T: Any> internal constructor() {
-    val entries = mutableMapOf<Identifier, T>()
+class Registry<T: Any> {
+    private val entries = mutableMapOf<Identifier, T>()
 
     fun register(id: String, entry: T) {
         register(Identifier.fromString(id), entry)

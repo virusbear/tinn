@@ -2,10 +2,8 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.*
-import com.virusbear.tinn.registry.Register
 
 class ComposeVec2: BaseNode("Compose Vec2", ComposeVec2) {
-    @Register("tinn:compose-vec2")
     companion object: NodeIdentifier("Vec2", NodeCategory.Compose, factory = { ComposeVec2() })
 
     val x: Double by input("X", default = 0.0)
@@ -18,7 +16,6 @@ class ComposeVec2: BaseNode("Compose Vec2", ComposeVec2) {
 }
 
 class ComposeIVec2: BaseNode("Compose IVec2", ComposeIVec2) {
-    @Register("tinn:compose-ivec2")
     companion object: NodeIdentifier("IVec2", NodeCategory.Compose, factory = { ComposeVec2() })
 
     val x: Int by input("X", default = 0)
@@ -31,7 +28,6 @@ class ComposeIVec2: BaseNode("Compose IVec2", ComposeIVec2) {
 }
 
 class ComposeVec3: BaseNode("Compose Vec3", ComposeVec3) {
-    @Register("tinn:compose-vec3")
     companion object: NodeIdentifier("Vec3", NodeCategory.Compose, factory = { ComposeVec3() })
 
     val x: Double by input("X", default = 0.0)
@@ -45,7 +41,6 @@ class ComposeVec3: BaseNode("Compose Vec3", ComposeVec3) {
 }
 
 class ComposeIVec3: BaseNode("Compose IVec3", ComposeIVec3) {
-    @Register("tinn:compose-ivec3")
     companion object: NodeIdentifier("IVec3", NodeCategory.Compose, factory = { ComposeIVec3() })
 
     val x: Int by input("X", default = 0)
@@ -59,7 +54,6 @@ class ComposeIVec3: BaseNode("Compose IVec3", ComposeIVec3) {
 }
 
 class ComposeVec4: BaseNode("Compose Vec4", ComposeVec4) {
-    @Register("tinn:compose-vec4")
     companion object: NodeIdentifier("Vec4", NodeCategory.Compose, factory = { ComposeVec4() })
 
     val x: Double by input("X", default = 0.0)
@@ -74,7 +68,6 @@ class ComposeVec4: BaseNode("Compose Vec4", ComposeVec4) {
 }
 
 class ComposeIVec4: BaseNode("Compose IVec4", ComposeIVec4) {
-    @Register("tinn:compose-ivec4")
     companion object: NodeIdentifier("IVec4", NodeCategory.Compose, factory = { ComposeIVec4() })
 
     val x: Int by input("X", default = 0)

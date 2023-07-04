@@ -3,11 +3,11 @@ package com.virusbear.tinn.nodes.random.noise
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.math.noise.Noise3D
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class Noise3DNode: BaseNode("Sample Noise 3D", Noise3DNode) {
-    @Register("tinn:noise-3d")
     companion object: NodeIdentifier("Sample Noise 3D", NodeCategory.Utility, factory = { Noise3DNode() })
 
     val noise: Noise3D? by input("Noise", default = null)

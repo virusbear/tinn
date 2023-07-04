@@ -2,10 +2,8 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.registry.Register
 
 class ComposeColorRGBANode: BaseNode("Compose Color RGBA", ComposeColorRGBANode) {
-    @Register("tinn:compose-rgba")
     companion object: NodeIdentifier("Color RGBA", NodeCategory.Compose, factory = { ComposeColorRGBANode() })
 
     val r: Double by input("R", default = 0.0)
