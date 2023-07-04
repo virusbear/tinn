@@ -1,10 +1,10 @@
 package com.virusbear.tinn.nodes.random.noise
 
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.math.noise.Noise2D
 import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.Context
 import com.virusbear.tinn.registry.Register
 
 class Noise2DNode: BaseNode("Sample Noise 2D", Noise2DNode) {

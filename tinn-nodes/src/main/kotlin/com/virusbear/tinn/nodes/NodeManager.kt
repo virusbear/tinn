@@ -1,10 +1,9 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
-import com.virusbear.tinn.registry.Registries
+import com.virusbear.tinn.registry.Register
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.KClass

@@ -1,11 +1,7 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
-import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.math.*
-import com.virusbear.tinn.registry.Registry
 import kotlin.reflect.KClass
 
 interface PortSerializer {

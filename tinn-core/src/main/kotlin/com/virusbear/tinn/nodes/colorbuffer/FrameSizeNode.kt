@@ -1,13 +1,13 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class FrameSizeNode: BaseNode("Frame size", FrameSizeNode) {
-    @Register("tinn:frame-size")
     companion object: NodeIdentifier("Frame size", NodeCategory.Math, factory = { FrameSizeNode() })
 
     private val frame: ColorBuffer? by input<ColorBuffer?>("Frame")

@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.registry.Register
 
 class DecomposeVec2: BaseNode("Decompose Vec2", DecomposeVec2) {

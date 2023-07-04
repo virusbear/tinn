@@ -4,8 +4,6 @@ import com.virusbear.tinn.*
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
 import imgui.ImGui
-import imgui.extension.imguifiledialog.ImGuiFileDialog
-import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags
 import java.io.File
 
 class MainMenuBar(val program: Program): Panel, BaseDestroyable() {

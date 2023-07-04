@@ -1,8 +1,8 @@
 package com.virusbear.tinn.nodes.particles
 
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.Context
 import com.virusbear.tinn.registry.Register
 
 data class Particle(

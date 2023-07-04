@@ -1,7 +1,6 @@
 package com.virusbear.tinn
 
 import com.virusbear.tinn.shader.*
-import java.awt.Color
 import java.io.File
 
 abstract class Driver: Destroyable {

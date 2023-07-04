@@ -2,7 +2,6 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.*
-import com.virusbear.tinn.math.Vec4 as Vec4
 
 interface SceneReader {
     fun byte(key: String): Byte

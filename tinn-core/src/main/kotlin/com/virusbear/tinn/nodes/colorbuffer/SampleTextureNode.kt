@@ -1,14 +1,14 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class SampleTextureNode: BaseNode("Sample Texture", SampleTextureNode) {
-    @Register("tinn:sample-texture")
     companion object: NodeIdentifier("Sample Texture", NodeCategory.Utility, factory = { SampleTextureNode() })
 
     val texture: ColorBuffer? by input("Texture", default = null)

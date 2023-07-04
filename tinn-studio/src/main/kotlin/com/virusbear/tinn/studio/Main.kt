@@ -6,7 +6,6 @@ import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.opengl.DriverGL
-import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.registry.Registries
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui

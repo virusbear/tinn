@@ -2,7 +2,6 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.*
-import java.io.File
 
 interface SceneWriter {
     fun write(key: String, value: Byte)

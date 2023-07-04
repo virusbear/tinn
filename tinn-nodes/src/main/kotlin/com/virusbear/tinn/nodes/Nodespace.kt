@@ -2,7 +2,6 @@ package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.*
 import com.virusbear.tinn.events.NodespaceActivateEvent
-import com.virusbear.tinn.Context
 import org.jgrapht.graph.DirectedAcyclicGraph
 
 class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(), SceneSavable {

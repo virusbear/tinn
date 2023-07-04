@@ -1,10 +1,8 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.SceneReader
-import com.virusbear.tinn.SceneWriter
-import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.Context
 import com.virusbear.tinn.SceneSavable
+import com.virusbear.tinn.math.IVec2
 
 interface Node: SceneSavable {
     val identifier: NodeIdentifier

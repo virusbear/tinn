@@ -1,12 +1,15 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
-import com.virusbear.tinn.*
-import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.ColorFormat
+import com.virusbear.tinn.Context
+import com.virusbear.tinn.Driver
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 import java.io.File
 
 class LoadImageNode: BaseNode("Load Image", LoadImageNode) {
-    @Register("tinn:load-image")
     companion object: NodeIdentifier("Load Image", NodeCategory.Utility, factory = { LoadImageNode() })
 
     val file: File? by input("File", default = null)

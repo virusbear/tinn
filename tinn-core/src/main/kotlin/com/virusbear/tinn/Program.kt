@@ -2,7 +2,8 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.events.NodeEnteredEvent
 import com.virusbear.tinn.events.NodespaceActivateEvent
-import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.nodes.Nodespace
+import com.virusbear.tinn.nodes.ProgramNode
 import kotlin.time.Duration
 
 class Program(name: String = "Program"): BaseDestroyable(), SceneSavable {

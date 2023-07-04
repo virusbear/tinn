@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes.primitive
 
-import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.registry.Register
 
 class TextNode: BaseNode("Text", TextNode) {

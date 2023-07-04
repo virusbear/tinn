@@ -1,13 +1,13 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
 class GetColorBufferNode: BaseNode("Get ColorBuffer", GetColorBufferNode) {
-    @Register("tinn:get-colorbuffer")
     companion object: NodeIdentifier("Get ColorBuffer", NodeCategory.System, factory = { GetColorBufferNode() })
 
     val index: String by input("Id", default = "")

@@ -3,7 +3,6 @@ package com.virusbear.tinn.opengl
 import com.virusbear.tinn.*
 import org.lwjgl.opengl.GL33C.*
 import org.lwjgl.stb.STBImage.*
-import org.lwjgl.stb.STBImageWrite
 import org.lwjgl.stb.STBImageWrite.stbi_write_png
 import org.lwjgl.system.MemoryStack
 import java.io.File

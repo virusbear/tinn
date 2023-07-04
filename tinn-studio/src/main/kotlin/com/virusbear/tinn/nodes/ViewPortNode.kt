@@ -1,8 +1,8 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.studio.panels.ViewPort
 

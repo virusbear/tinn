@@ -6,8 +6,6 @@ import com.virusbear.tinn.TextureFilter
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.ui.Panel
 import com.virusbear.tinn.ui.UIContext
-import imgui.ImVec2
-import imgui.flag.ImGuiHoveredFlags
 import imgui.internal.ImGui
 
 object ViewPort: Panel, BaseDestroyable() {

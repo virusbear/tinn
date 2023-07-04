@@ -1,14 +1,13 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.color.Color
+import com.virusbear.tinn.nodes.BaseNode
+import com.virusbear.tinn.nodes.NodeCategory
+import com.virusbear.tinn.nodes.NodeIdentifier
 
-//DRAFT
 class FillFrameNode: BaseNode("Fill Frame", FillFrameNode) {
-    @Register("tinn:fill-frame")
     companion object: NodeIdentifier("Fill Frame", NodeCategory.Utility, factory = { FillFrameNode() })
 
     val frame: ColorBuffer? by input("Frame", default = null)

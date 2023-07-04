@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.math.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.math.*
 import com.virusbear.tinn.registry.Register
 
 class ComposeVec2: BaseNode("Compose Vec2", ComposeVec2) {

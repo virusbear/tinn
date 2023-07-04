@@ -1,10 +1,10 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.SceneWriter
 import com.virusbear.tinn.events.NodeEnteredEvent
 import com.virusbear.tinn.events.NodeRemovedEvent
-import com.virusbear.tinn.Context
 import com.virusbear.tinn.registry.Register
 
 class NodespaceNode: BaseNode("Nodespace", NodespaceNode) {
