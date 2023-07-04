@@ -4,9 +4,10 @@ import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 class GetColorBufferNode: BaseNode("Get ColorBuffer", GetColorBufferNode) {
-    @Register
+    @Register("tinn:get-colorbuffer")
     companion object: NodeIdentifier("Get ColorBuffer", NodeCategory.System, factory = { GetColorBufferNode() })
 
     val index: String by input("Id", default = "")

@@ -2,10 +2,11 @@ package com.virusbear.tinn.nodes.convert
 
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 import kotlin.math.PI
 
 class RadiansToDegreesNode: BaseNode("Rad to Deg", RadiansToDegreesNode) {
-    @Register
+    @Register("tinn:rad2deg")
     companion object: NodeIdentifier("Rad to Deg", NodeCategory.Convert, factory = { RadiansToDegreesNode() })
 
     val radians: Double by input("Radians", default = 0.0)

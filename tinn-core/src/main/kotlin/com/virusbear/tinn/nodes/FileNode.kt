@@ -1,10 +1,11 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 import java.io.File
 
 class FileNode: BaseNode("File", FileNode) {
-    @Register
+    @Register("tinn:file")
     companion object: NodeIdentifier("File", NodeCategory.Utility, factory = { FileNode() })
 
     val path: String by input("Path", default = "")

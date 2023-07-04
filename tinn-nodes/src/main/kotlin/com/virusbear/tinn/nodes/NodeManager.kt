@@ -1,12 +1,13 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
+import com.virusbear.tinn.registry.Registries
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotations
 
 typealias NodeFactory = (Context) -> Node
 
@@ -95,7 +96,8 @@ object NodeManager {
             it.loadClass().kotlin.objectInstance as? NodeIdentifier
         }
         val nodeDefinitions = result.getClassesWithMethodAnnotation(Register::class.java).flatMap {
-            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(Register::class.java) }.map { it.name.substringBefore("$") }
+            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(
+                Register::class.java) }.map { it.name.substringBefore("$") }
             it.declaredMethodInfo.filter { it.name in annotatedMethods && it.isStatic && it.isFinal }.map {
                 it.loadClassAndGetMethod()
             }.filter { it.returnType == NodeIdentifier::class.java }.mapNotNull {
@@ -112,7 +114,8 @@ object NodeManager {
         }
 
         val serializerDefinitions = result.getClassesWithMethodAnnotation(Register::class.java).flatMap {
-            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(Register::class.java) }.map { it.name.substringBefore("$") }
+            val annotatedMethods = it.declaredMethodInfo.filter { "annotations" in it.name }.filter { it.hasAnnotation(
+                Register::class.java) }.map { it.name.substringBefore("$") }
             it.declaredMethodInfo.filter { it.name in annotatedMethods && it.isFinal }.map {
                 it.loadClassAndGetMethod()
             }.filter { it.returnType == PortSerializer::class.java }.mapNotNull {

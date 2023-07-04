@@ -1,15 +1,13 @@
 package com.virusbear.tinn.nodes.colorbuffer
 
-import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.ColorBufferProxy
-import com.virusbear.tinn.ColorBufferReader
+import com.virusbear.tinn.*
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.nodes.*
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
-    @Register
+    @Register("tinn:calculate-pixel")
     companion object: NodeIdentifier("Calculate Pixel", NodeCategory.Utility, factory = { CalculatePixelNode() })
 
     val image: ColorBuffer? by input("Image", default = null)

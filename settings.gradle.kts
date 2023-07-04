@@ -1,5 +1,4 @@
 rootProject.name = "tinn"
-include("tinn-ecs")
 include("tinn-api")
 include("tinn-math")
 include("tinn-color")

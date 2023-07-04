@@ -2,9 +2,10 @@ package com.virusbear.tinn.nodes.math
 
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 class MultiplyNode: BaseNode("Multiply", MultiplyNode) {
-    @Register
+    @Register("tinn:mul")
     companion object: NodeIdentifier("Multiply", NodeCategory.Math, factory = { MultiplyNode() })
 
     val a: Double by input("A", default = 0.0)

@@ -3,9 +3,10 @@ package com.virusbear.tinn.nodes
 import com.virusbear.tinn.*
 import com.virusbear.tinn.events.NodeAddedEvent
 import com.virusbear.tinn.events.NodeEnteredEvent
+import com.virusbear.tinn.registry.Register
 
 class ProgramNode(val program: Program): PortSynchronizingNode("Program", identifier = ProgramNode, deletable = false, dynamicInputsAllowed = true, dynamicOutputsAllowed = false) {
-    @Register
+    @Register("tinn:program")
     companion object: NodeIdentifier("Program", NodeCategory.System, internal = true, factory = { ctx ->
         val program = ctx[ProgramContextElement]?.program
         require(program != null) { "Creating Program node without Program in context is prohibited" }

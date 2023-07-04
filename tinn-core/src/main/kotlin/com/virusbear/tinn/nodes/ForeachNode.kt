@@ -1,9 +1,10 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 class ForeachNode: GroupNode("Foreach", ForeachNode) {
-    @Register
+    @Register("tinn:foreach")
     companion object: NodeIdentifier("Foreach", NodeCategory.Utility, factory = { ForeachNode() })
 
     val list: List<Any> by input("Input", emptyList())

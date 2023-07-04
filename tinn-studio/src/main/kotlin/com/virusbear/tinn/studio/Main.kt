@@ -4,10 +4,10 @@ import com.virusbear.tinn.*
 import com.virusbear.tinn.events.ProgramControlEvent
 import com.virusbear.tinn.imgui.ImGuiPanel
 import com.virusbear.tinn.imgui.ImGuiUIContext
-import com.virusbear.tinn.nodes.NodeManager
-import com.virusbear.tinn.nodes.Nodespace
-import com.virusbear.tinn.nodes.ProgramNode
+import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.opengl.DriverGL
+import com.virusbear.tinn.registry.Register
+import com.virusbear.tinn.registry.Registries
 import com.virusbear.tinn.studio.panels.*
 import imgui.ImGui
 import org.lwjgl.glfw.GLFW
@@ -23,6 +23,11 @@ fun main() {
     val context = ImGuiUIContext("#version 130", window)
     context.init()
 
+    //This is an artifact of failing to load classes correctly that create new registries.
+    //Those classes need to be loaded once and their registries accessed
+    //This should later be changed to a plugin based system.
+    //listOf(Registries.NodeIdentifiers, Registries.PortSerializers)
+    Registries.discover()
     NodeManager.load()
 
     val panels = listOf(

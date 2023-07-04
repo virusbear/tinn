@@ -5,9 +5,10 @@ import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.math.noise.Noise2D
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 class Noise2DNode: BaseNode("Sample Noise 2D", Noise2DNode) {
-    @Register
+    @Register("tinn:noise-2d")
     companion object: NodeIdentifier("Sample Noise 2D", NodeCategory.Utility, factory = { Noise2DNode() })
 
     val noise: Noise2D? by input("Noise", default = null)

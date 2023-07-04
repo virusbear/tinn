@@ -3,10 +3,11 @@ package com.virusbear.tinn.nodes
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 open class GroupNode(name: String = "Group", identifier: NodeIdentifier): PortSynchronizingNode(name, identifier) {
 
-    @Register
+    @Register("tinn:group")
     companion object: NodeIdentifier("Group", NodeCategory.Utility, factory = { GroupNode(identifier = it[NodeIdentifier]!!) })
 
     protected val contentNodespace: Nodespace = Nodespace(name)

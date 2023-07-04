@@ -1,5 +1,6 @@
 package com.virusbear.tinn.nodes
 
+import com.virusbear.tinn.registry.Register
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
 import com.virusbear.tinn.color.Color
@@ -26,7 +27,7 @@ inline fun <reified T: Any> PortSerializer(type: KClass<T>, noinline serializer:
             deserializer(key, reader)
     }
 
-@Register
+@Register("tinn:int")
 val IntPortSerializer =
     PortSerializer(
         type = Int::class,
@@ -38,7 +39,7 @@ val IntPortSerializer =
         }
     )
 
-@Register
+@Register("tinn:double")
 val DoubleSerializer =
     PortSerializer(
         type = Double::class,
@@ -50,7 +51,7 @@ val DoubleSerializer =
         }
     )
 
-@Register
+@Register("tinn:ivec2")
 val IVec2Serializer =
     PortSerializer(
         type = IVec2::class,
@@ -62,7 +63,7 @@ val IVec2Serializer =
         }
     )
 
-@Register
+@Register("tinn:ivec3")
 val IVec3Serializer =
     PortSerializer(
         type = IVec3::class,
@@ -74,7 +75,7 @@ val IVec3Serializer =
         }
     )
 
-@Register
+@Register("tinn:ivec4")
 val IVec4Serializer =
     PortSerializer(
         type = IVec4::class,
@@ -86,7 +87,7 @@ val IVec4Serializer =
         }
     )
 
-@Register
+@Register("tinn:vec2")
 val Vec2Serializer =
     PortSerializer(
         type = Vec2::class,
@@ -98,7 +99,7 @@ val Vec2Serializer =
         }
     )
 
-@Register
+@Register("tinn:vec3")
 val Vec3Serializer =
     PortSerializer(
         type = Vec3::class,
@@ -110,7 +111,7 @@ val Vec3Serializer =
         }
     )
 
-@Register
+@Register("tinn:vec4")
 val Vec4Serializer =
     PortSerializer(
         type = Vec4::class,
@@ -122,7 +123,7 @@ val Vec4Serializer =
         }
     )
 
-@Register
+@Register("tinn:color")
 val ColorSerializer =
     PortSerializer(
         type = Color::class,
@@ -134,7 +135,7 @@ val ColorSerializer =
         }
     )
 
-@Register
+@Register("tinn:mat3")
 val Mat3Serializer =
     PortSerializer(
         type = Mat3::class,
@@ -146,7 +147,7 @@ val Mat3Serializer =
         }
     )
 
-@Register
+@Register("tinn:mat4")
 val Mat4Serializer =
     PortSerializer(
         type = Mat4::class,
@@ -158,7 +159,7 @@ val Mat4Serializer =
         }
     )
 
-@Register
+@Register("tinn:string")
 val StringSerializer =
     PortSerializer(
         type = String::class,

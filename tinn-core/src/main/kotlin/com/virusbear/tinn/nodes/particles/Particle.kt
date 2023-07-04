@@ -3,6 +3,7 @@ package com.virusbear.tinn.nodes.particles
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
+import com.virusbear.tinn.registry.Register
 
 data class Particle(
     val acceleration: Vec3,
@@ -13,7 +14,7 @@ data class Particle(
 )
 
 class ParticleNode: BaseNode("Particle", ParticleNode) {
-    @Register
+    @Register("tinn:particle")
     companion object: NodeIdentifier("Particle", NodeCategory.Utility, factory = { ParticleNode() })
 
     val particle: Particle? by input("Particle", default = null)
