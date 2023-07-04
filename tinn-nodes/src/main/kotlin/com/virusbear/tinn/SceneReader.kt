@@ -21,6 +21,7 @@ interface SceneReader {
     fun mat3(key: String): Mat3
     fun mat4(key: String): Mat4
     fun string(key: String): String
+    //TODO: redesign array, list and compound serialization
     fun byteArray(key: String): ByteArray
     fun intArray(key: String): IntArray
     fun longArray(key: String): LongArray

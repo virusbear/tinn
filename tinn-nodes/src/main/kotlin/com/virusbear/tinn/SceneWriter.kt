@@ -22,11 +22,10 @@ interface SceneWriter {
     fun write(key: String, value: Mat4)
 
     fun write(key: String, value: String)
+    //TODO: redesign array, list and compound serialization
     fun write(key: String, value: ByteArray)
     fun write(key: String, value: IntArray)
     fun write(key: String, value: LongArray)
     fun <T> writeList(key: String, value: Collection<T>, block: SceneWriter.(T) -> Unit)
     fun <T> writeCompound(key: String, value: T, block: SceneWriter.(T) -> Unit)
-
-    fun saveAs(file: File)
 }

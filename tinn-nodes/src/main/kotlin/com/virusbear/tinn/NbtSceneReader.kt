@@ -7,6 +7,8 @@ import dev.dewy.nbt.tags.collection.CompoundTag
 import java.io.File
 
 class NbtSceneReader(private val root: CompoundTag): SceneReader {
+    //TODO: move this to NbtSceneFile
+    //TODO: create new interface SceneFile
     constructor(file: File): this(Nbt().fromFile(file))
     constructor(bytes: ByteArray): this(Nbt().fromByteArray(bytes))
 

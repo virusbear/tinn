@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11.GL_LUMINANCE
 import org.lwjgl.opengl.GL30C.*
 import org.lwjgl.opengl.GL41C
 
-val ColorFormat.internalFormat: Int
+internal val ColorFormat.internalFormat: Int
     get() =
         when(this) {
             ColorFormat.R8 -> GL_R8
@@ -35,7 +35,7 @@ val ColorFormat.internalFormat: Int
             else -> error("ColorFormat not supported")
         }
 
-val ColorFormat.glType: Int
+internal val ColorFormat.glType: Int
     get() =
         when(this.type) {
             PixelType.I8 -> GL_UNSIGNED_BYTE
@@ -45,7 +45,7 @@ val ColorFormat.glType: Int
             PixelType.F32 -> GL_FLOAT
         }
 
-val ColorFormat.glFormat: Int
+internal val ColorFormat.glFormat: Int
     get() =
         when(this.format) {
             PixelFormat.R -> GL_RED
@@ -57,7 +57,7 @@ val ColorFormat.glFormat: Int
             PixelFormat.ALPHA -> GL_ALPHA
         }
 
-val VertexComponentType.gl: Int
+internal val VertexComponentType.gl: Int
     get() = when(this) {
         VertexComponentType.HALF_FLOAT -> GL_HALF_FLOAT
         VertexComponentType.FLOAT -> GL_FLOAT
@@ -71,7 +71,7 @@ val VertexComponentType.gl: Int
         VertexComponentType.UINT -> GL_UNSIGNED_INT
     }
 
-val TextureFilter.gl: Int
+internal val TextureFilter.gl: Int
     get() = when(this) {
         TextureFilter.NEAREST -> GL_NEAREST
         TextureFilter.LINEAR -> GL_LINEAR

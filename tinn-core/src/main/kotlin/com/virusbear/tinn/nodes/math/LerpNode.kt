@@ -2,10 +2,8 @@ package com.virusbear.tinn.nodes.math
 
 import com.virusbear.tinn.nodes.*
 import com.virusbear.tinn.Context
-import com.virusbear.tinn.registry.Register
 
 class LerpNode: BaseNode("Lerp", LerpNode) {
-    @Register("tinn:lerp")
     companion object: NodeIdentifier("Lerp", NodeCategory.Math, factory = { LerpNode() })
 
     val start: Double by input("Start", 0.0)

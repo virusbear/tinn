@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL30C.GL_INVALID_FRAMEBUFFER_OPERATION
 
 class GLException(message: String): Exception(message)
 
-fun checkGLErrors(errorFunction: ((Int)->String?)?=null) {
+internal fun checkGLErrors(errorFunction: ((Int)->String?)?=null) {
     val error = glGetError()
     if (error != GL_NO_ERROR) {
         val message = when (error) {

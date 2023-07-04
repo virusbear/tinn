@@ -4,8 +4,6 @@ data class NodeCategory(
     val parent: NodeCategory?,
     val name: String
 ) {
-
-
     companion object {
         fun fromString(value: String): NodeCategory {
             val parentString = value.substringBeforeLast('/')

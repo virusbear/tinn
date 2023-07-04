@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    application
 }
 
 val imguiVersion = "1.86.6"

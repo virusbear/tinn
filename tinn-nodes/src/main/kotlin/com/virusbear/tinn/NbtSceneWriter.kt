@@ -131,7 +131,8 @@ class NbtSceneWriter(private val root: CompoundTag = CompoundTag("root")): Scene
         root.putCompound(key, NbtSceneWriter().apply { block(value) }.root.value)
     }
 
-    override fun saveAs(file: File) {
+    //TODO: move this to NbtSceneFile?
+    fun saveAs(file: File) {
         Nbt().toFile(root, file)
     }
 }
