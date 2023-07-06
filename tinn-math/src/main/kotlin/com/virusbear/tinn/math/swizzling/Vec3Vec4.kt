@@ -1,7 +1,7 @@
 package com.virusbear.tinn.math.swizzling
 
-import com.virusbear.tinn.math.IVec3
-import com.virusbear.tinn.math.IVec4
+import com.virusbear.tinn.math.Vec3
+import com.virusbear.tinn.math.Vec4
 
-val IVec3.xyz0: IVec4
-    get() = IVec4(x, y, z, 0)
+val Vec3.xyz0: Vec4
+    get() = Vec4(x, y, z, 0.0)
