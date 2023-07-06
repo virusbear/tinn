@@ -19,3 +19,6 @@ val Vec2.yyx: Vec3
     get() = Vec3(y, y, x)
 val Vec2.yyy: Vec3
     get() = Vec3(y, y, y)
+
+val Vec2.xy0: Vec3
+    get() = Vec3(x, y, 0.0)
