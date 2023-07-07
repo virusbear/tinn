@@ -31,4 +31,5 @@ class Port(
     }
 
     var value: Any? = default
+    var link: Link? = null
 }

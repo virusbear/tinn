@@ -2,7 +2,15 @@ package com.virusbear.tinn.nodes
 
 import kotlin.reflect.KProperty
 
-class PortDelegate<T: Any?>(private val port: Port) {
+open class InputPortDelegate<T: Any?>(private val port: Port) {
+    @Suppress("UNCHECKED_CAST")
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        port.link?.propagate()
+        return (port.value as? T) ?: port.default as T
+    }
+}
+
+class OutputPortDelegate<T: Any?>(private val port: Port) {
     @Suppress("UNCHECKED_CAST")
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T =
         (port.value as? T) ?: port.default as T

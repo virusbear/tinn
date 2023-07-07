@@ -26,6 +26,7 @@ fun main() {
     //Those classes need to be loaded once and their registries accessed
     //This should later be changed to a plugin based system.
     //listOf(Registries.NodeIdentifiers, Registries.PortSerializers)
+    TinnPlugin().onInitialize()
     Registries.Nodes.register("tinn-studio:viewport", ViewPortNode)
     Registries.Nodes.entries().forEach {
         NodeManager.register(it)

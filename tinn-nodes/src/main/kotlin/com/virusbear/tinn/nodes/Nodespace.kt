@@ -16,18 +16,18 @@ class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(),
     val nodes: Set<Node> = graph.vertexSet()
     val links: Set<Link> = graph.edgeSet()
 
+    private val terminalNodes: Sequence<Node>
+        get() =
+            nodes.asSequence().filter { graph.outDegreeOf(it) == 0 }
+
     fun evaluate(context: Context) {
         //TODO: Skip Nodes that do not link to any other node.
         //TODO: how to identify start and end of graph
-        for(node in graph) {
+        for(node in terminalNodes) {
             node.process(context)
-
-            node.ports.filter { port -> port.direction == PortDirection.Output }.forEach { port ->
-                graph.edgesOf(node).filter { link -> link.start == port }.forEach {
-                    it.propagate()
-                }
-            }
         }
+
+        links.forEach { it.reset() }
     }
 
     fun makeCurrent() {

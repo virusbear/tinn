@@ -49,8 +49,8 @@ abstract class BaseNode(
     protected inline fun <reified T: Any?> input(
         name: String,
         default: T? = null
-    ): PortDelegate<T> =
-        PortDelegate(
+    ): InputPortDelegate<T> =
+        InputPortDelegate(
             port(
                 PortDirection.Input,
                 name,
@@ -62,8 +62,8 @@ abstract class BaseNode(
     protected inline fun <reified T: Any?> output(
         name: String,
         default: T? = null
-    ): PortDelegate<T> =
-        PortDelegate(
+    ): OutputPortDelegate<T> =
+        OutputPortDelegate(
             port(
                 PortDirection.Output,
                 name,
