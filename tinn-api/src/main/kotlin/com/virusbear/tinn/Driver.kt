@@ -11,12 +11,14 @@ abstract class Driver: Destroyable {
         height: Int,
         title: String,
         resizable: Boolean,
-        vsync: Boolean
+        vsync: Boolean,
+        multisample: MultiSample
     ): Window
 
     abstract fun createColorBuffer(
         width: Int,
         height: Int,
+        contentScale: Double,
         format: ColorFormat,
         multisample: MultiSample,
         levels: MipMapLevel
@@ -29,7 +31,7 @@ abstract class Driver: Destroyable {
     abstract fun createDepthBuffer(width: Int, height: Int): DepthBuffer
     abstract fun createIndexBuffer(size: Int): IndexBuffer
     abstract fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer
-    abstract fun createRenderTarget(width: Int, height: Int): RenderTarget
+    abstract fun createRenderTarget(width: Int, height: Int, contentScale: Double): RenderTarget
     abstract fun createComputeShader(code: String): ComputeShader
     abstract fun createEvaluationShader(code: String): EvaluationShader
     abstract fun createFragmentShader(code: String): FragmentShader
@@ -39,6 +41,8 @@ abstract class Driver: Destroyable {
     abstract fun createVertexShader(code: String): VertexShader
     //TODO: add loadShader(binary: ShaderBinary): Shader?
     //TODO: add loadShaderProgram(binary: ShaderProgramBinary): ShaderProgram?
+
+    abstract val activeRenderTarget: RenderTarget
 
     final override var destroyed: Boolean = false
         private set
@@ -77,8 +81,16 @@ abstract class Driver: Destroyable {
             instance = driver
         }
 
-        fun <T> use(block: Driver.() -> T): T =
+        inline fun <T> use(block: Driver.() -> T): T =
             driver.block()
+
+        inline fun <T> using(driver: Driver, block: Driver.() -> T): T {
+            val currentDriver = Driver.driver
+            Driver.use(driver)
+            val result = driver.block()
+            Driver.use(currentDriver)
+            return result
+        }
     }
 }
 

@@ -29,13 +29,15 @@ class DriverGL: Driver() {
         height: Int,
         title: String,
         resizable: Boolean,
-        vsync: Boolean
+        vsync: Boolean,
+        multisample: MultiSample
     ): Window =
-        WindowGL.create(width, height, title, resizable, vsync)
+        WindowGL.create(width, height, title, resizable, vsync, multisample)
 
     override fun createColorBuffer(
         width: Int,
         height: Int,
+        contentScale: Double,
         format: ColorFormat,
         multisample: MultiSample,
         levels: MipMapLevel
@@ -43,6 +45,7 @@ class DriverGL: Driver() {
         ColorBufferGL(
             width,
             height,
+            contentScale,
             format,
             multisample,
             levels
@@ -66,9 +69,14 @@ class DriverGL: Driver() {
             format
         )
 
-    override fun createRenderTarget(width: Int, height: Int): RenderTarget {
-        TODO("Prio 4")
-    }
+    override fun createRenderTarget(
+        width: Int, 
+        height: Int, 
+        contentScale: Double
+    ): RenderTarget =
+        RenderTargetGL(
+            width, height, contentScale
+        )
 
     override fun createComputeShader(code: String): ComputeShader {
         TODO("Not yet implemented")
@@ -97,4 +105,7 @@ class DriverGL: Driver() {
     override fun createVertexShader(code: String): VertexShader {
         TODO("Prio 1")
     }
+
+    override val activeRenderTarget: RenderTarget
+        get() = RenderTargetGL.activeRenderTarget
 }
