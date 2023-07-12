@@ -6,6 +6,7 @@ import com.virusbear.tinn.Window
 import com.virusbear.tinn.WindowRenderTarget
 import com.virusbear.tinn.math.IVec2
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryStack
@@ -58,28 +59,27 @@ class WindowGL(
         }
     }
 
+    init {
+        glfwSetWindowSizeCallback(native) { _, width, height ->
+            this.size = IVec2(width, height)
+        }
+
+        glfwSetWindowContentScaleCallback(native) { _, scale, _ ->
+            this.contentScale = scale.toDouble()
+        }
+    }
+
     override val renderTarget: WindowRenderTarget =
         WindowRenderTargetGL(this)
 
     override val open: Boolean
         get() = !glfwWindowShouldClose(native)
 
-    override val size: IVec2
-        get() {
-            val x = IntArray(1)
-            val y = IntArray(1)
-            glfwGetFramebufferSize(native, x, y)
-            return IVec2(x[0], y[0])
-        }
+    override var size: IVec2 = getWindowSize()
+        private set
 
-    override val contentScale: Double
-        get() {
-            val scale = FloatArray(1)
-            val ignored = FloatArray(1)
-            glfwGetWindowContentScale(native, scale, ignored)
-
-            return scale[0].toDouble()
-        }
+    override var contentScale: Double = getWindowContentScale()
+        private set
 
     override fun clear() {
         GL30C.glClear(GL30C.GL_COLOR_BUFFER_BIT or GL30C.GL_DEPTH_BUFFER_BIT)
@@ -105,5 +105,21 @@ class WindowGL(
         glfwDestroyWindow(native)
 
         super.destroy()
+    }
+
+    private fun getWindowSize(): IVec2 {
+        val width = IntArray(1)
+        val height = IntArray(1)
+        glfwGetWindowSize(native, width, height)
+
+        return(IVec2(width[0], height[0]))
+    }
+
+    private fun getWindowContentScale(): Double {
+        val scale = FloatArray(1)
+        val ignored = FloatArray(1)
+        glfwGetWindowContentScale(native, scale, ignored)
+
+        return scale[0].toDouble()
     }
 }

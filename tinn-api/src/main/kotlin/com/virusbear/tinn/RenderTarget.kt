@@ -20,6 +20,8 @@ interface RenderTarget: Destroyable, Bindable {
 
     fun attach(colorBuffer: ColorBuffer, level: Int = 0)
 
+    fun colorBuffer(index: Int): ColorBuffer
+
     companion object {
         val active: RenderTarget
             get() = Driver.driver.activeRenderTarget
@@ -45,4 +47,3 @@ fun renderTarget(
     RenderTargetBuilder(target).builder()
     return target
 }
-

@@ -92,8 +92,15 @@ open class RenderTargetGL(
         }
     }
 
+    override fun colorBuffer(index: Int): ColorBuffer =
+        colorAttachments[index]
+
     override fun destroy() {
         super.destroy()
+
+        if(this is WindowRenderTargetGL) {
+            return
+        }
         glDeleteFramebuffers(frameBuffer)
         checkGLErrors()
     }
