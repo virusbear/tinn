@@ -1,10 +1,12 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
+import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.shader.*
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.nanovg.NanoVG
 import java.io.File
 
 class DriverGL: Driver() {
@@ -33,6 +35,9 @@ class DriverGL: Driver() {
         multisample: MultiSample
     ): Window =
         WindowGL.create(width, height, title, resizable, vsync, multisample)
+
+    override fun createDrawer(): Drawer =
+        NanoVGDrawer()
 
     override fun createColorBuffer(
         width: Int,

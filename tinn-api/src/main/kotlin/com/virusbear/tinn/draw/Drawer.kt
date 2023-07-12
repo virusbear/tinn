@@ -8,7 +8,7 @@ import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.vec
 
 interface Drawer {
-    fun begin(width: Int, height: Int)
+    fun begin(width: Int, height: Int, contentScale: Double)
     fun end()
 
     fun push()
@@ -27,7 +27,7 @@ interface Drawer {
     fun scale(scale: Vec2)
 
     fun image(image: ColorBuffer, source: Vec2 = Vec2.ZERO, size: Vec2 = IVec2(image.width, image.height).vec, target: Vec2 = Vec2.ZERO)
-    fun path(close: Boolean = false, block: PathScope.() -> Unit)
+    fun path(block: PathScope.() -> Unit)
 
     fun point(pos: Vec2)
     fun line(start: Vec2, end: Vec2)

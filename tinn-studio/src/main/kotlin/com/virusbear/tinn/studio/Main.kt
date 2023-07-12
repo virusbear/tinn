@@ -1,12 +1,12 @@
 package com.virusbear.tinn.studio
 
-import com.virusbear.tinn.Driver
-import com.virusbear.tinn.MultiSample
-import com.virusbear.tinn.Window
+import com.virusbear.tinn.*
+import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.math.rad
+import com.virusbear.tinn.math.vec
 import com.virusbear.tinn.opengl.DriverGL
-import com.virusbear.tinn.renderTarget
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.nanovg.NVGPaint
@@ -22,22 +22,34 @@ fun main() {
         createWindow(800, 600, "tinn", resizable = true, vsync = true, multisample = MultiSample.None)
     }
 
-    val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES)
-println(ctx)
-    val fill = NVGColor.create()
-
     var mousePos = Vec2.ZERO
 
     GLFW.glfwSetCursorPosCallback(window.native) { _, x, y ->
         mousePos = Vec2(x, y)
     }
 
-    val renderTarget = renderTarget(400, 400) {
-        colorBuffer()
-    }
+    var framecount = 0
 
     loop(window) {
-        window.renderTarget.bound {
+        framecount++
+        window.renderTarget.draw {
+            noStroke()
+            fill = Color(0.5, 0.5, 0.5, 1.0)
+            circle(Vec2.ZERO, window.size.x / 4.0)
+            isolated {
+                fill = Color(1.0, 1.0, 1.0, 1.0)
+                translate(window.size.vec / 2.0)
+                rotate((framecount.toDouble() / 60.0).rad)
+                translate(Vec2.ONE * -50)
+                rectangle(Vec2.ZERO, Vec2.ONE * 100.0)
+            }
+
+            rectangle(window.size.vec, Vec2.ONE * 50.0)
+
+            fill = Color.BLACK
+            point(window.size.vec / 2.0)
+        }
+        /*window.renderTarget.bound {
             NanoVG.nvgBeginFrame(ctx, window.width.toFloat(), window.height.toFloat(), 1f)
 
             NanoVG.nvgBeginPath(ctx)
@@ -58,7 +70,7 @@ println(ctx)
             NanoVG.nvgFill(ctx)
 
             NanoVG.nvgEndFrame(ctx)
-        }
+        }*/
     }
 
     Driver.driver.destroy()

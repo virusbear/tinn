@@ -9,6 +9,6 @@ data class Color(
     companion object {
         val TRANSPARENT = Color(0.0, 0.0, 0.0, 0.0)
         val BLACK = Color(0.0, 0.0, 0.0, 1.0)
-        val WHITE = Color(1.0, 1.0, 1.0, 0.0)
+        val WHITE = Color(1.0, 1.0, 1.0, 1.0)
     }
 }

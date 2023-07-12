@@ -1,6 +1,7 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
+import com.virusbear.tinn.draw.Drawer
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL30C.*
@@ -41,6 +42,10 @@ open class RenderTargetGL(
                 val stack = active.getOrPut(glfwGetCurrentContext()) { Stack() }
                 return stack.peek()
             }
+    }
+
+    override val drawer: Drawer by lazy {
+        Driver.driver.createDrawer()
     }
 
     override fun bind() {
@@ -122,6 +127,6 @@ open class RenderTargetGL(
         }
 
 
-        glViewport(0, 0, effectiveWidth, effectiveHeight)
+        glViewport(0, 0, width, height)
     }
 }

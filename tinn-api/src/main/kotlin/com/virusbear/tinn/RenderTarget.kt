@@ -1,5 +1,6 @@
 package com.virusbear.tinn
 
+import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.colorBuffer as _colorBuffer
 
@@ -10,6 +11,8 @@ interface RenderTarget: Destroyable, Bindable {
         get() = IVec2(width, height)
 
     val contentScale: Double
+
+    val drawer: Drawer
 
     val effectiveWidth: Int
         get() = (width * contentScale).toInt()
@@ -46,4 +49,14 @@ fun renderTarget(
     val target = Driver.driver.createRenderTarget(width, height, contentScale)
     RenderTargetBuilder(target).builder()
     return target
+}
+
+fun RenderTarget.draw(
+    block: Drawer.() -> Unit
+) {
+    bound {
+        drawer.begin(width, height, contentScale)
+        drawer.block()
+        drawer.end()
+    }
 }
