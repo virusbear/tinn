@@ -92,7 +92,7 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
     }
 
     override fun imageButton(label: String, colorBuffer: ColorBuffer, onClick: () -> Unit) {
-        if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
+        if(colorBuffer is ColorBufferGL && colorBuffer.multisample != MultiSample.None) {
             error("ImGUI does not support multisample image rendering.")
         }
 
@@ -211,7 +211,7 @@ class ImGuiUIContext(private val glslVersion: String, private val window: Window
     }
 
     override fun image(label: String, colorBuffer: ColorBuffer) {
-        if(colorBuffer is ColorBufferGL && colorBuffer.samples != MultiSample.None) {
+        if(colorBuffer is ColorBufferGL && colorBuffer.multisample != MultiSample.None) {
             error("ImGUI does not support multisample image rendering.")
         }
 

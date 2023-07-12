@@ -12,8 +12,9 @@ import java.nio.FloatBuffer
 class ColorBufferGL internal constructor(
     override val width: Int,
     override val height: Int,
+    override val contentScale: Double,
     val format: ColorFormat,
-    val samples: MultiSample,
+    override val  multisample: MultiSample,
     val levels: MipMapLevel
 ): ColorBuffer, Trackable() {
     internal val target: Int
@@ -28,7 +29,7 @@ class ColorBufferGL internal constructor(
         textureId = glGenTextures()
         checkGLErrors()
 
-        target = when(samples) {
+        target = when(multisample) {
             MultiSample.None -> GL_TEXTURE_2D
             else -> GL_TEXTURE_2D_MULTISAMPLE
         }
@@ -40,16 +41,16 @@ class ColorBufferGL internal constructor(
 
             glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-            when(samples) {
+            when(multisample) {
                 MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
-                else -> glTexImage2DMultisample(target, samples.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
+                else -> glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
             }
             checkGLErrors()
         }
     }
 
     override fun generateMipMaps() {
-        require(samples == MultiSample.None) { "Multisampled mipmaps not supported" }
+        require(multisample == MultiSample.None) { "Multisampled mipmaps not supported" }
         if(levels == MipMapLevel.None)
             return
 
@@ -116,6 +117,7 @@ class ColorBufferGL internal constructor(
             val cb = ColorBufferGL(
                 w[0],
                 h[0],
+                1.0,
                 format,
                 MultiSample.None,
                 MipMapLevel.None

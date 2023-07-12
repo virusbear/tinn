@@ -1,97 +1,65 @@
 package com.virusbear.tinn.studio
 
-import com.virusbear.tinn.*
-import com.virusbear.tinn.events.ProgramControlEvent
-import com.virusbear.tinn.imgui.ImGuiPanel
-import com.virusbear.tinn.imgui.ImGuiUIContext
-import com.virusbear.tinn.nodes.*
+import com.virusbear.tinn.Driver
+import com.virusbear.tinn.MultiSample
+import com.virusbear.tinn.Window
+import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.opengl.DriverGL
-import com.virusbear.tinn.registry.Registries
-import com.virusbear.tinn.studio.panels.*
-import imgui.ImGui
+import com.virusbear.tinn.renderTarget
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.nanovg.NVGColor
+import org.lwjgl.nanovg.NVGPaint
+import org.lwjgl.nanovg.NanoVG
+import org.lwjgl.nanovg.NanoVGGL3
+import org.lwjgl.opengl.GL11C.glViewport
 
 fun main() {
     Driver.use(DriverGL())
 
     val window: Window = Driver.use {
         init()
-        createWindow(800, 600, "tinn", resizable = true, vsync = true)
+        createWindow(800, 600, "tinn", resizable = true, vsync = true, multisample = MultiSample.None)
     }
 
-    val context = ImGuiUIContext("#version 130", window)
-    context.init()
+    val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES)
+println(ctx)
+    val fill = NVGColor.create()
 
-    //This is an artifact of failing to load classes correctly that create new registries.
-    //Those classes need to be loaded once and their registries accessed
-    //This should later be changed to a plugin based system.
-    //listOf(Registries.NodeIdentifiers, Registries.PortSerializers)
-    Registries.Nodes.register("tinn-studio:viewport", ViewPortNode)
-    Registries.Nodes.entries().forEach {
-        NodeManager.register(it)
-    }
-    Registries.PortSerializers.entries().forEach {
-        NodeManager.register(it)
+    var mousePos = Vec2.ZERO
+
+    GLFW.glfwSetCursorPosCallback(window.native) { _, x, y ->
+        mousePos = Vec2(x, y)
     }
 
-    val panels = listOf(
-        Controls(),
-        NodeEditor(),
-        ViewPort,
-        NodeList(),
-        Properties(),
-        NodespaceStack()
-    )
-
-    val dockSpace = DockSpace()
-    dockSpace.init(context)
-    panels.forEach { it.init(context) }
-
-    val program = Program()
-    val menuBar = MainMenuBar(program)
-
-    EventBus.subscribe<ProgramControlEvent> {
-        when(it) {
-            ProgramControlEvent.Pause -> program.stop()
-            ProgramControlEvent.Reset -> program.reset()
-            ProgramControlEvent.Start -> program.start()
-            ProgramControlEvent.Step -> program.step()
-            ProgramControlEvent.Stop -> {
-                program.stop()
-                program.reset()
-            }
-        }
+    val renderTarget = renderTarget(400, 400) {
+        colorBuffer()
     }
 
     loop(window) {
-        context.render { ctx ->
-            menuBar.render(ctx)
+        window.renderTarget.bound {
+            NanoVG.nvgBeginFrame(ctx, window.width.toFloat(), window.height.toFloat(), 1f)
 
-            if(ImGui.begin(dockSpace.name, (dockSpace as ImGuiPanel).windowFlags()))
-                dockSpace.render(ctx)
-            ImGui.end()
+            NanoVG.nvgBeginPath(ctx)
+            NanoVG.nvgCircle(ctx, mousePos.x.toFloat() / 2.0f, (window.height / window.contentScale).toFloat() + mousePos.y.toFloat() / 2.0f, 120f)
+            fill.r(0.5f)
+            fill.g(0.5f)
+            fill.b(0.5f)
+            fill.a(1.0f)
+            NanoVG.nvgFillColor(ctx, fill)
+            NanoVG.nvgFill(ctx)
 
-            panels.forEach {
-                if(ImGui.begin(it.name))
-                    it.render(ctx)
-                ImGui.end()
-            }
+            NanoVG.nvgCircle(ctx, mousePos.y.toFloat() / 2.0f, (window.height / window.contentScale).toFloat() + mousePos.y.toFloat() / 2.0f, 120f)
+            fill.r(0.5f)
+            fill.g(0.5f)
+            fill.b(0.5f)
+            fill.a(1.0f)
+            NanoVG.nvgFillColor(ctx, fill)
+            NanoVG.nvgFill(ctx)
 
-            //Back button (Logitech MX Master 3S)
-            if(ImGui.isMouseClicked(GLFW.GLFW_MOUSE_BUTTON_4)) {
-                EventBus.publish(NodespacePopEvent)
-            }
-
-            program.update()
+            NanoVG.nvgEndFrame(ctx)
         }
     }
-
-    panels.forEach {
-        it.destroy()
-    }
-    dockSpace.destroy()
-
-    program.destroy()
 
     Driver.driver.destroy()
 }
@@ -107,5 +75,3 @@ private fun loop(window: Window, block: () -> Unit) {
         }
     }
 }
-
-object NodespacePopEvent: Event
