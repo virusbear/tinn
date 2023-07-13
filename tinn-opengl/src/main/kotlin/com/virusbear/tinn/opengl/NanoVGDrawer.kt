@@ -2,20 +2,22 @@ package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.RenderTarget
+import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.draw.Drawer
-import com.virusbear.tinn.draw.PathScope
-import com.virusbear.tinn.draw.PathWinding
+import com.virusbear.tinn.draw.*
 import com.virusbear.tinn.math.Radians
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.math.vec
 import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.nanovg.NVGPaint
+import org.lwjgl.nanovg.NVGTextRow
 import org.lwjgl.nanovg.NanoVGGL3
 import org.lwjgl.nanovg.NanoVG.*
 import java.util.*
 
-class NanoVGDrawer: Drawer {
-    private val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES)
+class NanoVGDrawer: Drawer, Trackable() {
+    private val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE)
+    private val imageHandles = mutableMapOf<ColorBuffer, Int>()
 
     data class DrawerState(
         val fill: Color?,
@@ -88,12 +90,23 @@ class NanoVGDrawer: Drawer {
         nvgScale(ctx, scale.x.toFloat(), scale.y.toFloat())
     }
 
-    override fun image(image: ColorBuffer, source: Vec2, size: Vec2, target: Vec2) {
+    override fun image(image: ColorBuffer, position: Vec2, offset: Vec2, size: Vec2) {
         val paint = NVGPaint.create()
-        nvgImagePattern(ctx, source.x.toFloat(), source.y.toFloat(), source.x.toFloat() + size.x.toFloat(), source.y.toFloat() + size.y.toFloat(), 0f, image.textureId, 1f, paint)
+
+        val handle = imageHandles.computeIfAbsent(image) {
+            imageHandles.filterKeys { it.destroyed }.forEach { (img, _) ->
+                imageHandles -= img
+            }
+            NanoVGGL3.nvglCreateImageFromHandle(ctx, (image as ColorBufferGL).textureId, image.width, image.height, 0)
+        }
+
+        val maskPosition = position - offset
+        val maskSize = image.size.vec
+
+        nvgImagePattern(ctx, maskPosition.x.toFloat(), maskPosition.y.toFloat(), maskSize.x.toFloat(), maskSize.y.toFloat(), 0f, handle, 1f, paint)
 
         nvgBeginPath(ctx)
-        nvgRect(ctx, target.x.toFloat(), target.y.toFloat(), size.x.toFloat(), size.y.toFloat())
+        nvgRect(ctx, position.x.toFloat(), position.y.toFloat(), size.x.toFloat(), size.y.toFloat())
         nvgFillPaint(ctx, paint)
         nvgFill(ctx)
         nvgClosePath(ctx)
@@ -115,13 +128,17 @@ class NanoVGDrawer: Drawer {
         }
     }
 
+    override var lineCap: LineCap = LineCap.Butt
+    override var lineJoin: LineJoin = LineJoin.None
+
     override fun line(start: Vec2, end: Vec2) {
         if(stroke == null) {
             return
         }
 
         path {
-            line(start, end)
+            moveTo(start)
+            lineTo(end)
             stroke()
         }
     }
@@ -150,8 +167,46 @@ class NanoVGDrawer: Drawer {
         }
     }
 
-    override fun text(text: String, pos: Vec2) {
-        TODO("Not yet implemented")
+    override var font: Font? = null
+    override var fontSize: Double = 14.0
+    override var vertivalTextAlign: VerticalTextAlign = VerticalTextAlign.Middle
+    override var horizontalTextAlign: HorizontalTextAlign = HorizontalTextAlign.Left
+
+    override fun text(pos: Vec2, text: String) {
+        if(font == null) {
+            return
+        }
+
+        setupFont()
+        nvgText(ctx, pos.x.toFloat(), pos.y.toFloat(), text)
+    }
+
+    override fun measureText(text: String): Vec2 {
+        if(font == null) {
+            return Vec2.ZERO
+        }
+
+        setupFont()
+        val lineHeight = FloatArray(1)
+        nvgTextMetrics(ctx, null, null, lineHeight)
+        val width = nvgTextBounds(ctx, 0f, 0f, text, null as FloatArray?)
+
+        return Vec2(width.toDouble(), lineHeight[0].toDouble())
+    }
+
+    private fun setupFont() {
+        nvgTextAlign(ctx, nvgTextAlignInt(vertivalTextAlign, horizontalTextAlign))
+        nvgFontFace(ctx, font!!.name)
+        nvgFontSize(ctx, fontSize.toFloat())
+    }
+
+    override fun loadFont(name: String, path: String): Font =
+        NanoVGFont(name, nvgCreateFont(ctx, name, path))
+
+    override fun destroy() {
+        NanoVGGL3.nvgDelete(ctx)
+
+        super.destroy()
     }
 
     inner class NanoVGPathScope: PathScope {
@@ -160,6 +215,11 @@ class NanoVGDrawer: Drawer {
         }
 
         override fun lineTo(pos: Vec2) {
+            nvgLineCap(ctx, lineCap.nvg)
+            if(lineJoin != LineJoin.None) {
+                nvgLineJoin(ctx, lineJoin.nvg)
+            }
+
             nvgLineTo(ctx, pos.x.toFloat(), pos.y.toFloat())
         }
 
@@ -260,6 +320,7 @@ class NanoVGDrawer: Drawer {
 
         override fun stroke() {
             stroke?.let { value ->
+                nvgStrokeWidth(ctx, strokeWeight.toFloat())
                 nvgStrokeColor(ctx, NVGColor.create().apply {
                     r(value.r.toFloat())
                     g(value.g.toFloat())
@@ -271,3 +332,8 @@ class NanoVGDrawer: Drawer {
         }
     }
 }
+
+data class NanoVGFont(
+    override val name: String,
+    val font: Int
+): Font

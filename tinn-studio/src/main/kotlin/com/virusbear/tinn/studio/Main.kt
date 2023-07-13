@@ -2,6 +2,10 @@ package com.virusbear.tinn.studio
 
 import com.virusbear.tinn.*
 import com.virusbear.tinn.color.Color
+import com.virusbear.tinn.draw.LineCap
+import com.virusbear.tinn.extensions.draw
+import com.virusbear.tinn.extensions.isolated
+import com.virusbear.tinn.extensions.loadImage
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.rad
@@ -13,6 +17,7 @@ import org.lwjgl.nanovg.NVGPaint
 import org.lwjgl.nanovg.NanoVG
 import org.lwjgl.nanovg.NanoVGGL3
 import org.lwjgl.opengl.GL11C.glViewport
+import java.io.File
 
 fun main() {
     Driver.use(DriverGL())
@@ -30,6 +35,10 @@ fun main() {
 
     var framecount = 0
 
+    val image = loadImage(File("H:\\git\\tinn\\prusa.png"))
+    image.filter()
+
+image.generateMipMaps()
     loop(window) {
         framecount++
         window.renderTarget.draw {
@@ -42,35 +51,22 @@ fun main() {
                 rotate((framecount.toDouble() / 60.0).rad)
                 translate(Vec2.ONE * -50)
                 rectangle(Vec2.ZERO, Vec2.ONE * 100.0)
+                image(image)
             }
 
             rectangle(window.size.vec, Vec2.ONE * 50.0)
 
             fill = Color.BLACK
             point(window.size.vec / 2.0)
+
+            font = loadFont("JetBrainsMono-Regular", "H:\\git\\tinn\\JetBrainsMono-Regular.ttf")
+            fontSize = 14.0
+            val textSize = measureText("Hello World!")
+            val textPos = window.size.vec / 2.0 - Vec2(textSize.x, -textSize.y / 2.0) / 2.0
+            stroke = Color.BLACK
+            line(textPos, textPos + textSize.copy(y = 0.0))
+            text(textPos, "Hello World!")
         }
-        /*window.renderTarget.bound {
-            NanoVG.nvgBeginFrame(ctx, window.width.toFloat(), window.height.toFloat(), 1f)
-
-            NanoVG.nvgBeginPath(ctx)
-            NanoVG.nvgCircle(ctx, mousePos.x.toFloat() / 2.0f, (window.height / window.contentScale).toFloat() + mousePos.y.toFloat() / 2.0f, 120f)
-            fill.r(0.5f)
-            fill.g(0.5f)
-            fill.b(0.5f)
-            fill.a(1.0f)
-            NanoVG.nvgFillColor(ctx, fill)
-            NanoVG.nvgFill(ctx)
-
-            NanoVG.nvgCircle(ctx, mousePos.y.toFloat() / 2.0f, (window.height / window.contentScale).toFloat() + mousePos.y.toFloat() / 2.0f, 120f)
-            fill.r(0.5f)
-            fill.g(0.5f)
-            fill.b(0.5f)
-            fill.a(1.0f)
-            NanoVG.nvgFillColor(ctx, fill)
-            NanoVG.nvgFill(ctx)
-
-            NanoVG.nvgEndFrame(ctx)
-        }*/
     }
 
     Driver.driver.destroy()

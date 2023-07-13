@@ -18,7 +18,7 @@ class ColorBufferGL internal constructor(
     val levels: MipMapLevel
 ): ColorBuffer, Trackable() {
     internal val target: Int
-    override val textureId: Int
+    val textureId: Int
 
     override val proxy: ColorBufferProxy = ColorBufferProxyGL(this)
 
@@ -39,7 +39,7 @@ class ColorBufferGL internal constructor(
                 glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels.levels - 1)
             }
 
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
 
             when(multisample) {
                 MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
