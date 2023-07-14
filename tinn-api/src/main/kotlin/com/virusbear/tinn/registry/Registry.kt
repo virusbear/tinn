@@ -1,23 +1,22 @@
 package com.virusbear.tinn.registry
 
-class Registry<T: Any> {
-    private val entries = mutableMapOf<Identifier, T>()
+class Registry<T: Any> private constructor(
+    private val elements: MutableMap<Identifier, T>
+): Map<Identifier, T> by elements {
+    constructor(): this(mutableMapOf())
 
     fun register(id: String, entry: T) {
         register(Identifier.fromString(id), entry)
     }
 
     fun register(id: Identifier, entry: T) {
-        require(id !in entries) { "Instance with id $id already registered" }
+        require(id !in elements) { "Instance with id $id already registered" }
 
-        entries[id] = entry
+        elements[id] = entry
     }
 
     fun entries(): List<T> =
-        entries.values.toList()
-
-    operator fun get(id: Identifier): T? =
-        entries[id]
+        elements.values.toList()
 
     operator fun get(id: String): T? =
         get(Identifier.fromString(id))
