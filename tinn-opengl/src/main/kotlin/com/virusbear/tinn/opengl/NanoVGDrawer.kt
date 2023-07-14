@@ -10,7 +10,6 @@ import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.vec
 import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.nanovg.NVGPaint
-import org.lwjgl.nanovg.NVGTextRow
 import org.lwjgl.nanovg.NanoVGGL3
 import org.lwjgl.nanovg.NanoVG.*
 import java.util.*
@@ -37,7 +36,6 @@ class NanoVGDrawer: Drawer, Trackable() {
 
     override fun push() {
         nvgSave(ctx)
-        nvgReset(ctx)
 
         states.push(DrawerState(fill, stroke, strokeWeight))
     }
@@ -114,7 +112,12 @@ class NanoVGDrawer: Drawer, Trackable() {
 
     override fun path(block: PathScope.() -> Unit) {
         nvgBeginPath(ctx)
-        NanoVGPathScope().block()
+        NanoVGPathScope().apply {
+            block()
+            fill()
+            stroke()
+        }
+
         nvgClosePath(ctx)
     }
 
@@ -122,10 +125,13 @@ class NanoVGDrawer: Drawer, Trackable() {
         if(fill == null) {
             return
         }
+
+        val currStroke = stroke
+        noStroke()
         path {
             circle(pos, 1.0)
-            fill()
         }
+        stroke = currStroke
     }
 
     override var lineCap: LineCap = LineCap.Butt
@@ -136,11 +142,13 @@ class NanoVGDrawer: Drawer, Trackable() {
             return
         }
 
+        val currFill = fill
+        noFill()
         path {
             moveTo(start)
             lineTo(end)
-            stroke()
         }
+        fill = currFill
     }
 
     override fun circle(center: Vec2, radius: Double) {
@@ -150,8 +158,6 @@ class NanoVGDrawer: Drawer, Trackable() {
 
         path {
             circle(center, radius)
-            stroke()
-            fill()
         }
     }
 
@@ -162,8 +168,6 @@ class NanoVGDrawer: Drawer, Trackable() {
 
         path {
             rect(corner, size)
-            stroke()
-            fill()
         }
     }
 
@@ -242,10 +246,10 @@ class NanoVGDrawer: Drawer, Trackable() {
             )
         }
 
-        override fun arcTo(a: Vec2, b: Vec2, radius: Double) {
+        override fun arcTo(start: Vec2, end: Vec2, radius: Double) {
             nvgArcTo(ctx,
-                a.x.toFloat(), a.y.toFloat(),
-                b.x.toFloat(), b.y.toFloat(),
+                start.x.toFloat(), start.y.toFloat(),
+                end.x.toFloat(), end.y.toFloat(),
                 radius.toFloat()
             )
         }
@@ -310,7 +314,7 @@ class NanoVGDrawer: Drawer, Trackable() {
             )
         }
 
-        override fun fill() {
+        internal fun fill() {
             fill?.let { value ->
                 nvgFillColor(ctx, NVGColor.create().apply {
                     r(value.r.toFloat())
@@ -322,7 +326,7 @@ class NanoVGDrawer: Drawer, Trackable() {
             }
         }
 
-        override fun stroke() {
+        internal fun stroke() {
             stroke?.let { value ->
                 nvgStrokeWidth(ctx, strokeWeight.toFloat())
                 nvgStrokeColor(ctx, NVGColor.create().apply {

@@ -3,6 +3,7 @@ package com.virusbear.tinn
 import com.virusbear.tinn.draw.Drawable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.shader.*
+import com.virusbear.tinn.window.Window
 import java.io.File
 
 abstract class Driver: Destroyable {

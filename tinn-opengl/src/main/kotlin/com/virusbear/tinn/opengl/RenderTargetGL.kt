@@ -2,6 +2,8 @@ package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
 import com.virusbear.tinn.draw.Drawer
+import com.virusbear.tinn.window.Window
+import com.virusbear.tinn.window.WindowRenderTarget
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL30C.*
