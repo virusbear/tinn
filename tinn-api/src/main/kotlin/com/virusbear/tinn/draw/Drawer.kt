@@ -3,6 +3,7 @@ package com.virusbear.tinn.draw
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.Destroyable
 import com.virusbear.tinn.color.Color
+import com.virusbear.tinn.extensions.isolated
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Radians
 import com.virusbear.tinn.math.Vec2
@@ -38,6 +39,12 @@ interface Drawer: Destroyable {
     fun line(start: Vec2, end: Vec2)
     fun circle(center: Vec2, radius: Double)
     fun rectangle(corner: Vec2, size: Vec2)
+
+    fun draw(drawable: Drawable)
+
+    fun draw(drawable: Drawer.() -> Unit) {
+        isolated(drawable)
+    }
 
     var font: Font?
     var fontSize: Double

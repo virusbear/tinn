@@ -1,5 +1,6 @@
 package com.virusbear.tinn
 
+import com.virusbear.tinn.draw.Drawable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.shader.*
 import java.io.File
@@ -17,6 +18,7 @@ abstract class Driver: Destroyable {
     ): Window
 
     abstract fun createDrawer(): Drawer
+    abstract fun createDrawable(block: Drawer.() -> Unit): Drawable
 
     abstract fun createColorBuffer(
         width: Int,

@@ -167,6 +167,10 @@ class NanoVGDrawer: Drawer, Trackable() {
         }
     }
 
+    override fun draw(drawable: Drawable) {
+        draw((drawable as DrawableGL).drawable)
+    }
+
     override var font: Font? = null
     override var fontSize: Double = 14.0
     override var vertivalTextAlign: VerticalTextAlign = VerticalTextAlign.Middle

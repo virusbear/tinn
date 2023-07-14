@@ -1,6 +1,7 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
+import com.virusbear.tinn.draw.Drawable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.shader.*
 import org.lwjgl.glfw.GLFW
@@ -38,6 +39,9 @@ class DriverGL: Driver() {
 
     override fun createDrawer(): Drawer =
         NanoVGDrawer()
+
+    override fun createDrawable(block: Drawer.() -> Unit): Drawable =
+        DrawableGL(block)
 
     override fun createColorBuffer(
         width: Int,
