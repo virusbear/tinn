@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":tinn-math"))
     implementation(project(":tinn-color"))
     implementation(project(":tinn-opengl"))
+    implementation(project(":tinn-ui"))
     implementation(project(":tinn-nodes"))
     implementation(project(":tinn-core"))
 }

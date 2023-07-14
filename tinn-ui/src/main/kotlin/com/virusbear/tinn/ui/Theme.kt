@@ -1,11 +1,11 @@
 package com.virusbear.tinn.ui
 
 import com.virusbear.tinn.ReadOnlyExtensionPropertyDelegate
-import com.virusbear.tinn.registry.Registries
-import com.virusbear.tinn.registry.Registries.registry
-import com.virusbear.tinn.registry.Registry
 
 object Theme {
+    //TODO: add loading and saving possibilities to Themes
+    //TODO: how to serialize and deserialize ThemeVariable types?
+
     private val theme = mutableMapOf<ThemeVariable<*>, Any>()
 
     fun <T: Any> themeVariable(default: T): ReadOnlyExtensionPropertyDelegate<Theme, ThemeVariable<T>> =
