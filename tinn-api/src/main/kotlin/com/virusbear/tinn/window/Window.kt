@@ -6,7 +6,6 @@ import com.virusbear.tinn.MultiSample
 import com.virusbear.tinn.math.IVec2
 
 interface Window: Destroyable, Bindable {
-    val native: Long
     val open: Boolean
 
     val width: Int

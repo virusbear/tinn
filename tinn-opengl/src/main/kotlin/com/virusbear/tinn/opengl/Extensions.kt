@@ -1,6 +1,10 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
+import com.virusbear.tinn.window.MouseButton
+import com.virusbear.tinn.window.Action
+import com.virusbear.tinn.window.Mod
+import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_LUMINANCE
 import org.lwjgl.opengl.GL30C.*
@@ -75,4 +79,35 @@ internal val TextureFilter.gl: Int
     get() = when(this) {
         TextureFilter.NEAREST -> GL_NEAREST
         TextureFilter.LINEAR -> GL_LINEAR
+    }
+
+internal fun MouseButton.Companion.fromGl(button: Int): MouseButton =
+    when(button) {
+        GLFW.GLFW_MOUSE_BUTTON_LEFT -> MouseButton.Left
+        GLFW.GLFW_MOUSE_BUTTON_RIGHT -> MouseButton.Right
+        GLFW.GLFW_MOUSE_BUTTON_MIDDLE -> MouseButton.Middle
+        GLFW.GLFW_MOUSE_BUTTON_4 -> MouseButton.Button4
+        GLFW.GLFW_MOUSE_BUTTON_5 -> MouseButton.Button5
+        GLFW.GLFW_MOUSE_BUTTON_6 -> MouseButton.Button6
+        GLFW.GLFW_MOUSE_BUTTON_7 -> MouseButton.Button7
+        GLFW.GLFW_MOUSE_BUTTON_8 -> MouseButton.Button8
+        else -> error("Unknown GLFW mouse button $button")
+    }
+
+internal fun Mod.Companion.fromGl(mods: Int): Set<Mod> =
+    mapOf(
+        Mod.Shift to GLFW.GLFW_MOD_SHIFT,
+        Mod.Alt to GLFW.GLFW_MOD_ALT,
+        Mod.Control to GLFW.GLFW_MOD_CONTROL,
+        Mod.Super to GLFW.GLFW_MOD_SUPER,
+        Mod.CapsLock to GLFW.GLFW_MOD_CAPS_LOCK,
+        Mod.NumLock to GLFW.GLFW_MOD_NUM_LOCK
+    ).filter { (_, gl) -> mods and gl != 0 }.keys
+
+internal fun Action.Companion.fromGl(action: Int): Action =
+    when(action) {
+        GLFW.GLFW_PRESS -> Action.Press
+        GLFW.GLFW_RELEASE -> Action.Release
+        GLFW.GLFW_REPEAT -> Action.Repeat
+        else -> error("Unknown GLFW action $action")
     }

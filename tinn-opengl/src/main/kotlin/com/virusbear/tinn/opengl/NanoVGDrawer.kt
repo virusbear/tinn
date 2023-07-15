@@ -89,13 +89,15 @@ class NanoVGDrawer: Drawer, Trackable() {
     }
 
     override fun image(image: ColorBuffer, position: Vec2, offset: Vec2, size: Vec2) {
+        require(image is ColorBufferGL) { "NanoVGDrawer expected ColorBufferGL got ${image::class.simpleName}"}
+
         val paint = NVGPaint.create()
 
         val handle = imageHandles.computeIfAbsent(image) {
             imageHandles.filterKeys { it.destroyed }.forEach { (img, _) ->
                 imageHandles -= img
             }
-            NanoVGGL3.nvglCreateImageFromHandle(ctx, (image as ColorBufferGL).textureId, image.width, image.height, 0)
+            NanoVGGL3.nvglCreateImageFromHandle(ctx, image.textureId, image.width, image.height, 0)
         }
 
         val maskPosition = position - offset

@@ -5,7 +5,7 @@ import com.virusbear.tinn.math.Vec2
 
 object Icons {
     val Cross by lazy {
-        drawable {
+        drawable(Vec2(512.0, 512.0)) {
             noStroke()
             fill = Theme.IconForegroundColor()
 
@@ -33,7 +33,7 @@ object Icons {
     }
 
     val Check by lazy {
-        drawable {
+        drawable(Vec2(512.0, 512.0)) {
             noStroke()
             fill = Theme.IconForegroundColor()
 
@@ -57,7 +57,7 @@ object Icons {
     }
 
     val Hamburger by lazy {
-        drawable {
+        drawable(Vec2(512.0, 512.0)) {
             noStroke()
             fill = Theme.IconForegroundColor()
 

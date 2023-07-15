@@ -1,19 +1,17 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.MultiSample
-import com.virusbear.tinn.Trackable
-import com.virusbear.tinn.Window
-import com.virusbear.tinn.WindowRenderTarget
+import com.virusbear.tinn.*
 import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.window.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.glfw.GLFWWindowSizeCallbackI
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil.NULL
 
 class WindowGL(
-    override val native: Long,
+    private val native: Long,
     override val multisample: MultiSample
 ): Window, Trackable() {
     companion object {
@@ -60,14 +58,11 @@ class WindowGL(
     }
 
     init {
-        glfwSetWindowSizeCallback(native) { _, width, height ->
-            this.size = IVec2(width, height)
-        }
-
-        glfwSetWindowContentScaleCallback(native) { _, scale, _ ->
-            this.contentScale = scale.toDouble()
-        }
+        registerWindowEvents()
     }
+
+    override var position = getWindowPos()
+        private set
 
     override val renderTarget: WindowRenderTarget =
         WindowRenderTargetGL(this)
@@ -121,5 +116,79 @@ class WindowGL(
         glfwGetWindowContentScale(native, scale, ignored)
 
         return scale[0].toDouble()
+    }
+
+    private fun getWindowPos(): IVec2 {
+        val x = IntArray(1)
+        val y = IntArray(1)
+        glfwGetWindowPos(native, x, y)
+
+        return IVec2(x[0], y[0])
+    }
+
+    private fun registerWindowEvents() {
+        glfwSetWindowSizeCallback(native) { _, width, height ->
+            size = IVec2(width, height)
+            EventBus.publish(WindowResizeEvent(this, size))
+        }
+        glfwSetWindowContentScaleCallback(native) { _, scale, _ ->
+            contentScale = scale.toDouble()
+        }
+        glfwSetWindowPosCallback(native) { _, x, y ->
+            position = IVec2(x, y)
+            EventBus.publish(WindowMoveEvent(this, position))
+        }
+        glfwSetWindowFocusCallback(native) { _, focused ->
+            EventBus.publish(WindowFocusEvent(this, focused))
+        }
+        glfwSetWindowMaximizeCallback(native) { _, maximized ->
+            EventBus.publish(WindowMaximizeEvent(this, maximized))
+        }
+        glfwSetWindowIconifyCallback(native) { _, minimized ->
+            EventBus.publish(WindowMinimizeEvent(this, minimized))
+        }
+
+        glfwSetScrollCallback(native) { _, x, y ->
+            EventBus.publish(WindowMouseScrollEvent(this, Vec2(x, y)))
+        }
+        glfwSetCursorEnterCallback(native) { _, entered ->
+            if(entered) {
+                EventBus.publish(WindowMouseLeaveEvent(this))
+            } else {
+                EventBus.publish(WindowMouseEnterEvent(this))
+            }
+        }
+        glfwSetCursorPosCallback(native) { _, x, y ->
+            EventBus.publish(WindowMouseMoveEvent(this, Vec2(x, y)))
+        }
+        glfwSetMouseButtonCallback(native) { _, button, action, mods ->
+            EventBus.publish(
+                WindowMouseButtonEvent(this,
+                    MouseButton.fromGl(button),
+                    Mod.fromGl(mods),
+                    Action.fromGl(action)
+                )
+            )
+        }
+
+        glfwSetCharCallback(native) { _, codepoint ->
+            EventBus.publish(WindowCharEvent(this, codepoint.toChar()))
+        }
+
+        glfwSetKeyCallback(native) { _, key, code, action, mods ->
+            Key.values().firstOrNull { it.code == key }?.let {
+                EventBus.publish(
+                    WindowKeyEvent( this,
+                        it,
+                        Action.fromGl(action),
+                        Mod.fromGl(mods)
+                    )
+                )
+            }
+        }
+
+        glfwSetCharModsCallback(native) { _, codepoint, mods ->
+            EventBus.publish(WindowCharModEvent(this, codepoint.toChar(), Mod.fromGl(mods)))
+        }
     }
 }

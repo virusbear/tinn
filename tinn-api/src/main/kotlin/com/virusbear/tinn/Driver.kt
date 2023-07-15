@@ -2,6 +2,7 @@ package com.virusbear.tinn
 
 import com.virusbear.tinn.draw.Drawable
 import com.virusbear.tinn.draw.Drawer
+import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
 import java.io.File
@@ -19,7 +20,7 @@ abstract class Driver: Destroyable {
     ): Window
 
     abstract fun createDrawer(): Drawer
-    abstract fun createDrawable(block: Drawer.() -> Unit): Drawable
+    abstract fun createDrawable(size: Vec2, block: Drawer.() -> Unit): Drawable
 
     abstract fun createColorBuffer(
         width: Int,

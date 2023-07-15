@@ -36,6 +36,10 @@ open class RenderTargetGL(
     //TODO: separate type for ColorBufferAttachment necessary?
     private val colorAttachments = mutableListOf<ColorBuffer>()
 
+    init {
+        checkGLErrors()
+    }
+
     companion object {
         private val active = mutableMapOf<Long, Stack<RenderTarget>>()
 

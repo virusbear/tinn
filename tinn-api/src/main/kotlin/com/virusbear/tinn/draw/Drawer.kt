@@ -29,7 +29,7 @@ interface Drawer: Destroyable {
     fun rotate(angle: Radians)
     fun scale(scale: Vec2)
 
-    fun image(image: ColorBuffer, position: Vec2 = Vec2.ZERO, offset: Vec2 = Vec2.ZERO, size: Vec2 = IVec2(image.width, image.height).vec)
+    fun image(image: ColorBuffer, position: Vec2 = Vec2.ZERO, offset: Vec2 = Vec2.ZERO, size: Vec2 = image.size.vec)
     fun path(block: PathScope.() -> Unit)
 
     fun point(pos: Vec2)
