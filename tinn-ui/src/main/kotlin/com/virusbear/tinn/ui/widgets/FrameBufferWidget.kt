@@ -3,6 +3,7 @@ package com.virusbear.tinn.ui.widgets
 import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.draw.Drawer
+import com.virusbear.tinn.extensions.colorBuffer
 import com.virusbear.tinn.extensions.draw
 import com.virusbear.tinn.extensions.renderTarget
 import com.virusbear.tinn.math.Vec2
@@ -17,26 +18,15 @@ class FrameBufferWidget(
         attach(content)
     }
 
-    override var size: Vec2
-        get() = content.size
-        set(value) {
-            if(value == content.size) {
-                return
-            }
-            rt.destroy()
-            rt = createRenderTarget(value)
-            content.size = value
-            dirty = true
-        }
+    override val size: Vec2 = content.size
 
     override fun draw(drawer: Drawer) {
-        //TODO: somehow rt.draw das not draw to any rendertarget, leaving rt.colorBuffer(0) completely empty
-        //if(dirty) {
+        if(dirty) {
             rt.draw {
-                drawer.clear(Color.BLACK)
-                content.draw(drawer)
+                clear(Color.BLACK)
+                content.draw(this)
             }
-        //}
+        }
 
         drawer.image(rt.colorBuffer(0))
 

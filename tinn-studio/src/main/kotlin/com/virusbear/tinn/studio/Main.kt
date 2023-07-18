@@ -1,13 +1,15 @@
 package com.virusbear.tinn.studio
 
 import com.virusbear.tinn.*
-import com.virusbear.tinn.color.Color
+import com.virusbear.tinn.color.rgb
+import com.virusbear.tinn.extensions.loadImage
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.registry.Registries
 import com.virusbear.tinn.ui.*
-import com.virusbear.tinn.ui.widgets.DrawableWidget
-import com.virusbear.tinn.ui.widgets.FrameBufferWidget
+import com.virusbear.tinn.ui.theme.IconForegroundColor
+import com.virusbear.tinn.ui.theme.Theme
 import com.virusbear.tinn.window.Window
+import java.io.File
 
 fun main() {
     Driver.use(DriverGL())
@@ -19,9 +21,17 @@ fun main() {
 
     Registries.ThemeVariables.register("tinn:icon_foreground_color", Theme.IconForegroundColor)
 
-    Theme.IconForegroundColor(Color(0.1686274510, 0.1764705882, 0.1882352941))
+    Theme.IconForegroundColor(rgb(206, 208, 214))
+    Theme.IconHoverColor(rgb(57, 59, 64))
+    Theme.IconActiveColor(rgb(78, 81, 87))
+    Theme.BackgroundColor(rgb(43, 45, 48))
 
-    Scene(window, FrameBufferWidget(DrawableWidget(Icons.Hamburger))).run()
+    Theme.IconMargin(0)
+    Theme.IconRounding(0)
+
+    val img = loadImage(File("H:\\git\\tinn\\prusa.png"))
+
+    Scene(window, IconButtonWidget(Icons.Hamburger) { println("button clicked") }.also { it.active = true }).run()
 
     Driver.driver.destroy()
 }

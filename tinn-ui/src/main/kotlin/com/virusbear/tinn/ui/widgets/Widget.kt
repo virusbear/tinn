@@ -21,7 +21,7 @@ abstract class Widget: BaseDestroyable() {
         }
 
     var visible: Boolean = true
-    abstract var size: Vec2
+    abstract val size: Vec2
 
     private val children = mutableListOf<Widget>()
 
@@ -85,13 +85,12 @@ abstract class Widget: BaseDestroyable() {
             else -> true
         }
 
+    //TODO: onMouseEntered and onMouseExited should be relative to the Widget the event is received on.
+    //TODO: Instead on firing events for "OnEnter" and "OnExit" a flag "hovered" and "dragged" should be set on the widget to easily access the information passed by those events
     open fun onMouseEntered(event: MouseEnteredEvent): Boolean =
         recurseEvent(Widget::onMouseEntered, event)
     open fun onMouseExited(event: MouseExitedEvent): Boolean =
         recurseEvent(Widget::onMouseExited, event)
-    //TODO: how to filter events based on position?
-    //Subclass may change event passed to this (e.g. TransformWidget) thus position would not be relative to this parent anymore
-    //TODO: somehow prefilter events in recurseEvent function? This would need some kind of currying filtering system
     open fun onMouseDown(event: MouseEvent): Boolean =
         recurseEvent(Widget::onMouseDown, event)
     open fun onMouseUp(event: MouseEvent): Boolean =

@@ -10,4 +10,6 @@ dependencies {
     implementation(project(":tinn-api"))
     implementation(project(":tinn-math"))
     implementation(project(":tinn-color"))
+
+    api("dev.dewy:nbt:1.5.1")
 }

@@ -2,6 +2,8 @@ package com.virusbear.tinn.ui
 
 import com.virusbear.tinn.draw.drawable
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.ui.theme.IconForegroundColor
+import com.virusbear.tinn.ui.theme.Theme
 
 object Icons {
     val Cross by lazy {

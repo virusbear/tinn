@@ -15,7 +15,7 @@ class Registry<T: Any> private constructor(
         elements[id] = entry
     }
 
-    fun entries(): List<T> =
+    fun values(): List<T> =
         elements.values.toList()
 
     operator fun get(id: String): T? =

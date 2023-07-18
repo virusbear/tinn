@@ -47,6 +47,8 @@ class ColorBufferGL internal constructor(
             }
             checkGLErrors()
         }
+
+        filter()
     }
 
     override fun generateMipMaps() {
