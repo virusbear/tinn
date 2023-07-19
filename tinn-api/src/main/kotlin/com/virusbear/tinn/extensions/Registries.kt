@@ -6,4 +6,4 @@ import com.virusbear.tinn.registry.Registry
 import com.virusbear.tinn.serialization.Serializer
 import kotlin.reflect.KClass
 
-val Registries.Serializers: Registry<Pair<KClass<*>, Serializer<*>>> by registry()
+val Registries.Serializers: Registry<Serializer<*>> by registry()

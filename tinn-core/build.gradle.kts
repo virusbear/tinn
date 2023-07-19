@@ -10,4 +10,6 @@ dependencies {
     implementation(project(":tinn-math"))
     implementation(project(":tinn-opengl"))
     implementation(project(":tinn-nodes"))
+
+    api("dev.dewy:nbt:1.5.1")
 }
