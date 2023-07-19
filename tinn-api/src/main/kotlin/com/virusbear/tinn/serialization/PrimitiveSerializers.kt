@@ -1,6 +1,9 @@
 package com.virusbear.tinn.serialization
 
+import kotlin.reflect.KClass
+
 object BooleanSerializer: Serializer<Boolean> {
+    override val type = Boolean::class
     override fun serialize(value: Boolean, encoder: Encoder): EncodedValue =
         EncodedValue.BooleanValue(value)
 
