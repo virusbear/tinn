@@ -5,6 +5,7 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.ui.MouseEvent
 import com.virusbear.tinn.ui.theme.Theme
+import com.virusbear.tinn.ui.widgets.Constraints
 import com.virusbear.tinn.ui.widgets.Widget
 
 
@@ -25,11 +26,14 @@ class IconButtonWidget(
             dirty = true
         }
 
-    override fun draw(drawer: Drawer) {
+    override fun measure(constraints: Constraints): Vec2 =
+        constraints.maxSize
+
+    override fun draw(drawer: Drawer, bounds: Vec2) {
         drawSurface(drawer)
         drawIcon(drawer)
 
-        super.draw(drawer)
+        super.draw(drawer, bounds)
     }
 
     private fun drawSurface(drawer: Drawer) {

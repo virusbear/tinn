@@ -5,6 +5,7 @@ import com.virusbear.tinn.Time
 import com.virusbear.tinn.UnixClock
 import com.virusbear.tinn.extensions.draw
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.math.vec
 import com.virusbear.tinn.ui.widgets.Widget
 import com.virusbear.tinn.window.*
 
@@ -117,7 +118,7 @@ class Scene(
     fun run() {
         loop(window) {
             window.renderTarget.draw {
-                content.draw(this)
+                content.draw(this, window.renderTarget.size.vec)
             }
         }
     }

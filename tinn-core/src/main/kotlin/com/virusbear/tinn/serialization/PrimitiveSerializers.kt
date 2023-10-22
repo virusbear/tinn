@@ -1,5 +1,5 @@
 package com.virusbear.tinn.serialization
-
+/*
 import com.virusbear.tinn.registry.Registry
 
 val BooleanSerializer = Serializer(
@@ -63,4 +63,4 @@ internal fun Registry<Serializer<*>>.registerPrimitiveSerializers() {
     register("tinn:intarray", IntArraySerializer)
     register("tinn:longarray", LongArraySerializer)
     register("tinn:doublearray", DoubleArraySerializer)
-}
+}*/

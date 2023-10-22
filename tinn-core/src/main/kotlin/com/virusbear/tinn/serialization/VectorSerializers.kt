@@ -1,5 +1,5 @@
 package com.virusbear.tinn.serialization
-
+/*
 import com.virusbear.tinn.math.*
 import com.virusbear.tinn.registry.Registry
 
@@ -124,4 +124,4 @@ internal fun Registry<Serializer<*>>.registerVectorSerializers() {
     register("tinn:ivec3", IVec3Serializer)
     register("tinn:vec4", Vec4Serializer)
     register("tinn:ivec4", IVec4Serializer)
-}
+}*/

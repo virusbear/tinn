@@ -1,5 +1,5 @@
 package com.virusbear.tinn.serialization
-
+/*
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.serialization.Serializer
 import com.virusbear.tinn.serialization.compound
@@ -25,4 +25,4 @@ val ColorSerializer = Serializer(
             )
         }
     }
-)
+)*/

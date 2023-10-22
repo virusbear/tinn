@@ -1,8 +1,5 @@
 package com.virusbear.tinn.serialization
-
-import com.virusbear.tinn.TinnPlugin
-import com.virusbear.tinn.color.Color
-import com.virusbear.tinn.color.rgb
+/*
 import dev.dewy.nbt.Nbt
 import dev.dewy.nbt.api.Tag
 import dev.dewy.nbt.tags.TagType
@@ -18,7 +15,6 @@ import dev.dewy.nbt.tags.primitive.IntTag
 import dev.dewy.nbt.tags.primitive.LongTag
 import dev.dewy.nbt.tags.primitive.ShortTag
 import dev.dewy.nbt.tags.primitive.StringTag
-import java.io.File
 
 object NbtFormat: Format {
     override fun load(data: ByteArray): EncodedValue =
@@ -62,4 +58,4 @@ object NbtFormat: Format {
             is EncodedValue.StringValue -> StringTag(name, value)
             EncodedValue.NullValue -> null
         }
-}
+}*/

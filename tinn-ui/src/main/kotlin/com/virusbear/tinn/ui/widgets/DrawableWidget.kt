@@ -10,7 +10,10 @@ class DrawableWidget(
 ): Widget() {
     override var size: Vec2 = drawable.size
 
-    override fun draw(drawer: Drawer) {
+    override fun measure(constraints: Constraints): Vec2 =
+        size
+
+    override fun draw(drawer: Drawer, bounds: Vec2) {
         drawer.isolated {
             draw(drawable)
         }

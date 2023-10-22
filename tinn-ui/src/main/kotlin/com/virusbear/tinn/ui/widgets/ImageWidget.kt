@@ -12,7 +12,10 @@ class ImageWidget(
 ): Widget() {
     override val size: Vec2 = image.size.vec
 
-    override fun draw(drawer: Drawer) {
+    override fun measure(constraints: Constraints): Vec2 =
+        constraints.maxSize
+
+    override fun draw(drawer: Drawer, bounds: Vec2) {
         drawer.image(image)
     }
 }

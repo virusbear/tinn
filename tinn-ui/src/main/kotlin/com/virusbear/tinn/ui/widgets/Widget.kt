@@ -3,7 +3,6 @@ package com.virusbear.tinn.ui.widgets
 import com.virusbear.tinn.BaseDestroyable
 import com.virusbear.tinn.Event
 import com.virusbear.tinn.draw.Drawer
-import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.ui.*
 
@@ -44,7 +43,9 @@ abstract class Widget: BaseDestroyable() {
         dirty = true
     }
 
-    open fun draw(drawer: Drawer) {
+    abstract fun measure(constraints: Constraints): Vec2
+
+    open fun draw(drawer: Drawer, bounds: Vec2) {
         dirty = false
     }
 
