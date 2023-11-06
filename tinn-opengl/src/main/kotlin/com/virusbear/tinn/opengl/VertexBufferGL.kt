@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL30C.*
 class VertexBufferGL internal constructor(
     override val size: Int,
     override val format: VertexFormat
-): ConfinedBindable, VertexBuffer, Trackable() {
+): VertexBuffer, Trackable() {
     private val vao: Int
     private val vbo: Int
 
@@ -14,9 +14,9 @@ class VertexBufferGL internal constructor(
         get() = TODO("Not yet implemented")
 
     init {
-        vbo = Driver.driver.scheduler.execute { glGenBuffers() }
+        vbo = glGenBuffers()
         checkGLErrors()
-        vao = Driver.driver.scheduler.execute { glGenVertexArrays() }
+        vao = glGenVertexArrays()
         checkGLErrors()
 
         bound {
@@ -59,10 +59,9 @@ class VertexBufferGL internal constructor(
         if(destroyed)
             return
 
-        Driver.driver.scheduler.execute {
-            glDeleteVertexArrays(vao)
-            glDeleteBuffers(vbo)
-        }
+        glDeleteVertexArrays(vao)
+        glDeleteBuffers(vbo)
+
         checkGLErrors()
 
         super.destroy()

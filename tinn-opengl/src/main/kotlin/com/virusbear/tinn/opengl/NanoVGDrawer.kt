@@ -16,7 +16,7 @@ import org.lwjgl.nanovg.NanoVGGL3
 import java.util.*
 
 class NanoVGDrawer: Drawer, Trackable() {
-    private val ctx = Driver.driver.scheduler.execute { NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE) }
+    private val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE)
     private val imageHandles = mutableMapOf<ColorBuffer, Int>()
 
     private data class DrawerState(
@@ -32,9 +32,7 @@ class NanoVGDrawer: Drawer, Trackable() {
     }
 
     override fun end() {
-        Driver.driver.scheduler.execute {
-            nvgEndFrame(ctx)
-        }
+        nvgEndFrame(ctx)
     }
 
     override fun push() {

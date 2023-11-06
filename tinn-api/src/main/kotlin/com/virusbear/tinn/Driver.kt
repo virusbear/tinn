@@ -1,6 +1,5 @@
 package com.virusbear.tinn
 
-import com.virusbear.tinn.async.Scheduler
 import com.virusbear.tinn.draw.Drawable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
@@ -10,8 +9,6 @@ import java.io.File
 
 abstract class Driver: Destroyable {
     abstract fun init()
-
-    abstract val scheduler: Scheduler
 
     abstract fun createWindow(
         width: Int,

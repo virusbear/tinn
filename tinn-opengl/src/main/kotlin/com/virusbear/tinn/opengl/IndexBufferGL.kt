@@ -8,14 +8,14 @@ import org.lwjgl.opengl.GL15C.*
 
 class IndexBufferGL(
     override val size: Int
-): ConfinedBindable, IndexBuffer, Trackable() {
+): IndexBuffer, Trackable() {
     private val ebo: Int
 
     override val proxy: BufferProxy
         get() = TODO("Not yet implemented")
 
     init {
-        ebo = Driver.driver.scheduler.execute { glGenBuffers() }
+        ebo = glGenBuffers()
         checkGLErrors()
 
         bound {
@@ -39,7 +39,7 @@ class IndexBufferGL(
         if(destroyed)
             return
 
-        Driver.driver.scheduler.execute { glDeleteBuffers(ebo) }
+        glDeleteBuffers(ebo)
         checkGLErrors()
 
         super.destroy()

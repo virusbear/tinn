@@ -15,7 +15,7 @@ import java.util.*
 class WindowRenderTargetGL(override val window: Window):
     RenderTargetGL(
         0, 0, 1.0,
-        Driver.driver.scheduler.execute { glGetInteger(GL_FRAMEBUFFER_BINDING) }
+        glGetInteger(GL_FRAMEBUFFER_BINDING)
     ), WindowRenderTarget {
 
     override val width: Int
@@ -35,7 +35,7 @@ open class RenderTargetGL(
     override val height: Int,
     override val contentScale: Double,
     protected val frameBuffer: Int = glGenFramebuffers()
-) : ConfinedBindable, RenderTarget, Trackable() {
+) : RenderTarget, Trackable() {
     //TODO: separate type for ColorBufferAttachment necessary?
     private val colorAttachments = mutableListOf<ColorBuffer>()
 
@@ -116,7 +116,7 @@ open class RenderTargetGL(
             return
         }
         
-        Driver.driver.scheduler.execute { glDeleteFramebuffers(frameBuffer) }
+        glDeleteFramebuffers(frameBuffer)
         checkGLErrors()
     }
 
