@@ -1,15 +1,16 @@
 package com.virusbear.tinn.ui.compose
 
 import androidx.compose.runtime.AbstractApplier
+import com.virusbear.tinn.ui.compose.node.TinnNode
 
 internal class Applier(
-    root: Node
-): AbstractApplier<Node>(root) {
-    override fun insertBottomUp(index: Int, instance: Node) {
+    root: TinnNode
+): AbstractApplier<TinnNode>(root) {
+    override fun insertBottomUp(index: Int, instance: TinnNode) {
         //Ignored
     }
 
-    override fun insertTopDown(index: Int, instance: Node) {
+    override fun insertTopDown(index: Int, instance: TinnNode) {
         current.children.add(index, instance)
     }
 

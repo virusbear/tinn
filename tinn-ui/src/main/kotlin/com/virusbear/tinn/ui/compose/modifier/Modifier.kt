@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.virusbear.tinn.ui.compose
+package com.virusbear.tinn.ui.compose.modifier
 
 import androidx.compose.runtime.Stable
 
