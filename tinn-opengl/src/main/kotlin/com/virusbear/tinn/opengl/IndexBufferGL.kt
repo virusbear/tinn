@@ -1,20 +1,21 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.BufferProxy
+import com.virusbear.tinn.Driver
 import com.virusbear.tinn.IndexBuffer
 import com.virusbear.tinn.Trackable
 import org.lwjgl.opengl.GL15C.*
 
 class IndexBufferGL(
     override val size: Int
-): IndexBuffer, Trackable() {
+): ConfinedBindable, IndexBuffer, Trackable() {
     private val ebo: Int
 
     override val proxy: BufferProxy
         get() = TODO("Not yet implemented")
 
     init {
-        ebo = glGenBuffers()
+        ebo = Driver.driver.scheduler.execute { glGenBuffers() }
         checkGLErrors()
 
         bound {
@@ -38,7 +39,7 @@ class IndexBufferGL(
         if(destroyed)
             return
 
-        glDeleteBuffers(ebo)
+        Driver.driver.scheduler.execute { glDeleteBuffers(ebo) }
         checkGLErrors()
 
         super.destroy()

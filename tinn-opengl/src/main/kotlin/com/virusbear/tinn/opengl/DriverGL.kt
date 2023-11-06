@@ -1,7 +1,9 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
-import com.virusbear.tinn.draw.*
+import com.virusbear.tinn.async.Scheduler
+import com.virusbear.tinn.draw.Drawable
+import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
@@ -9,12 +11,17 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.glfw.GLFWErrorCallback
 import java.io.File
+import kotlin.properties.Delegates
 
 class DriverGL: Driver() {
     override fun init() {
-        GLFWErrorCallback.createPrint(System.err).set()
-        if (!GLFW.glfwInit()) {
-            throw IllegalStateException("Unable to initialize GLFW")
+        scheduler = createGlScheduler()
+        
+        scheduler.execute {
+            GLFWErrorCallback.createPrint(System.err).set()
+            if (!GLFW.glfwInit()) {
+                throw IllegalStateException("Unable to initialize GLFW")
+            }
         }
     }
 
@@ -23,9 +30,16 @@ class DriverGL: Driver() {
             return
 
         super.destroy()
-
-        glfwTerminate()
+        
+        scheduler.execute {
+            glfwTerminate()
+        }
+        
+        scheduler.destroy()
     }
+
+    override var scheduler: Scheduler by Delegates.notNull()
+        private set
 
     override fun createWindow(
         width: Int,

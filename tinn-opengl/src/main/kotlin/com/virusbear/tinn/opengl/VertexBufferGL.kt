@@ -1,15 +1,12 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.BufferProxy
-import com.virusbear.tinn.Trackable
-import com.virusbear.tinn.VertexBuffer
-import com.virusbear.tinn.VertexFormat
+import com.virusbear.tinn.*
 import org.lwjgl.opengl.GL30C.*
 
 class VertexBufferGL internal constructor(
     override val size: Int,
     override val format: VertexFormat
-): VertexBuffer, Trackable() {
+): ConfinedBindable, VertexBuffer, Trackable() {
     private val vao: Int
     private val vbo: Int
 
@@ -17,9 +14,9 @@ class VertexBufferGL internal constructor(
         get() = TODO("Not yet implemented")
 
     init {
-        vbo = glGenBuffers()
+        vbo = Driver.driver.scheduler.execute { glGenBuffers() }
         checkGLErrors()
-        vao = glGenVertexArrays()
+        vao = Driver.driver.scheduler.execute { glGenVertexArrays() }
         checkGLErrors()
 
         bound {
@@ -62,8 +59,10 @@ class VertexBufferGL internal constructor(
         if(destroyed)
             return
 
-        glDeleteVertexArrays(vao)
-        glDeleteBuffers(vbo)
+        Driver.driver.scheduler.execute {
+            glDeleteVertexArrays(vao)
+            glDeleteBuffers(vbo)
+        }
         checkGLErrors()
 
         super.destroy()

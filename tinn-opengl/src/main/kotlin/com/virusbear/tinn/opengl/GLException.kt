@@ -1,12 +1,13 @@
 package com.virusbear.tinn.opengl
 
+import com.virusbear.tinn.Driver
 import org.lwjgl.opengl.GL11C.*
 import org.lwjgl.opengl.GL30C.GL_INVALID_FRAMEBUFFER_OPERATION
 
 class GLException(message: String): Exception(message)
 
 internal fun checkGLErrors(errorFunction: ((Int)->String?)?=null) {
-    val error = glGetError()
+    val error = Driver.driver.scheduler.execute { glGetError() }
     if (error != GL_NO_ERROR) {
         val message = when (error) {
             GL_INVALID_OPERATION             -> "GL_INVALID_OPERATION"

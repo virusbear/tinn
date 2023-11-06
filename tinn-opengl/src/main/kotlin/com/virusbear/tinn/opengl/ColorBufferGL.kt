@@ -16,7 +16,7 @@ class ColorBufferGL internal constructor(
     val format: ColorFormat,
     override val  multisample: MultiSample,
     val levels: MipMapLevel
-): ColorBuffer, Trackable() {
+): ConfinedBindable, ColorBuffer, Trackable() {
     internal val target: Int
     val textureId: Int
 
@@ -26,7 +26,7 @@ class ColorBufferGL internal constructor(
         require(width < LimitsGL.MaxTextureSize)
         require(height < LimitsGL.MaxTextureSize)
 
-        textureId = glGenTextures()
+        textureId = Driver.driver.scheduler.execute { glGenTextures() }
         checkGLErrors()
 
         target = when(multisample) {
@@ -40,7 +40,7 @@ class ColorBufferGL internal constructor(
             }
 
             glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
-
+            
             when(multisample) {
                 MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
                 else -> glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
@@ -92,7 +92,7 @@ class ColorBufferGL internal constructor(
         if(destroyed)
             return
 
-        glDeleteTextures(textureId)
+        Driver.driver.scheduler.execute { glDeleteTextures(textureId) }
         checkGLErrors()
 
         super.destroy()

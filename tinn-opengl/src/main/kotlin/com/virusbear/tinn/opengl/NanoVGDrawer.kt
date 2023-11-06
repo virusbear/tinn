@@ -1,6 +1,7 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.Driver
 import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.color.Color
@@ -10,15 +11,15 @@ import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.vec
 import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.nanovg.NVGPaint
-import org.lwjgl.nanovg.NanoVGGL3
 import org.lwjgl.nanovg.NanoVG.*
+import org.lwjgl.nanovg.NanoVGGL3
 import java.util.*
 
 class NanoVGDrawer: Drawer, Trackable() {
-    private val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE)
+    private val ctx = Driver.driver.scheduler.execute { NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE) }
     private val imageHandles = mutableMapOf<ColorBuffer, Int>()
 
-    data class DrawerState(
+    private data class DrawerState(
         val fill: Color?,
         val stroke: Color?,
         val strokeWeight: Double
@@ -31,7 +32,9 @@ class NanoVGDrawer: Drawer, Trackable() {
     }
 
     override fun end() {
-        nvgEndFrame(ctx)
+        Driver.driver.scheduler.execute {
+            nvgEndFrame(ctx)
+        }
     }
 
     override fun push() {

@@ -1,18 +1,21 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.*
+import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.Driver
+import com.virusbear.tinn.RenderTarget
+import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.window.Window
 import com.virusbear.tinn.window.WindowRenderTarget
-import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFW.glfwGetCurrentContext
 import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL30C.*
-import java.util.Stack
+import java.util.*
 
 class WindowRenderTargetGL(override val window: Window):
     RenderTargetGL(
         0, 0, 1.0,
-        glGetInteger(GL_FRAMEBUFFER_BINDING)
+        Driver.driver.scheduler.execute { glGetInteger(GL_FRAMEBUFFER_BINDING) }
     ), WindowRenderTarget {
 
     override val width: Int
@@ -32,7 +35,7 @@ open class RenderTargetGL(
     override val height: Int,
     override val contentScale: Double,
     protected val frameBuffer: Int = glGenFramebuffers()
-) : RenderTarget, Trackable() {
+) : ConfinedBindable, RenderTarget, Trackable() {
     //TODO: separate type for ColorBufferAttachment necessary?
     private val colorAttachments = mutableListOf<ColorBuffer>()
 
@@ -112,7 +115,8 @@ open class RenderTargetGL(
         if(this is WindowRenderTargetGL) {
             return
         }
-        glDeleteFramebuffers(frameBuffer)
+        
+        Driver.driver.scheduler.execute { glDeleteFramebuffers(frameBuffer) }
         checkGLErrors()
     }
 
