@@ -1,92 +1,64 @@
 package com.virusbear.tinn.ui
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ControlledComposition
+import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
-import com.virusbear.tinn.draw.Drawable
+import com.virusbear.tinn.ui.compose.TinnApplier
+import com.virusbear.tinn.ui.compose.GlobalSnapshotManager
+import com.virusbear.tinn.ui.compose.androidx.Constraints
+import com.virusbear.tinn.ui.compose.node.TinnNode
+import com.virusbear.tinn.window.Window
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlin.coroutines.CoroutineContext
 
-fun main() {
-
+suspend fun tinnWindow(window: Window, uiContext: CoroutineContext, content: @Composable () -> Unit) {
+    renderComposable(
+        onUpdate = { node ->
+            runBlocking(uiContext) {
+                node.measureAndPlace(Constraints.createConstraints(0, window.width, 0, window.height))
+                window.clear()
+                with(window.renderTarget.drawer) {
+                    begin(window.width, window.height, window.contentScale)
+                    node.draw(this)
+                    end()
+                }
+                window.update()
+            }
+        },
+        content = content)
 }
 
-suspend fun tinnWindow(
-    title: String = "Tinn",
-    width: Int = 800,
-    height: Int = 600,
-    resizable: Boolean = true,
-    body: suspend TinnUiScope.() -> Unit
-): Unit = coroutineScope {
-    //TODO: create and show tinn window
+internal suspend fun renderComposable(onUpdate: (TinnNode) -> Unit, content: @Composable () -> Unit) = coroutineScope {
+    GlobalSnapshotManager.ensureStarted()
 
-    var hasFrameAwaiters = false
+    val frameChannel = Channel<Unit>()
     val clock = BroadcastFrameClock {
-        hasFrameAwaiters = true
-    }
-    val job = Job(coroutineContext[Job])
-    val composeContext = coroutineContext + clock + job
-
-    val applier = Applier(root) {
-        //TODO: render to window
-        hasFrameAwaiters = false
+        frameChannel.trySend(Unit)
     }
 
-    val recomposer = Recomposer(composeContext)
-    val composition = Composition(applier, recomposer)
+    val recomposerContext = clock + Dispatchers.Default
+    val recomposer = Recomposer(recomposerContext)
 
-    launch(start = CoroutineStart.UNDISPATCHED, context = composeContext) {
+    val rootNode = TinnNode.createRootNode()
+    val composition = ControlledComposition(TinnApplier(rootNode), parent = recomposer)
+
+    composition.setContent(content)
+
+    launch(recomposerContext, start = CoroutineStart.UNDISPATCHED) {
         recomposer.runRecomposeAndApplyChanges()
     }
 
-    launch(context = composeContext) {
-        //while window is open
-        while(true) {
-            //TODO: only if frame is ready
-            clock.sendFrame(0L)
+    launch(recomposerContext) {
+        frameChannel.consumeEach {
+            Snapshot.sendApplyNotifications()
+            clock.sendFrame(System.nanoTime())
+            onUpdate(rootNode)
         }
     }
 
-    coroutineScope {
-        val scope = object: TinnUiScope, CoroutineScope by this {
-            override fun setContent(content: () -> Unit) {
-                composition.setContent(content)
-            }
-        }
-
-        var snapshotNotificationsPending = false
-        val observer: (stat: Any) -> Unit = {
-            if(!snapshotNotificationsPending) {
-                snapshotNotificationsPending = true
-                launch {
-                    snapshotNotificationsPending = false
-                    Snapshot.sendApplyNotifications()
-                }
-            }
-        }
-        val snapshotObserverHandle = Snapshot.registerGlobalWriteObserver(observer)
-        try {
-            scope.body()
-        } finally {
-            snapshotObserverHandle.dispose()
-        }
-    }
-
-    yield()
-    yield()
-    Snapshot.sendApplyNotifications()
-    yield()
-    yield()
-
-    if(hasFrameAwaiters) {
-        CompletableDeferred<Unit>().also {
-
-            it.await()
-        }
-    }
-
-    job.cancel()
-    composition.dispose()
-}
-
-interface TinnUiScope {
-    fun setContent(content: @Composable () -> Unit)
+    frameChannel.send(Unit)
 }

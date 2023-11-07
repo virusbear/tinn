@@ -6,7 +6,6 @@ import com.virusbear.tinn.serialization.Encoder
 import com.virusbear.tinn.serialization.TextFormat
 import dev.dewy.nbt.api.Tag
 import dev.dewy.nbt.tags.collection.CompoundTag
-import dev.dewy.nbt.tags.primitive.ByteTag
 import kotlin.reflect.KClass
 
 class Nbt: BinaryFormat, TextFormat {

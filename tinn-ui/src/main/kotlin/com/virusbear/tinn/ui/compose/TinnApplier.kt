@@ -3,7 +3,7 @@ package com.virusbear.tinn.ui.compose
 import androidx.compose.runtime.AbstractApplier
 import com.virusbear.tinn.ui.compose.node.TinnNode
 
-internal class Applier(
+internal class TinnApplier(
     root: TinnNode
 ): AbstractApplier<TinnNode>(root) {
     override fun insertBottomUp(index: Int, instance: TinnNode) {

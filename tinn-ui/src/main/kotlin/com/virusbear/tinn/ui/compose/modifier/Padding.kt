@@ -2,6 +2,8 @@ package com.virusbear.tinn.ui.compose.modifier
 
 import androidx.compose.runtime.Stable
 import com.virusbear.tinn.ui.compose.*
+import com.virusbear.tinn.ui.compose.androidx.Constraints
+import com.virusbear.tinn.ui.compose.androidx.offset
 
 @Stable
 fun Modifier.padding(
@@ -9,14 +11,13 @@ fun Modifier.padding(
     top: Int = 0,
     right: Int = 0,
     bottom: Int = 0
-): Modifier = this.then(
-    PaddingModifier(
+): Modifier =
+    this then PaddingModifier(
         left = left,
         top = top,
         right = right,
         bottom = bottom
     )
-)
 
 @Stable
 fun Modifier.padding(
@@ -53,7 +54,7 @@ private class PaddingModifier(
         val horizontal = left + right
         val vertical = top + bottom
 
-        val placeable = measurable.measure(constraints)
+        val placeable = measurable.measure(constraints.offset(-horizontal, -vertical))
 
         val width = placeable.width + horizontal
         val height = placeable.height + vertical
