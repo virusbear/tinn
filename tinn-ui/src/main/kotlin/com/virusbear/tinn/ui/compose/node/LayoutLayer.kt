@@ -1,6 +1,6 @@
 package com.virusbear.tinn.ui.compose.node
 
-import com.virusbear.tinn.ui.compose.androidx.Constraints
+import com.virusbear.tinn.ui.compose.Constraints
 import com.virusbear.tinn.ui.compose.MeasureResult
 import com.virusbear.tinn.ui.compose.modifier.LayoutModifier
 

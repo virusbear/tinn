@@ -1,12 +1,43 @@
 package com.virusbear.tinn.ui.compose.modifier
 
 import androidx.compose.runtime.Stable
-import com.virusbear.tinn.ui.compose.Measurable
-import com.virusbear.tinn.ui.compose.MeasureResult
-import com.virusbear.tinn.ui.compose.MeasureScope
-import com.virusbear.tinn.ui.compose.androidx.Constraints
-import com.virusbear.tinn.ui.compose.androidx.constrainHeight
-import com.virusbear.tinn.ui.compose.androidx.constrainWidth
+import com.virusbear.tinn.ui.compose.*
+
+@Stable
+fun Modifier.width(width: Int) =
+    this then SizeModifier(
+        minWidth = width,
+        maxWidth = width
+    )
+
+private class SizeModifier(
+    private val minWidth: Int,
+    private val minHeight: Int,
+    private val maxWidth: Int,
+    private val maxHeight: Int
+): LayoutModifier {
+    override fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult {
+        TODO("Not yet implemented")
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @Stable
 fun Modifier.size(
@@ -16,15 +47,15 @@ fun Modifier.size(
     this then SizeModifier(width, height)
 
 @Stable
-fun Modifier.fillWidth(): Modifier =
+fun Modifier.fillMaxWidth(): Modifier =
     this then FillSizeModifier(fillWidth = true)
 
 @Stable
-fun Modifier.fillHeight(): Modifier =
+fun Modifier.fillMaxHeight(): Modifier =
     this then FillSizeModifier(fillHeight = true)
 
 @Stable
-fun Modifier.fillSize(): Modifier =
+fun Modifier.fillMaxSize(): Modifier =
     this then FillSizeModifier(fillWidth = true, fillHeight = true)
 
 @Stable
@@ -57,7 +88,7 @@ private class FillSizeModifier(
     override fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult {
         val width = if(fillWidth) constraints.maxWidth else constraints.minWidth
         val height = if(fillHeight) constraints.maxHeight else constraints.minHeight
-        val placeable = measurable.measure(Constraints.createConstraints(width, constraints.maxWidth, height, constraints.maxHeight))
+        val placeable = measurable.measure(Constraints(width, constraints.maxWidth, height, constraints.maxHeight))
 
         return layout(placeable.width, placeable.height) {
             placeable.place(0, 0)

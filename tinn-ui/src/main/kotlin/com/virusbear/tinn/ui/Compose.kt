@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ControlledComposition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
+import com.virusbear.tinn.ui.compose.Constraints
 import com.virusbear.tinn.ui.compose.TinnApplier
 import com.virusbear.tinn.ui.compose.GlobalSnapshotManager
-import com.virusbear.tinn.ui.compose.androidx.Constraints
 import com.virusbear.tinn.ui.compose.node.TinnNode
 import com.virusbear.tinn.window.Window
 import kotlinx.coroutines.*
@@ -19,7 +19,7 @@ suspend fun tinnWindow(window: Window, uiContext: CoroutineContext, content: @Co
     renderComposable(
         onUpdate = { node ->
             runBlocking(uiContext) {
-                node.measureAndPlace(Constraints.createConstraints(0, window.width, 0, window.height))
+                node.measureAndPlace(Constraints(0, window.width, 0, window.height))
                 window.clear()
                 with(window.renderTarget.drawer) {
                     begin(window.width, window.height, window.contentScale)

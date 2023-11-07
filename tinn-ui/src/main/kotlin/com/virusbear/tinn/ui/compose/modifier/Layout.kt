@@ -1,7 +1,6 @@
 package com.virusbear.tinn.ui.compose.modifier
 
 import com.virusbear.tinn.ui.compose.*
-import com.virusbear.tinn.ui.compose.androidx.Constraints
 
 interface LayoutModifier: Modifier.Element {
     fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult

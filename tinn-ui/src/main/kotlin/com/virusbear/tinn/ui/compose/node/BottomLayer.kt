@@ -1,7 +1,7 @@
 package com.virusbear.tinn.ui.compose.node
 
 import com.virusbear.tinn.draw.Drawer
-import com.virusbear.tinn.ui.compose.androidx.Constraints
+import com.virusbear.tinn.ui.compose.Constraints
 import com.virusbear.tinn.ui.compose.MeasureResult
 
 internal class BottomLayer(

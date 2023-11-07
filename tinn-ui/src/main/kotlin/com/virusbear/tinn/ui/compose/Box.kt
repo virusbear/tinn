@@ -3,9 +3,6 @@ package com.virusbear.tinn.ui.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.virusbear.tinn.ui.compose.androidx.Constraints
-import com.virusbear.tinn.ui.compose.androidx.constrainHeight
-import com.virusbear.tinn.ui.compose.androidx.constrainWidth
 import com.virusbear.tinn.ui.compose.modifier.Modifier
 import com.virusbear.tinn.ui.compose.modifier.ParentDataModifier
 
