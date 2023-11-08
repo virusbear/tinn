@@ -10,6 +10,7 @@ import com.virusbear.tinn.math.vec
 import com.virusbear.tinn.opengl.DriverGL
 import com.virusbear.tinn.ui.compose.Alignment
 import com.virusbear.tinn.ui.compose.Box
+import com.virusbear.tinn.ui.compose.dp
 import com.virusbear.tinn.ui.compose.modifier.*
 import com.virusbear.tinn.ui.tinnWindow
 import com.virusbear.tinn.window.Window
@@ -31,11 +32,11 @@ suspend fun main() {
 
     tinnWindow(window, dispatcher) {
         Box(Modifier.fillSize().padding(16)) {
-            Box(Modifier.size(1, 1).background(Color.WHITE), alignment = Alignment.TopStart)
-            Box(Modifier.size(1, 1).background(Color.WHITE), alignment = Alignment.TopEnd)
-            Box(Modifier.size(1, 1).background(Color.WHITE), alignment = Alignment.BottomStart)
-            Box(Modifier.size(1, 1).background(Color.WHITE), alignment = Alignment.BottomEnd)
-            Box(Modifier.size(1, 1).background(Color.WHITE), alignment = Alignment.Center)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomStart)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomEnd)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.Center)
         }
     }
 

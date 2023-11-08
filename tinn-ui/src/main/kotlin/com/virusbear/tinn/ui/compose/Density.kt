@@ -2,6 +2,7 @@ package com.virusbear.tinn.ui.compose
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import kotlin.math.roundToInt
 
 @Stable
 fun Density(density: Double): Density =
@@ -24,4 +25,10 @@ interface Density {
 
     @Stable
     fun Double.toDp(): Dp = (this / density).dp
+
+    @Stable
+    fun Dp.roundToPx(): Int {
+        val px = toPx()
+        return if (px.isInfinite()) Constraints.Infinity else px.roundToInt()
+    }
 }

@@ -4,6 +4,7 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.extensions.isolated
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.vec
+import com.virusbear.tinn.ui.compose.Density
 import com.virusbear.tinn.ui.compose.modifier.AbstractDrawScope
 import com.virusbear.tinn.ui.compose.modifier.ContentDrawScope
 import com.virusbear.tinn.ui.compose.modifier.DrawModifier
@@ -16,7 +17,7 @@ internal class DrawLayer(
         drawer.isolated {
             translate(IVec2(x, y).vec)
 
-            val scope = object: AbstractDrawScope(this, width, height), ContentDrawScope {
+            val scope = object: AbstractDrawScope(this, width, height), ContentDrawScope, Density by this@DrawLayer {
                 override fun drawContent() {
                     lowerLayer.draw(this)
                 }

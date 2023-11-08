@@ -1,4 +1,4 @@
-package com.virusbear.tinn.math
+package com.virusbear.tinn.math.units
 
 import kotlin.math.PI
 

@@ -2,12 +2,13 @@ package com.virusbear.tinn.ui.compose.modifier
 
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.extensions.isolated
+import com.virusbear.tinn.ui.compose.Density
 
 interface DrawModifier: Modifier.Element {
     fun ContentDrawScope.draw()
 }
 
-interface DrawScope: Drawer {
+interface DrawScope: Drawer, Density {
     val width: Int
     val height: Int
 }

@@ -62,6 +62,9 @@ value class Dp(
         val Infinity = Dp(value = Double.POSITIVE_INFINITY)
         @Stable
         val Unspecified = Dp(value = Double.NaN)
+
+        @Stable
+        val ReferenceDensity = Density(160.0)
     }
 }
 

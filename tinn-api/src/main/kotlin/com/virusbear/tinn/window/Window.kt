@@ -15,6 +15,8 @@ interface Window: Destroyable, Bindable {
     val size: IVec2
     val position: IVec2
     val contentScale: Double
+    val dpi: Double
+    val pixelAspectRatio: Double
     val multisample: MultiSample
 
     val renderTarget: WindowRenderTarget

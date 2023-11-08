@@ -2,94 +2,238 @@ package com.virusbear.tinn.ui.compose.modifier
 
 import androidx.compose.runtime.Stable
 import com.virusbear.tinn.ui.compose.*
+import javax.management.modelmbean.ModelMBeanConstructorInfo
 
 @Stable
-fun Modifier.width(width: Int) =
+fun Modifier.width(width: Dp) =
     this then SizeModifier(
         minWidth = width,
-        maxWidth = width
+        maxWidth = width,
+        enforceIncoming = true
     )
 
-private class SizeModifier(
-    private val minWidth: Int,
-    private val minHeight: Int,
-    private val maxWidth: Int,
-    private val maxHeight: Int
-): LayoutModifier {
-    override fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult {
-        TODO("Not yet implemented")
-    }
+@Stable
+fun Modifier.height(height: Dp) =
+    this then SizeModifier(
+        minHeight = height,
+        maxHeight = height,
+        enforceIncoming = true
+    )
 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@Stable
+fun Modifier.size(size: Dp) =
+    this then SizeModifier(
+        minWidth = size,
+        maxWidth = size,
+        minHeight = size,
+        maxHeight = size,
+        enforceIncoming = true
+    )
 
 @Stable
 fun Modifier.size(
-    width: Int,
-    height: Int
-): Modifier =
-    this then SizeModifier(width, height)
+    width: Dp = Dp.Unspecified,
+    height: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = width,
+        maxWidth = width,
+        minHeight = height,
+        maxHeight = height,
+        enforceIncoming = true
+    )
 
 @Stable
-fun Modifier.fillMaxWidth(): Modifier =
-    this then FillSizeModifier(fillWidth = true)
+fun Modifier.widthIn(
+    min: Dp = Dp.Unspecified,
+    max: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = min,
+        maxWidth = max,
+        enforceIncoming = true
+    )
 
 @Stable
-fun Modifier.fillMaxHeight(): Modifier =
-    this then FillSizeModifier(fillHeight = true)
+fun Modifier.heightIn(
+    min: Dp = Dp.Unspecified,
+    max: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minHeight = min,
+        maxHeight = max,
+        enforceIncoming = true
+    )
 
 @Stable
-fun Modifier.fillMaxSize(): Modifier =
-    this then FillSizeModifier(fillWidth = true, fillHeight = true)
+fun Modifier.sizeIn(
+    minWidth: Dp = Dp.Unspecified,
+    maxWidth: Dp = Dp.Unspecified,
+    minHeight: Dp = Dp.Unspecified,
+    maxHeight: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = minWidth,
+        maxWidth = maxWidth,
+        minHeight = minHeight,
+        maxHeight = maxHeight,
+        enforceIncoming = true
+    )
 
 @Stable
+fun Modifier.requiredWidth(width: Dp) =
+    this then SizeModifier(
+        minWidth = width,
+        maxWidth = width,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredHeight(height: Dp) =
+    this then SizeModifier(
+        minHeight = height,
+        maxHeight = height,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredSize(size: Dp) =
+    this then SizeModifier(
+        minWidth = size,
+        maxWidth = size,
+        minHeight = size,
+        maxHeight = size,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredSize(
+    width: Dp = Dp.Unspecified,
+    height: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = width,
+        maxWidth = width,
+        minHeight = height,
+        maxHeight = height,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredWidthIn(
+    min: Dp = Dp.Unspecified,
+    max: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = min,
+        maxWidth = max,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredHeightIn(
+    min: Dp = Dp.Unspecified,
+    max: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minHeight = min,
+        maxHeight = max,
+        enforceIncoming = false
+    )
+
+@Stable
+fun Modifier.requiredSizeIn(
+    minWidth: Dp = Dp.Unspecified,
+    maxWidth: Dp = Dp.Unspecified,
+    minHeight: Dp = Dp.Unspecified,
+    maxHeight: Dp = Dp.Unspecified
+) =
+    this then SizeModifier(
+        minWidth = minWidth,
+        maxWidth = maxWidth,
+        minHeight = minHeight,
+        maxHeight = maxHeight,
+        enforceIncoming = false
+    )
+
 private class SizeModifier(
-    val width: Int,
-    val height: Int
+    private val minWidth: Dp = Dp.Unspecified,
+    private val minHeight: Dp = Dp.Unspecified,
+    private val maxWidth: Dp = Dp.Unspecified,
+    private val maxHeight: Dp = Dp.Unspecified,
+    private val enforceIncoming: Boolean
 ): LayoutModifier {
-    init {
-        require(width > 0 && height > 0) {
-            "Size must be non-negative"
+    private val Density.targetConstraints: Constraints
+        get() {
+            val maxWidth = if(maxWidth.isSpecified) {
+                maxWidth.roundToPx().coerceAtLeast(0)
+            } else {
+                Constraints.Infinity
+            }
+            val maxHeight = if(maxHeight.isSpecified) {
+                maxHeight.roundToPx().coerceAtLeast(0)
+            } else {
+                Constraints.Infinity
+            }
+            val minWidth = if(minWidth.isSpecified) {
+                minWidth.roundToPx().coerceIn(0, maxWidth).let {
+                    if(it != Constraints.Infinity) it else 0
+                }
+            } else {
+                0
+            }
+            val minHeight = if(minHeight.isSpecified) {
+                minHeight.roundToPx().coerceIn(0, maxHeight).let {
+                    if(it != Constraints.Infinity) it else 0
+                }
+            } else {
+                0
+            }
+
+            return Constraints(
+                minWidth = minWidth,
+                minHeight = minHeight,
+                maxWidth = maxWidth,
+                maxHeight = maxHeight
+            )
         }
-    }
 
     override fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult {
-        val placeable = measurable.measure(constraints)
-        val width = constraints.constrainWidth(width)
-        val height = constraints.constrainHeight(height)
+        val wrappedConstraints = targetConstraints.let { targetConstraints ->
+            if(enforceIncoming) {
+                constraints.constrain(targetConstraints)
+            } else {
+                val resolvedMinWidth = if(minWidth.isSpecified) {
+                    targetConstraints.minWidth
+                } else {
+                    constraints.minWidth.coerceAtMost(targetConstraints.maxWidth)
+                }
+                val resolvedMaxWidth = if(maxWidth.isSpecified) {
+                    targetConstraints.maxWidth
+                } else {
+                    constraints.maxWidth.coerceAtLeast(targetConstraints.minWidth)
+                }
+                val resolvedMinHeight = if(minHeight.isSpecified) {
+                    targetConstraints.minHeight
+                } else {
+                    constraints.minWidth.coerceAtMost(targetConstraints.maxHeight)
+                }
+                val resolvedMaxHeight = if(maxHeight.isSpecified) {
+                    targetConstraints.maxHeight
+                } else {
+                    constraints.maxHeight.coerceAtLeast(targetConstraints.minHeight)
+                }
 
-        return layout(width, height) {
-            placeable.place(0, 0)
+                Constraints(
+                    minWidth = resolvedMinWidth,
+                    minHeight = resolvedMinHeight,
+                    maxWidth = resolvedMaxWidth,
+                    maxHeight = resolvedMaxHeight
+                )
+            }
         }
-    }
-}
 
-@Stable
-private class FillSizeModifier(
-    val fillWidth: Boolean = false,
-    val fillHeight: Boolean = false
-): LayoutModifier {
-    override fun MeasureScope.measure(constraints: Constraints, measurable: Measurable): MeasureResult {
-        val width = if(fillWidth) constraints.maxWidth else constraints.minWidth
-        val height = if(fillHeight) constraints.maxHeight else constraints.minHeight
-        val placeable = measurable.measure(Constraints(width, constraints.maxWidth, height, constraints.maxHeight))
-
+        val placeable = measurable.measure(wrappedConstraints)
         return layout(placeable.width, placeable.height) {
             placeable.place(0, 0)
         }

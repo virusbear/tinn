@@ -3,8 +3,11 @@ package com.virusbear.tinn.opengl
 import com.virusbear.tinn.*
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.math.units.dimensions.mm
+import com.virusbear.tinn.math.units.dimensions.toInch
 import com.virusbear.tinn.window.*
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryStack
@@ -78,6 +81,12 @@ class WindowGL(
     override var contentScale: Double = getWindowContentScale()
         private set
 
+    override var dpi: Double = getWindowDpi()
+        private set
+
+    override var pixelAspectRatio: Double = 1.0
+        private set
+
     override fun clear() {
         GL30C.glClear(GL30C.GL_COLOR_BUFFER_BIT or GL30C.GL_DEPTH_BUFFER_BIT)
     }
@@ -120,6 +129,23 @@ class WindowGL(
         return scale[0].toDouble()
     }
 
+    private fun getWindowDpi(): Double {
+        val widthMm = IntArray(1)
+        val heightMm = IntArray(1)
+        val monitor = glfwGetWindowMonitor(native)
+        glfwGetMonitorPhysicalSize(monitor, widthMm, heightMm)
+        val videoMode = glfwGetVideoMode(monitor) ?: error("Unable to read video mode of monitor ${getMonitorName(monitor)}")
+
+        val widthDpi = videoMode.width() / widthMm[0].mm.toInch().value
+        val heightDpi = videoMode.height() / heightMm[0].mm.toInch().value
+        pixelAspectRatio = widthDpi / heightDpi
+
+        return widthDpi
+    }
+
+    private fun getMonitorName(monitor: Long): String =
+        glfwGetMonitorName(monitor) ?: "unknown"
+
     private fun getWindowPos(): IVec2 {
         val x = IntArray(1)
         val y = IntArray(1)
@@ -139,6 +165,7 @@ class WindowGL(
         glfwSetWindowPosCallback(native) { _, x, y ->
             position = IVec2(x, y)
             EventBus.publish(WindowMoveEvent(this, position))
+            dpi = getWindowDpi()
         }
         glfwSetWindowFocusCallback(native) { _, focused ->
             EventBus.publish(WindowFocusEvent(this, focused))

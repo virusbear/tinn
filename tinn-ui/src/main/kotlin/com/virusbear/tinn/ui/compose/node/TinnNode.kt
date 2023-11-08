@@ -24,6 +24,13 @@ internal class TinnNode(
     override var parentData: Any? = null
         private set
 
+    var density: Density = Dp.ReferenceDensity
+        set(value) {
+            topLayer.density = density.density
+
+            field = value
+        }
+
     var modifiers: Modifier = Modifier
         set(value) {
             topLayer = value.foldOut(bottomLayer) { element, lowerLayer ->

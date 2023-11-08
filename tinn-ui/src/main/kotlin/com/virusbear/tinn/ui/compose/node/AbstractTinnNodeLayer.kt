@@ -1,9 +1,7 @@
 package com.virusbear.tinn.ui.compose.node
 
 import com.virusbear.tinn.draw.Drawer
-import com.virusbear.tinn.ui.compose.Constraints
-import com.virusbear.tinn.ui.compose.MeasureResult
-import com.virusbear.tinn.ui.compose.Placeable
+import com.virusbear.tinn.ui.compose.*
 
 internal abstract class AbstractTinnNodeLayer(
     private val next: TinnNodeLayer?
@@ -16,6 +14,12 @@ internal abstract class AbstractTinnNodeLayer(
         get() = measureResult.width
     final override val height: Int
         get() = measureResult.height
+
+    final override var density: Double = Dp.ReferenceDensity.density
+        set(value) {
+            next?.density = value
+            field = value
+        }
 
     override fun measure(constraints: Constraints): Placeable = apply {
         measureResult = doMeasure(constraints)

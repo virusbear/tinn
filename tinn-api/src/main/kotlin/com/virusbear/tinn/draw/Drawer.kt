@@ -4,11 +4,9 @@ import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.Destroyable
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.extensions.isolated
-import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.math.Radians
+import com.virusbear.tinn.math.units.Radians
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.vec
-import javax.sound.sampled.Line
 
 interface Drawer: Destroyable {
     fun begin(width: Int, height: Int, contentScale: Double)

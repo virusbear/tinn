@@ -1,12 +1,11 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.Driver
 import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.draw.*
-import com.virusbear.tinn.math.Radians
+import com.virusbear.tinn.math.units.Radians
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.vec
 import org.lwjgl.nanovg.NVGColor

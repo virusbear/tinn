@@ -1,6 +1,6 @@
 package com.virusbear.tinn.draw
 
-import com.virusbear.tinn.math.Radians
+import com.virusbear.tinn.math.units.Radians
 import com.virusbear.tinn.math.Vec2
 
 interface PathScope {

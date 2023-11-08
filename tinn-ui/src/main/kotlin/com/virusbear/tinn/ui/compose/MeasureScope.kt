@@ -1,6 +1,6 @@
 package com.virusbear.tinn.ui.compose
 
-interface MeasureScope {
+interface MeasureScope: IntrinsicMeasureScope {
     fun layout(
         width: Int,
         height: Int,
