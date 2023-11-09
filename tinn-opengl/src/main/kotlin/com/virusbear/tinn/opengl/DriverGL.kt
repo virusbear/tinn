@@ -6,26 +6,48 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.withContext
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.glfwTerminate
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import java.io.File
+import java.util.concurrent.Executors
 
-class DriverGL: Driver() {
+class DriverGL: Driver(), Context {
+    override val dispatcher: CoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    override var currentContext: Context = this
+
     override fun init() {
         GLFWErrorCallback.createPrint(System.err).set()
-        if (!GLFW.glfwInit()) {
+        if (!execute { glfwInit() }) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
+    }
+
+    private val destroyListeners = LinkedHashSet<Context.OnDestroyListener>()
+
+    override fun onDestroy(onDestroyListener: Context.OnDestroyListener) {
+        destroyListeners += onDestroyListener
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
+        destroyListeners.forEach(Context.OnDestroyListener::onDestroy)
+        destroyListeners.clear()
+
         super.destroy()
 
-        glfwTerminate()
+        execute { glfwTerminate() }
+    }
+
+    override suspend fun pollEvents() {
+        withContext(dispatcher) {
+            async { glfwWaitEvents() }.await()
+        }
     }
 
     override fun createWindow(
@@ -36,10 +58,10 @@ class DriverGL: Driver() {
         vsync: Boolean,
         multisample: MultiSample
     ): Window =
-        WindowGL.create(width, height, title, resizable, vsync, multisample)
+        WindowGL.create(width, height, title, resizable, vsync, multisample, this)
 
     override fun createDrawer(): Drawer =
-        NanoVGDrawer()
+        NanoVGDrawer(currentContext)
 
     override fun createDrawable(size: Vec2, block: Drawer.() -> Unit): Drawable =
         DrawableGL(size, block)
@@ -58,11 +80,12 @@ class DriverGL: Driver() {
             contentScale,
             format,
             multisample,
-            levels
+            levels,
+            currentContext
         )
 
     override fun loadImage(file: File, format: ColorFormat): ColorBuffer =
-        ColorBufferGL.loadImage(file, format)
+        ColorBufferGL.loadImage(file, format, currentContext)
 
     override fun createDepthBuffer(width: Int, height: Int): DepthBuffer {
         TODO("Prio 5")
@@ -70,13 +93,15 @@ class DriverGL: Driver() {
 
     override fun createIndexBuffer(size: Int): IndexBuffer =
         IndexBufferGL(
-            size
+            size,
+            currentContext
         )
 
     override fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer =
         VertexBufferGL(
             size,
-            format
+            format,
+            currentContext
         )
 
     override fun createRenderTarget(
@@ -85,7 +110,7 @@ class DriverGL: Driver() {
         contentScale: Double
     ): RenderTarget =
         RenderTargetGL(
-            width, height, contentScale
+            width, height, contentScale, null, currentContext
         )
 
     override fun createComputeShader(code: String): ComputeShader {

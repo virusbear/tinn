@@ -1,18 +1,18 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.AbstractContextElement
-import com.virusbear.tinn.Context
-import com.virusbear.tinn.EmptyContext
+import com.virusbear.tinn.AbstractProcessingContextElement
+import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.EmptyProcessingContext
 
 open class NodeIdentifier(
     val name: String,
     val category: NodeCategory,
     val internal: Boolean = false,
     private val factory: NodeFactory
-): AbstractContextElement(NodeIdentifier) {
-    companion object Key: Context.Key<NodeIdentifier>
+): AbstractProcessingContextElement(NodeIdentifier) {
+    companion object Key: ProcessingContext.Key<NodeIdentifier>
 
-    fun new(context: Context = EmptyContext): Node =
+    fun new(context: ProcessingContext = EmptyProcessingContext): Node =
         factory(context + this)
 
     override fun equals(other: Any?): Boolean {

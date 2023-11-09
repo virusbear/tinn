@@ -16,7 +16,7 @@ class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(),
     val nodes: Set<Node> = graph.vertexSet()
     val links: Set<Link> = graph.edgeSet()
 
-    fun evaluate(context: Context) {
+    fun evaluate(context: ProcessingContext) {
         //TODO: Skip Nodes that do not link to any other node.
         //TODO: how to identify start and end of graph
         for(node in graph) {
@@ -135,7 +135,7 @@ class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(),
         }
     }
 
-    override fun load(reader: SceneReader, context: Context) {
+    override fun load(reader: SceneReader, context: ProcessingContext) {
         val version = reader.string("version")
         require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load Nodespace" }
         clear()
@@ -198,8 +198,8 @@ class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(),
 
 class NodespaceContextElement(
     val nodespace: Nodespace
-): AbstractContextElement(NodespaceContextElement) {
-    companion object Key: Context.Key<NodespaceContextElement>
+): AbstractProcessingContextElement(NodespaceContextElement) {
+    companion object Key: ProcessingContext.Key<NodespaceContextElement>
 
     override fun toString(): String =
         "Nodespace(${nodespace.name})"

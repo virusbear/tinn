@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.convert
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
@@ -12,7 +12,7 @@ class DegreesToRadiansNode: BaseNode("Deg to Rad", DegreesToRadiansNode) {
     val degrees: Double by input("Degrees", default = 0.0)
     var radians: Double by output("Radians", default = 0.0)
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         radians = degrees * PI / 180
     }
 }

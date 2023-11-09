@@ -5,10 +5,21 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.io.File
+import java.util.LinkedList
 
-abstract class Driver: Destroyable {
+abstract class Driver: BaseDestroyable() {
     abstract fun init()
+
+    suspend fun runEventLoop() {
+        while(!destroyed) {
+            pollEvents()
+        }
+    }
+
+    protected abstract suspend fun pollEvents()
 
     abstract fun createWindow(
         width: Int,
@@ -51,26 +62,13 @@ abstract class Driver: Destroyable {
 
     abstract val activeRenderTarget: RenderTarget
 
-    final override var destroyed: Boolean = false
-        private set
-    private val tracked = mutableSetOf<Trackable>()
-
-    fun track(trackable: Trackable) {
-        tracked += trackable
-    }
-    fun untrack(trackable: Trackable) {
-        tracked -= trackable
-    }
-
-    override fun destroy() {
-        while(true) {
-            when(val e = tracked.firstOrNull()) {
-                null -> break
-                else -> e.destroy()
-            }
-        }
-
-        destroyed = true
+    abstract var currentContext: Context
+    inline fun <T> use(context: Context, block: () -> T): T {
+        val prevContext = currentContext
+        currentContext = context
+        val result = block()
+        currentContext = prevContext
+        return result
     }
 
     companion object {

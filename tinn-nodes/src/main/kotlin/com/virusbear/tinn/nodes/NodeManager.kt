@@ -1,11 +1,11 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
 import kotlin.reflect.KClass
 
-typealias NodeFactory = (Context) -> Node
+typealias NodeFactory = (ProcessingContext) -> Node
 
 object NodeManager {
     val hierarchy = NodeCategoryTree()
