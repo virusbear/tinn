@@ -50,7 +50,29 @@ class DriverGL: Driver(), Context {
             async { glfwWaitEvents() }.await()
         }
     }
+            glfwWaitEvents()
+        }
+    }
+    override val availableMonitors: List<Monitor>
+        get() =
+            execute {
+                glfwGetMonitors()?.let { buffer ->
+                    buildList {
+                        while(buffer.hasRemaining()) {
+                            add(MonitorGL(buffer.get(), this@DriverGL))
+                        }
+                    }
+                } ?: emptyList()
+            }
 
+    override val primaryMonitor: Monitor
+        get() = execute { glfwGetPrimaryMonitor() }.let { native ->
+            if(native == NULL) {
+                error("No primary monitor available")
+            } else {
+                MonitorGL(native, this)
+            }
+        }
 
     override fun createWindow(
         width: Int,
