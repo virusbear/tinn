@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.constants
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.Constant
 import com.virusbear.tinn.nodes.NodeCategory
@@ -11,5 +11,5 @@ class ConstantENode: BaseNode("E", ConstantENode) {
 
     val e: Double by output("E", default = kotlin.math.E)
 
-    override fun process(context: ProcessingContext) {}
+    override fun process(context: Context) {}
 }

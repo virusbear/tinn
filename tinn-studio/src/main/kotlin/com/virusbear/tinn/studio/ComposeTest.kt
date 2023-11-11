@@ -14,15 +14,11 @@ import com.virusbear.tinn.ui.compose.dp
 import com.virusbear.tinn.ui.compose.modifier.*
 import com.virusbear.tinn.ui.tinnWindow
 import com.virusbear.tinn.window.Window
-import kotlinx.coroutines.*
-import kotlinx.coroutines.future.asDeferred
-import kotlinx.coroutines.future.future
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.startCoroutine
-import kotlin.coroutines.suspendCoroutine
 
-fun main() {
+suspend fun main() {
     Driver.use(DriverGL())
 
     val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -34,20 +30,15 @@ fun main() {
         }
     }
 
-    val composeFuture = CoroutineScope(Dispatchers.Default).future {
-        tinnWindow(window, dispatcher) {
-            Box(Modifier.padding(16.dp)) {
-                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
-                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)
-                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomStart)
-                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomEnd)
-                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.Center)
-            }
+    tinnWindow(window, dispatcher) {
+        Box(Modifier.fillSize().padding(16)) {
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomStart)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomEnd)
+            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.Center)
         }
-    }.thenApply {
-        Driver.driver.destroy()
     }
 
-    Driver.driver.runEventLoop()
-    composeFuture.cancel(true)
+    Driver.driver.destroy()
 }

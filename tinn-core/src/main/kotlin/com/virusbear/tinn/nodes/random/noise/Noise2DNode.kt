@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.random.noise
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.math.noise.Noise2D
@@ -17,7 +17,7 @@ class Noise2DNode: BaseNode("Sample Noise 2D", Noise2DNode) {
     val zoom: Double by input("Zoom", default = 1.0)
     var result: Vec2 by output("Output", default = Vec2.ZERO)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         result = noise?.sample(offset + pos * zoom) ?: Vec2.ZERO
     }
 }

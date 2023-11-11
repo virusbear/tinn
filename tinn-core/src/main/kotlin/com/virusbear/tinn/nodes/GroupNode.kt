@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.events.NodeEnteredEvent
 
@@ -31,7 +31,7 @@ open class GroupNode(name: String = "Group", identifier: NodeIdentifier): PortSy
         }*/
     }
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         propagate()
 
         contentNodespace.evaluate(context)

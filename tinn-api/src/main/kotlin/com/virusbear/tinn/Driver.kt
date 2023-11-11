@@ -65,13 +65,26 @@ abstract class Driver: BaseDestroyable() {
 
     abstract val activeRenderTarget: RenderTarget
 
-    abstract var currentContext: Context
-    inline fun <T> use(context: Context, block: () -> T): T {
-        val prevContext = currentContext
-        currentContext = context
-        val result = block()
-        currentContext = prevContext
-        return result
+    final override var destroyed: Boolean = false
+        private set
+    private val tracked = mutableSetOf<Trackable>()
+
+    fun track(trackable: Trackable) {
+        tracked += trackable
+    }
+    fun untrack(trackable: Trackable) {
+        tracked -= trackable
+    }
+
+    override fun destroy() {
+        while(true) {
+            when(val e = tracked.firstOrNull()) {
+                null -> break
+                else -> e.destroy()
+            }
+        }
+
+        destroyed = true
     }
 
     companion object {

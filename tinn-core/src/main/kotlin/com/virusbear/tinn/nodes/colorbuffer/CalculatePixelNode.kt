@@ -3,7 +3,7 @@ package com.virusbear.tinn.nodes.colorbuffer
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.ColorBufferProxy
 import com.virusbear.tinn.ColorBufferReader
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.nodes.*
@@ -20,7 +20,7 @@ class CalculatePixelNode: GroupNode("Calculate Pixel", CalculatePixelNode) {
     val readerInputPort: Port = inputNode.addPort(PortDirection.Output, "Reader", ColorBufferReader::class, null)
     val pixelOutputPort: Port = outputNode.addPort(PortDirection.Input, "Pixel", Color::class, Color.TRANSPARENT)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         propagate()
 
         val img = image ?: run {

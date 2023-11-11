@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.particles
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.Vec3
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
@@ -24,7 +24,7 @@ class ParticleNode: BaseNode("Particle", ParticleNode) {
     var size: Double by output("Size", default = 0.0)
     var age: Double by output("Age", default = 0.0)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         particle?.let {
             pos = it.position
             velocity = it.velocity

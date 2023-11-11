@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.convert
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.nodes.BaseNode
@@ -13,7 +13,7 @@ class Vec2ToIVec2: BaseNode("Vec2 to IVec2", IVec2ToVec2) {
     val vec2: Vec2 by input("Input", default = Vec2.ZERO)
     var iVec2: IVec2 by output("Output", default = IVec2.ZERO)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         iVec2 = IVec2(vec2.x.toInt(), vec2.y.toInt())
     }
 }

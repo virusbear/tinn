@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes.shader.blend
 
 import com.virusbear.tinn.ColorBuffer
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeIdentifier
 import com.virusbear.tinn.shader.ComputeShader
@@ -12,7 +12,7 @@ class BlendShaderNode(name: String, protected val shader: ComputeShader, identif
     val a: ColorBuffer? by input("A", default = null)
     val b: ColorBuffer? by input("B", default = null)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
 
     }
 }

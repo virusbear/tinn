@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.convert
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
@@ -11,7 +11,7 @@ class FloatToIntNode: BaseNode("Float to Int", FloatToIntNode) {
     val input: Double by input("Float", 0.0)
     var output: Int by output("Int", 0)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         output = input.toInt()
     }
 }

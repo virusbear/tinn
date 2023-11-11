@@ -76,7 +76,7 @@ class Program(name: String = "Program"): BaseDestroyable(), SceneSavable {
         writer.write("programNodeId", programNode.id)
     }
 
-    override fun load(reader: SceneReader, context: ProcessingContext) {
+    override fun load(reader: SceneReader, context: Context) {
         val version = reader.string("version")
         require(SCENE_VERSION.version >= version.version) {  "Unsupported file version. Unable to load Program" }
 
@@ -116,8 +116,8 @@ class Program(name: String = "Program"): BaseDestroyable(), SceneSavable {
 
 class ProgramContextElement(
     val program: Program
-): AbstractProcessingContextElement(ProgramContextElement) {
-    companion object Key: ProcessingContext.Key<ProgramContextElement>
+): AbstractContextElement(ProgramContextElement) {
+    companion object Key: Context.Key<ProgramContextElement>
 
     override fun toString(): String =
         "Program(${program.name})"

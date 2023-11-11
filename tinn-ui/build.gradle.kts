@@ -17,4 +17,5 @@ dependencies {
     implementation(project(":tinn-api"))
     implementation(project(":tinn-math"))
     implementation(project(":tinn-color"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
 }

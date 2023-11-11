@@ -16,4 +16,5 @@ dependencies {
     implementation(project(":tinn-ui"))
     implementation(project(":tinn-nodes"))
     implementation(project(":tinn-core"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
 }

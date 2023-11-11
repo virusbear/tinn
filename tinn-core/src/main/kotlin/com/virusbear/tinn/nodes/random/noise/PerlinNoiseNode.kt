@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.random.noise
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.math.noise.Noise
 import com.virusbear.tinn.math.noise.PerlinNoise
 import com.virusbear.tinn.nodes.BaseNode
@@ -16,7 +16,7 @@ class PerlinNoiseNode: BaseNode("Perlin Noise", PerlinNoiseNode) {
     val persistence: Double by input("Persistence", default = 0.5)
     var noise: Noise by output("Noise", default = PerlinNoise())
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         noise = PerlinNoise(octaves, frequency, amplitude, persistence)
     }
 }

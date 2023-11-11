@@ -2,7 +2,7 @@ package com.virusbear.tinn.nodes.colorbuffer
 
 import com.virusbear.tinn.ColorBuffer
 import com.virusbear.tinn.ColorFormat
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.Driver
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
@@ -16,7 +16,7 @@ class LoadImageNode: BaseNode("Load Image", LoadImageNode) {
     val format: ColorFormat by input("Color Format", default = ColorFormat.RGB8)
     var output: ColorBuffer? by output("Output", default = null)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         if(file == null) {
             output = null
             return

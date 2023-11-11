@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.EventBus
 import com.virusbear.tinn.SceneWriter
 import com.virusbear.tinn.events.NodeEnteredEvent
@@ -36,7 +36,7 @@ class NodespaceNode: BaseNode("Nodespace", NodespaceNode) {
         super.onDetach(nodespace)
     }
 
-    override fun process(context: ProcessingContext) { }
+    override fun process(context: Context) { }
 
     override fun save(writer: SceneWriter) {
         super.save(writer)

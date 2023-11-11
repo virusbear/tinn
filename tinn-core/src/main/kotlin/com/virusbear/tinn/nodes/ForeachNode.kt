@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 
 class ForeachNode: GroupNode("Foreach", ForeachNode) {
     companion object: NodeIdentifier("Foreach", NodeCategory.Utility, factory = { ForeachNode() })
@@ -11,7 +11,7 @@ class ForeachNode: GroupNode("Foreach", ForeachNode) {
     val elementInputPort: Port = inputNode.addPort(PortDirection.Output, "Element", Any::class, null)
     val elementOutputPort: Port = outputNode.addPort(PortDirection.Input, "Element", Any::class, null)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         propagate()
 
         result = list.map {

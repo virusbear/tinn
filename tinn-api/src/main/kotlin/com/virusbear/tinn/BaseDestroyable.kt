@@ -8,13 +8,3 @@ abstract class BaseDestroyable: Destroyable {
         destroyed = true
     }
 }
-
-abstract class ContextAwareDestroyable: BaseDestroyable(), ContextAware, Context.OnDestroyListener {
-    init {
-        context.onDestroy(this)
-    }
-
-    override fun onDestroy() {
-        destroy()
-    }
-}

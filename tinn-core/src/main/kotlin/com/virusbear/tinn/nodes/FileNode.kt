@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import java.io.File
 
 class FileNode: BaseNode("File", FileNode) {
@@ -9,7 +9,7 @@ class FileNode: BaseNode("File", FileNode) {
     val path: String by input("Path", default = "")
     var file: File? by output("Output", default = null)
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         file = File(path)
     }
 }

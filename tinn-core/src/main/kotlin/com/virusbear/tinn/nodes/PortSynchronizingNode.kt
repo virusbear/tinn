@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import kotlin.reflect.KClass
 
 open class PortSynchronizingNode(
@@ -73,5 +73,5 @@ open class PortSynchronizingNode(
         }
     }
 
-    override fun process(context: ProcessingContext) {}
+    override fun process(context: Context) {}
 }

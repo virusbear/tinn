@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.random
 
-import com.virusbear.tinn.ProcessingContext
+import com.virusbear.tinn.Context
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
@@ -15,7 +15,7 @@ class RandomFloatNode: BaseNode("Random Float", RandomFloatNode) {
 
     private val random = Random(System.currentTimeMillis())
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         output = random.nextDouble(minimum, maximum)
     }
 }

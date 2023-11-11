@@ -1,49 +1,46 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.*
+import com.virusbear.tinn.BufferProxy
+import com.virusbear.tinn.Driver
+import com.virusbear.tinn.IndexBuffer
+import com.virusbear.tinn.Trackable
 import org.lwjgl.opengl.GL15C.*
 
 class IndexBufferGL(
-    override val size: Int,
-    override val context: Context
-): IndexBuffer, ContextAwareDestroyable() {
+    override val size: Int
+): IndexBuffer, Trackable() {
     private val ebo: Int
 
     override val proxy: BufferProxy
         get() = TODO("Not yet implemented")
 
     init {
-        ebo = context.execute { glGenBuffers().also { checkGLErrors() } }
+        ebo = glGenBuffers()
+        checkGLErrors()
 
         bound {
-            context.execute { glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * 4L, GL_DYNAMIC_DRAW) }
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * 4L, GL_DYNAMIC_DRAW)
         }
     }
 
     override fun bind() {
         require(!destroyed) { "IndexBuffer is destroyed" }
 
-        context.execute {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
-            checkGLErrors()
-        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
+        checkGLErrors()
     }
 
     override fun unbind() {
-        context.execute {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-            checkGLErrors()
-        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        checkGLErrors()
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        context.execute {
-            glDeleteBuffers(ebo)
-            checkGLErrors()
-        }
+        glDeleteBuffers(ebo)
+        checkGLErrors()
 
         super.destroy()
     }

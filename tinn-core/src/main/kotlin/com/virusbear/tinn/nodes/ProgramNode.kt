@@ -38,7 +38,7 @@ class ProgramNode(val program: Program): PortSynchronizingNode("Program", identi
         }
     }
 
-    override fun process(context: ProcessingContext) {
+    override fun process(context: Context) {
         propagate()
         nextStateNode.propagate()
 
@@ -53,7 +53,7 @@ class ProgramNode(val program: Program): PortSynchronizingNode("Program", identi
         writer.write("nextStateNodeId", nextStateNode.id)
     }
 
-    override fun load(reader: SceneReader, context: ProcessingContext) {
+    override fun load(reader: SceneReader, context: Context) {
         super.load(reader, context)
 
         program.nodespace.nodeByIdOrNull(reader.int("globalStateNodeId"))?.let {
