@@ -8,8 +8,10 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWVidMode
 
 class MonitorGL(
-    val native: Long
-): Monitor, Trackable() {
+    val native: Long,
+    private val context: ContextGL,
+    driver: Driver
+): Monitor, Trackable(driver) {
     override val size: IVec2
         get() = getVideoMode().run {
             IVec2(width(), height())
@@ -26,39 +28,30 @@ class MonitorGL(
     override val refreshRate: Int
         get() = getVideoMode().refreshRate()
     override val name: String
-        get() = glfwGetMonitorName(native) ?: "Unknown"
+        get() = context.glfwGetMonitorName(native) ?: "Unknown"
     override val isPrimary: Boolean
-        get() = glfwGetPrimaryMonitor() == native
+        get() = context.glfwGetPrimaryMonitor() == native
 
     private fun getVideoMode(): GLFWVidMode =
-        glfwGetVideoMode(native) ?: error("no VideoMode available for monitor $name")
+        context.glfwGetVideoMode(native) ?: error("no VideoMode available for monitor $name")
 
-    private fun getMonitorPosition(): IVec2 {
-        val x = IntArray(1)
-        val y = IntArray(1)
-        glfwGetMonitorPos(native, x, y)
-
-        return IVec2(x[0], y[0])
-    }
+    private fun getMonitorPosition(): IVec2 =
+        context.glfwGetMonitorPos(native)
 
     private fun getMonitorDensity(): MonitorDensityInformation {
-        val widthMm = IntArray(1)
-        val heightMm = IntArray(1)
-        glfwGetMonitorPhysicalSize(native, widthMm, heightMm)
+        val (widthMm, heightMm) = context.glfwGetMonitorPhysicalSize(native)
         val videoMode = getVideoMode()
 
-        val widthDpi = videoMode.width() / widthMm[0].mm.toInch().value
-        val heightDpi = videoMode.height() / heightMm[0].mm.toInch().value
+        val widthDpi = videoMode.width() / widthMm.mm.toInch().value
+        val heightDpi = videoMode.height() / heightMm.mm.toInch().value
         val pixelAspectRatio = widthDpi / heightDpi
 
-        val contentScaleX = FloatArray(1)
-        val contentScaleY = FloatArray(1)
-        glfwGetMonitorContentScale(native, contentScaleX, contentScaleY)
+        val (contentScaleX, _) = context.glfwGetMonitorContentScale(native)
 
         return MonitorDensityInformation(
             pixelAspectRatio = pixelAspectRatio,
             dpi = widthDpi,
-            contentScale = contentScaleX[0].toDouble()
+            contentScale = contentScaleX
         )
     }
 

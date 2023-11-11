@@ -1,14 +1,17 @@
 package com.virusbear.tinn.opengl
 
-import com.virusbear.tinn.Monitor
 import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.Vec2
+import com.virusbear.tinn.window.Action
+import com.virusbear.tinn.window.Key
+import com.virusbear.tinn.window.Mod
+import com.virusbear.tinn.window.MouseButton
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL30C
-import org.lwjgl.opengl.GLCapabilities
+import org.lwjgl.glfw.GLFWVidMode
+import org.lwjgl.opengl.*
 import org.lwjgl.system.MemoryStack
+import com.virusbear.tinn.opengl.checkGLErrors as checkGLErrorsTinn
 
 fun ContextGL.glfwDefaultWindowHints() =
     execute {
@@ -119,5 +122,240 @@ fun ContextGL.glfwSetWindowSizeCallback(window: Long, callback: (size: IVec2) ->
             if(callbackWindow == window) {
                 callback(IVec2(width, height))
             }
+        }
+    }
+
+fun ContextGL.glfwSetWindowContentScaleCallback(window: Long, callback: (scale: Vec2) -> Unit) =
+    execute {
+        GLFW.glfwSetWindowContentScaleCallback(window) { callbackWindow, scaleX, scaleY ->
+            if(callbackWindow == window) {
+                callback(Vec2(scaleX.toDouble(), scaleY.toDouble()))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetWindowPosCallback(window: Long, callback: (pos: IVec2) -> Unit) =
+    execute {
+        GLFW.glfwSetWindowPosCallback(window) { callbackWindow, x, y ->
+            if(callbackWindow == window) {
+                callback(IVec2(x, y))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetWindowFocusCallback(window: Long, callback: (focused: Boolean) -> Unit) =
+    execute {
+        GLFW.glfwSetWindowFocusCallback(window) { callbackWindow, focused ->
+            if(callbackWindow == window) {
+                callback(focused)
+            }
+        }
+    }
+
+fun ContextGL.glfwSetWindowMaximizeCallback(window: Long, callback: (maximized: Boolean) -> Unit) =
+    execute {
+        GLFW.glfwSetWindowMaximizeCallback(window) { callbackWindow, maximized ->
+            if(callbackWindow == window) {
+                callback(maximized)
+            }
+        }
+    }
+
+fun ContextGL.glfwSetWindowIconifyCallback(window: Long, callback: (minimized: Boolean) -> Unit) =
+    execute {
+        GLFW.glfwSetWindowIconifyCallback(window) { callbackWindow, minimized ->
+           if(callbackWindow == window) {
+               callback(minimized)
+           }
+        }
+    }
+
+fun ContextGL.glfwSetScrollCallback(window: Long, callback: (offset: Vec2) -> Unit) =
+    execute {
+        GLFW.glfwSetScrollCallback(window) { callbackWindow, x, y ->
+            if(callbackWindow == window) {
+                callback(Vec2(x, y))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetCursorEnterCallback(window: Long, callback: (entered: Boolean) -> Unit) =
+    execute {
+        GLFW.glfwSetCursorEnterCallback(window) { callbackWindow, entered ->
+            if(callbackWindow == window) {
+                callback(entered)
+            }
+        }
+    }
+
+fun ContextGL.glfwSetCursorPosCallback(window: Long, callback: (pos: Vec2) -> Unit) =
+    execute {
+        GLFW.glfwSetCursorPosCallback(window) { callbackWindow, x, y ->
+            if(callbackWindow == window) {
+                callback(Vec2(x, y))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetMouseButtonCallback(window: Long, callback: (button: MouseButton, action: Action, mods: Set<Mod>) -> Unit) =
+    execute {
+        GLFW.glfwSetMouseButtonCallback(window) { callbackWindow, button, action, mods ->
+            if(callbackWindow == window) {
+                callback(MouseButton.fromGl(button), Action.fromGl(action), Mod.fromGl(mods))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetCharCallback(window: Long, callback: (codepoint: Char) -> Unit) =
+    execute {
+        GLFW.glfwSetCharCallback(window) { callbackWindow, codepoint ->
+            if(callbackWindow == window) {
+                callback(codepoint.toChar())
+            }
+        }
+    }
+
+fun ContextGL.glfwSetKeyCallback(window: Long, callback: (key: Key?, code: Int, action: Action, mods: Set<Mod>) -> Unit) =
+    execute {
+        GLFW.glfwSetKeyCallback(window) { callbackWindow, key, code, action, mods ->
+            if(callbackWindow == window) {
+                callback(Key.values().firstOrNull { it.code == key }, code, Action.fromGl(action), Mod.fromGl(mods))
+            }
+        }
+    }
+
+fun ContextGL.glfwSetCharModsCallback(window: Long, callback: (codepoint: Char, mods: Set<Mod>) -> Unit) =
+    execute {
+        GLFW.glfwSetCharModsCallback(window) { callbackWindow, codepoint, mods ->
+            if(callbackWindow == window) {
+                callback(codepoint.toChar(), Mod.fromGl(mods))
+            }
+        }
+    }
+
+fun ContextGL.glGenBuffers(): Int =
+    execute {
+        GL30C.glGenBuffers()
+    }
+
+fun ContextGL.glGenVertexArrays(): Int =
+    execute {
+        GL30C.glGenVertexArrays()
+    }
+
+fun ContextGL.checkGLErrors(errorFunction: ((error: Int) -> String?)? = null) {
+    execute {
+        checkGLErrorsTinn(errorFunction)
+    }
+}
+
+fun ContextGL.glBindBuffer(target: Int, buffer: Int) =
+    execute {
+        GL30C.glBindBuffer(target, buffer)
+    }
+
+fun ContextGL.glBufferData(target: Int, size: Long, usage: Int) =
+    execute {
+        GL30C.glBufferData(target, size, usage)
+    }
+
+fun ContextGL.glVertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, pointer: Long) =
+    execute {
+        GL30C.glVertexAttribPointer(index, size, type, normalized, stride, pointer)
+    }
+
+fun ContextGL.glEnableVertexAttribArray(index: Int) =
+    execute {
+        GL30C.glEnableVertexAttribArray(index)
+    }
+
+fun ContextGL.glBindVertexArray(array: Int) =
+    execute {
+        GL30C.glBindVertexArray(array)
+    }
+
+fun ContextGL.glDeleteVertexArrays(array: Int) =
+    execute {
+        GL30C.glDeleteVertexArrays(array)
+    }
+
+fun ContextGL.glDeleteBuffers(buffer: Int) =
+    execute {
+        GL30C.glDeleteBuffers(buffer)
+    }
+
+fun ContextGL.glFramebufferTexture2D(target: Int, attachment: Int, texTarget: Int, texture: Int, level: Int) =
+    execute {
+        GL30C.glFramebufferTexture2D(target, attachment, texTarget, texture, level)
+    }
+
+fun ContextGL.glDeleteFramebuffers(frameBuffer: Int) =
+    execute {
+        GL30C.glDeleteFramebuffers(frameBuffer)
+    }
+
+fun ContextGL.glBindFramebuffer(target: Int, frameBuffer: Int) =
+    execute {
+        GL30C.glBindFramebuffer(target, frameBuffer)
+    }
+
+fun ContextGL.glDrawBuffers(attachments: IntArray) =
+    execute {
+        GL30C.glDrawBuffers(attachments)
+    }
+
+fun ContextGL.glViewport(pos: IVec2, size: IVec2) =
+    execute {
+        GL30C.glViewport(pos.x, pos.y, size.x, size.y)
+    }
+
+fun ContextGL.glfwGetMonitorName(monitor: Long): String? =
+    execute {
+        GLFW.glfwGetMonitorName(monitor)
+    }
+
+fun ContextGL.glfwGetPrimaryMonitor(): Long =
+    execute {
+        GLFW.glfwGetPrimaryMonitor()
+    }
+
+fun ContextGL.glfwGetVideoMode(monitor: Long): GLFWVidMode? =
+    execute {
+        GLFW.glfwGetVideoMode(monitor)
+    }
+
+fun ContextGL.glfwGetMonitorPos(monitor: Long): IVec2 =
+    execute {
+        MemoryStack.stackPush().use { stack ->
+            val x = stack.mallocInt(1)
+            val y = stack.mallocInt(1)
+
+            GLFW.glfwGetMonitorPos(monitor, x, y)
+
+            IVec2(x.get(), y.get())
+        }
+    }
+
+fun ContextGL.glfwGetMonitorPhysicalSize(monitor: Long): IVec2 =
+    execute {
+        MemoryStack.stackPush().use { stack ->
+            val width = stack.mallocInt(1)
+            val height = stack.mallocInt(1)
+
+            GLFW.glfwGetMonitorPhysicalSize(monitor, width, height)
+
+            IVec2(width.get(), height.get())
+        }
+    }
+
+fun ContextGL.glfwGetMonitorContentScale(monitor: Long): Vec2 =
+    execute {
+        MemoryStack.stackPush().use { stack ->
+            val x = stack.mallocFloat(1)
+            val y = stack.mallocFloat(1)
+
+            GLFW.glfwGetMonitorContentScale(monitor, x, y)
+
+            Vec2(x.get().toDouble(), y.get().toDouble())
         }
     }

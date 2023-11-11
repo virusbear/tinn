@@ -9,7 +9,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class ContextGL(driver: Driver): Trackable(driver) {
-    private var native: Long = NULL
+    var native: Long = NULL
+        private set
     private val owner: ExecutorService = Executors.newSingleThreadExecutor()
 
     fun makeCurrent(context: Long) {

@@ -15,8 +15,10 @@ class ColorBufferGL internal constructor(
     override val contentScale: Double,
     val format: ColorFormat,
     override val  multisample: MultiSample,
-    val levels: MipMapLevel
-): ColorBuffer, Trackable() {
+    val levels: MipMapLevel,
+    private val context: ContextGL,
+    driver: Driver
+): ColorBuffer, Trackable(driver) {
     internal val target: Int
     val textureId: Int
 
@@ -26,8 +28,8 @@ class ColorBufferGL internal constructor(
         require(width < LimitsGL.MaxTextureSize)
         require(height < LimitsGL.MaxTextureSize)
 
-        textureId = glGenTextures()
-        checkGLErrors()
+        textureId = context.glGenTextures()
+        context.checkGLErrors()
 
         target = when(multisample) {
             MultiSample.None -> GL_TEXTURE_2D
@@ -36,16 +38,16 @@ class ColorBufferGL internal constructor(
 
         bound {
             if(levels != MipMapLevel.None) {
-                glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels.levels - 1)
+                context.glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels.levels - 1)
             }
 
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
+            context.glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
             
             when(multisample) {
-                MultiSample.None -> glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
-                else -> glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
+                MultiSample.None -> context.glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
+                else -> context.glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
             }
-            checkGLErrors()
+            context.checkGLErrors()
         }
 
         filter()
@@ -57,14 +59,14 @@ class ColorBufferGL internal constructor(
             return
 
         bound {
-            glGenerateMipmap(target)
+            context.glGenerateMipmap(target)
         }
     }
 
     override fun filter(minifyingFilter: TextureFilter, magnifyingFilter: TextureFilter) {
         bound {
-            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minifyingFilter.gl)
-            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magnifyingFilter.gl)
+            context.glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minifyingFilter.gl)
+            context.glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magnifyingFilter.gl)
         }
     }
 
@@ -78,28 +80,28 @@ class ColorBufferGL internal constructor(
     override fun bind() {
         require(!destroyed) { "ColorBuffer is destroyed" }
 
-        glActiveTexture(GL_TEXTURE0)
-        glBindTexture(target, textureId)
-        checkGLErrors()
+        context.glActiveTexture(GL_TEXTURE0)
+        context.glBindTexture(target, textureId)
+        context.checkGLErrors()
     }
 
     override fun unbind() {
-        glBindTexture(target, 0)
-        checkGLErrors()
+        context.glBindTexture(target, 0)
+        context.checkGLErrors()
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        glDeleteTextures(textureId)
-        checkGLErrors()
+        context.glDeleteTextures(textureId)
+        context.checkGLErrors()
 
         super.destroy()
     }
 
     companion object {
-        fun loadImage(file: File, format: ColorFormat = ColorFormat.RGB8): ColorBuffer {
+        fun loadImage(file: File, format: ColorFormat = ColorFormat.RGB8, context: ContextGL, driver: Driver): ColorBuffer {
             val stack = MemoryStack.stackPush()
 
             val w = stack.mallocInt(1)
@@ -122,16 +124,18 @@ class ColorBufferGL internal constructor(
                 1.0,
                 format,
                 MultiSample.None,
-                MipMapLevel.None
+                MipMapLevel.None,
+                context,
+                driver
             )
 
             cb.bound {
                 if(image is FloatBuffer) {
-                    glTexImage2D(cb.target, 0, format.internalFormat, cb.width, cb.height, 0, format.glFormat, format.glType, image)
+                    cb.context.glTexImage2D(cb.target, 0, format.internalFormat, cb.width, cb.height, 0, format.glFormat, format.glType, image)
                     stbi_image_free(image)
                 }
                 if(image is ByteBuffer) {
-                    glTexImage2D(cb.target, 0, format.internalFormat, cb.width, cb.height, 0, format.glFormat, format.glType, image)
+                    cb.context.glTexImage2D(cb.target, 0, format.internalFormat, cb.width, cb.height, 0, format.glFormat, format.glType, image)
                     stbi_image_free(image)
                 }
             }

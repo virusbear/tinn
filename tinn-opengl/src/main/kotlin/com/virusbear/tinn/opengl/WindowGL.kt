@@ -115,7 +115,7 @@ class WindowGL(
     private fun getWindowMonitor(): Monitor {
         context.glfwGetWindowMonitor(native).let {
             if(it != NULL) {
-                return MonitorGL(native)
+                return MonitorGL(native, context, driver)
             }
         }
 
@@ -142,64 +142,63 @@ class WindowGL(
         context.glfwSetWindowSizeCallback(native) { size ->
             EventBus.publish(WindowResizeEvent(this, size))
         }
-        glfwSetWindowContentScaleCallback(native) { _, scale, _ ->
-            contentScale = scale.toDouble()
+        context.glfwSetWindowContentScaleCallback(native) { scale ->
+            contentScale = scale.x
         }
-        glfwSetWindowPosCallback(native) { _, x, y ->
-            position = IVec2(x, y)
+        context.glfwSetWindowPosCallback(native) { position ->
             EventBus.publish(WindowMoveEvent(this, position))
         }
-        glfwSetWindowFocusCallback(native) { _, focused ->
+        context.glfwSetWindowFocusCallback(native) { focused ->
             EventBus.publish(WindowFocusEvent(this, focused))
         }
-        glfwSetWindowMaximizeCallback(native) { _, maximized ->
+        context.glfwSetWindowMaximizeCallback(native) { maximized ->
             EventBus.publish(WindowMaximizeEvent(this, maximized))
         }
-        glfwSetWindowIconifyCallback(native) { _, minimized ->
+        context.glfwSetWindowIconifyCallback(native) { minimized ->
             EventBus.publish(WindowMinimizeEvent(this, minimized))
         }
 
-        glfwSetScrollCallback(native) { _, x, y ->
-            EventBus.publish(WindowMouseScrollEvent(this, Vec2(x, y)))
+        context.glfwSetScrollCallback(native) { offset ->
+            EventBus.publish(WindowMouseScrollEvent(this, offset))
         }
-        glfwSetCursorEnterCallback(native) { _, entered ->
+        context.glfwSetCursorEnterCallback(native) { entered ->
             if(entered) {
                 EventBus.publish(WindowMouseLeaveEvent(this))
             } else {
                 EventBus.publish(WindowMouseEnterEvent(this))
             }
         }
-        glfwSetCursorPosCallback(native) { _, x, y ->
-            EventBus.publish(WindowMouseMoveEvent(this, Vec2(x, y)))
+        context.glfwSetCursorPosCallback(native) { position ->
+            EventBus.publish(WindowMouseMoveEvent(this, position))
         }
-        glfwSetMouseButtonCallback(native) { _, button, action, mods ->
+        context.glfwSetMouseButtonCallback(native) { button, action, mods ->
             EventBus.publish(
                 WindowMouseButtonEvent(this,
-                    MouseButton.fromGl(button),
-                    Mod.fromGl(mods),
-                    Action.fromGl(action)
+                    button,
+                    mods,
+                    action
                 )
             )
         }
 
-        glfwSetCharCallback(native) { _, codepoint ->
-            EventBus.publish(WindowCharEvent(this, codepoint.toChar()))
+        context.glfwSetCharCallback(native) { codepoint ->
+            EventBus.publish(WindowCharEvent(this, codepoint))
         }
 
-        glfwSetKeyCallback(native) { _, key, code, action, mods ->
-            Key.values().firstOrNull { it.code == key }?.let {
+        context.glfwSetKeyCallback(native) { key, _, action, mods ->
+            key?.let {
                 EventBus.publish(
                     WindowKeyEvent( this,
                         it,
-                        Action.fromGl(action),
-                        Mod.fromGl(mods)
+                        action,
+                        mods
                     )
                 )
             }
         }
 
-        glfwSetCharModsCallback(native) { _, codepoint, mods ->
-            EventBus.publish(WindowCharModEvent(this, codepoint.toChar(), Mod.fromGl(mods)))
+        context.glfwSetCharModsCallback(native) { codepoint, mods ->
+            EventBus.publish(WindowCharModEvent(this, codepoint, mods))
         }
     }
 }

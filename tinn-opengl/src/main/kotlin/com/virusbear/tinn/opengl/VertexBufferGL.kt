@@ -5,8 +5,10 @@ import org.lwjgl.opengl.GL30C.*
 
 class VertexBufferGL internal constructor(
     override val size: Int,
-    override val format: VertexFormat
-): VertexBuffer, Trackable() {
+    override val format: VertexFormat,
+    private val context: ContextGL,
+    driver: Driver
+): VertexBuffer, Trackable(driver) {
     private val vao: Int
     private val vbo: Int
 
@@ -14,23 +16,23 @@ class VertexBufferGL internal constructor(
         get() = TODO("Not yet implemented")
 
     init {
-        vbo = glGenBuffers()
-        checkGLErrors()
-        vao = glGenVertexArrays()
-        checkGLErrors()
+        vbo = context.glGenBuffers()
+        context.checkGLErrors()
+        vao = context.glGenVertexArrays()
+        context.checkGLErrors()
 
         bound {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo)
-            glBufferData(GL_ARRAY_BUFFER, size.toLong() * format.size, GL_DYNAMIC_DRAW)
-            checkGLErrors()
+            context.glBindBuffer(GL_ARRAY_BUFFER, vbo)
+            context.glBufferData(GL_ARRAY_BUFFER, size.toLong() * format.size, GL_DYNAMIC_DRAW)
+            context.checkGLErrors()
 
             var offset = 0
             val stride = format.size
 
             format.attributes().forEachIndexed { idx, attribute ->
-                glVertexAttribPointer(idx, attribute.components, attribute.type.gl, attribute.normalized, stride, offset.toLong())
-                glEnableVertexAttribArray(idx)
-                checkGLErrors()
+                context.glVertexAttribPointer(idx, attribute.components, attribute.type.gl, attribute.normalized, stride, offset.toLong())
+                context.glEnableVertexAttribArray(idx)
+                context.checkGLErrors()
 
                 offset += if(format.interleaved) {
                     attribute.size
@@ -39,30 +41,30 @@ class VertexBufferGL internal constructor(
                 }
             }
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0)
+            context.glBindBuffer(GL_ARRAY_BUFFER, 0)
         }
     }
 
     override fun bind() {
         require(!destroyed) { "VertexBuffer is destroyed" }
 
-        glBindVertexArray(vao)
-        checkGLErrors()
+        context.glBindVertexArray(vao)
+        context.checkGLErrors()
     }
 
     override fun unbind() {
-        glBindVertexArray(0)
-        checkGLErrors()
+        context.glBindVertexArray(0)
+        context.checkGLErrors()
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        glDeleteVertexArrays(vao)
-        glDeleteBuffers(vbo)
+        context.glDeleteVertexArrays(vao)
+        context.glDeleteBuffers(vbo)
 
-        checkGLErrors()
+        context.checkGLErrors()
 
         super.destroy()
     }

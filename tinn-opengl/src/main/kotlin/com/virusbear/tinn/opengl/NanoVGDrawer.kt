@@ -1,6 +1,7 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.ColorBuffer
+import com.virusbear.tinn.Driver
 import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.color.Color
@@ -14,8 +15,11 @@ import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3
 import java.util.*
 
-class NanoVGDrawer: Drawer, Trackable() {
-    private val ctx = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE)
+class NanoVGDrawer(
+    private val context: ContextGL,
+    driver: Driver
+): Drawer, Trackable(driver) {
+    private val ctx = context.execute { NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE) }
     private val imageHandles = mutableMapOf<ColorBuffer, Int>()
 
     private data class DrawerState(
@@ -27,11 +31,11 @@ class NanoVGDrawer: Drawer, Trackable() {
     private val states = Stack<DrawerState>()
 
     override fun begin(width: Int, height: Int, contentScale: Double) {
-        nvgBeginFrame(ctx, width.toFloat(), height.toFloat(),  contentScale.toFloat())
+        context.execute { nvgBeginFrame(ctx, width.toFloat(), height.toFloat(),  contentScale.toFloat()) }
     }
 
     override fun end() {
-        nvgEndFrame(ctx)
+        context.execute { nvgEndFrame(ctx) }
     }
 
     override fun push() {
@@ -97,7 +101,7 @@ class NanoVGDrawer: Drawer, Trackable() {
             imageHandles.filterKeys { it.destroyed }.forEach { (img, _) ->
                 imageHandles -= img
             }
-            NanoVGGL3.nvglCreateImageFromHandle(ctx, image.textureId, image.width, image.height, 0)
+            context.execute { NanoVGGL3.nvglCreateImageFromHandle(ctx, image.textureId, image.width, image.height, 0) }
         }
 
         val maskPosition = position - offset

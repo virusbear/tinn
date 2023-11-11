@@ -5,6 +5,8 @@ import com.virusbear.tinn.Driver
 import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.draw.Drawer
+import com.virusbear.tinn.math.IVec2
+import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.window.Window
 import com.virusbear.tinn.window.WindowRenderTarget
 import org.lwjgl.glfw.GLFW.glfwGetCurrentContext
@@ -12,10 +14,12 @@ import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL30C.*
 import java.util.*
 
-class WindowRenderTargetGL(override val window: Window):
+class WindowRenderTargetGL(override val window: Window, context: ContextGL, driver: Driver):
     RenderTargetGL(
         0, 0, 1.0,
-        glGetInteger(GL_FRAMEBUFFER_BINDING)
+        glGetInteger(GL_FRAMEBUFFER_BINDING),
+        context,
+        driver
     ), WindowRenderTarget {
 
     override val width: Int
@@ -34,8 +38,10 @@ open class RenderTargetGL(
     override val width: Int,
     override val height: Int,
     override val contentScale: Double,
-    protected val frameBuffer: Int = glGenFramebuffers()
-) : RenderTarget, Trackable() {
+    protected val frameBuffer: Int = glGenFramebuffers(),
+    private val context: ContextGL,
+    driver: Driver
+) : RenderTarget, Trackable(driver) {
     //TODO: separate type for ColorBufferAttachment necessary?
     private val colorAttachments = mutableListOf<ColorBuffer>()
 
@@ -48,25 +54,25 @@ open class RenderTargetGL(
 
         val activeRenderTarget: RenderTarget
             get() {
-                val stack = active.getOrPut(glfwGetCurrentContext()) { Stack() }
+                val stack = active.getOrPut(Driver.driver.currentContext.native) { Stack() }
                 return stack.peek()
             }
     }
 
     override val drawer: Drawer by lazy {
-        Driver.driver.createDrawer()
+        driver.createDrawer(context)
     }
 
     override fun bind() {
         require(!destroyed)
 
-        val stack = active.getOrPut(glfwGetCurrentContext()) { Stack() }
+        val stack = active.getOrPut(context.native) { Stack() }
         stack.push(this)
         bindTarget()
     }
 
     override fun unbind() {
-        val previous = active.getOrPut(glfwGetCurrentContext()) { Stack() }.let {
+        val previous = active.getOrPut(context.native) { Stack() }.let {
             if(it.peek() !== this) {
                 null
             } else {
@@ -92,7 +98,7 @@ open class RenderTargetGL(
         }
 
         bound {
-            glFramebufferTexture2D(
+            context.glFramebufferTexture2D(
                 GL_FRAMEBUFFER,
                 GL_COLOR_ATTACHMENT0 + colorAttachments.size,
                 colorBuffer.target,
@@ -100,7 +106,7 @@ open class RenderTargetGL(
                 level
             )
 
-            checkGLErrors()
+            context.checkGLErrors()
 
             colorAttachments += colorBuffer
         }
@@ -116,17 +122,17 @@ open class RenderTargetGL(
             return
         }
         
-        glDeleteFramebuffers(frameBuffer)
-        checkGLErrors()
+        context.glDeleteFramebuffers(frameBuffer)
+        context.checkGLErrors()
     }
 
     private fun bindTarget() {
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer)
+        context.glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer)
 
         if(colorAttachments.isNotEmpty()) {
             val attachments = List(colorAttachments.size) { idx -> GL_COLOR_ATTACHMENT0 + idx }.toIntArray()
-            GL20C.glDrawBuffers(attachments)
-            checkGLErrors {
+            context.glDrawBuffers(attachments)
+            context.checkGLErrors {
                 when(it) {
                     GL_INVALID_ENUM -> "1. one of the values in bufs is not an accepted value\n2. the API call refers to the default framebuffer and one or more of the values in bufs is one of the GL_COLOR_ATTACHMENTn tokens\n3. the API call refers to a framebuffer object and one or more of the values in bufs is anything other than GL_NONE or one of the GL_COLOR_ATTACHMENTn tokens\n4. n is less than 0"
                     GL_INVALID_OPERATION -> "a symbolic constant other than GL_NONE appears more than once in bufs."
@@ -137,6 +143,6 @@ open class RenderTargetGL(
         }
 
 
-        glViewport(0, 0, width, height)
+        context.glViewport(IVec2.ZERO, IVec2(width, height))
     }
 }

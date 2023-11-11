@@ -7,40 +7,42 @@ import com.virusbear.tinn.Trackable
 import org.lwjgl.opengl.GL15C.*
 
 class IndexBufferGL(
-    override val size: Int
-): IndexBuffer, Trackable() {
+    override val size: Int,
+    private val context: ContextGL,
+    driver: Driver
+): IndexBuffer, Trackable(driver) {
     private val ebo: Int
 
     override val proxy: BufferProxy
         get() = TODO("Not yet implemented")
 
     init {
-        ebo = glGenBuffers()
-        checkGLErrors()
+        ebo = context.glGenBuffers()
+        context.checkGLErrors()
 
         bound {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * 4L, GL_DYNAMIC_DRAW)
+            context.glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * 4L, GL_DYNAMIC_DRAW)
         }
     }
 
     override fun bind() {
         require(!destroyed) { "IndexBuffer is destroyed" }
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
-        checkGLErrors()
+        context.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
+        context.checkGLErrors()
     }
 
     override fun unbind() {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-        checkGLErrors()
+        context.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        context.checkGLErrors()
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        glDeleteBuffers(ebo)
-        checkGLErrors()
+        context.glDeleteBuffers(ebo)
+        context.checkGLErrors()
 
         super.destroy()
     }
