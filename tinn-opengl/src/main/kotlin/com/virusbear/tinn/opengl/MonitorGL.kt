@@ -17,7 +17,7 @@ class MonitorGL(
         }
 
     override val position: IVec2
-        get() = getPosition()
+        get() = getMonitorPosition()
     override val contentScale: Double
         get() = getMonitorDensity().contentScale
     override val dpi: Double
@@ -34,7 +34,7 @@ class MonitorGL(
     private fun getVideoMode(): GLFWVidMode =
         glfwGetVideoMode(native) ?: error("no VideoMode available for monitor $name")
 
-    private fun getPosition(): IVec2 {
+    private fun getMonitorPosition(): IVec2 {
         val x = IntArray(1)
         val y = IntArray(1)
         context.execute { glfwGetMonitorPos(native, x, y) }

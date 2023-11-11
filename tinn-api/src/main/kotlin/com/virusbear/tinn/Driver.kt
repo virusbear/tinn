@@ -21,6 +21,9 @@ abstract class Driver: BaseDestroyable() {
 
     protected abstract suspend fun pollEvents()
 
+    abstract val availableMonitors: List<Monitor>
+    abstract val primaryMonitor: Monitor
+
     abstract fun createWindow(
         width: Int,
         height: Int,

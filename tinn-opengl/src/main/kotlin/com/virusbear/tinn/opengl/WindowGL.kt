@@ -93,11 +93,8 @@ class WindowGL(
     override var contentScale: Double = getWindowContentScale()
         private set
 
-    override var dpi: Double = getWindowDpi()
-        private set
-
-    override var pixelAspectRatio: Double = 1.0
-        private set
+    override val monitor: Monitor
+        get() = getWindowMonitor()
 
     override fun clear() {
         execute { GL30C.glClear(GL30C.GL_COLOR_BUFFER_BIT or GL30C.GL_DEPTH_BUFFER_BIT) }
@@ -149,32 +146,27 @@ class WindowGL(
         return scale[0].toDouble()
     }
 
-    private fun getWindowDpi(): Double {
-        val widthMm = IntArray(1)
-        val heightMm = IntArray(1)
-        val monitor = getWindowMonitor()
-        execute { glfwGetMonitorPhysicalSize(monitor, widthMm, heightMm) }
-        val videoMode = execute { glfwGetVideoMode(monitor) } ?: error("Unable to read video mode of monitor ${getMonitorName(monitor)}")
-
-        val widthDpi = videoMode.width() / widthMm[0].mm.toInch().value
-        val heightDpi = videoMode.height() / heightMm[0].mm.toInch().value
-        pixelAspectRatio = widthDpi / heightDpi
-
-        return widthDpi
-    }
-
-    private fun getWindowMonitor(): Long {
+    private fun getWindowMonitor(): Monitor {
         execute { glfwGetWindowMonitor(native) }.let {
             if(it != NULL) {
-                return it
+                return MonitorGL(native, context)
             }
         }
 
-        return getMostOccupiedMonitor()
+        return getClosestMonitor()
     }
 
-    private fun getMostOccupiedMonitor(): Long {
-        //TODO: Implement
+    private fun getClosestMonitor(): Monitor {
+        val monitors = Driver.driver.availableMonitors
+        val windowPos = position
+        val windowSize = size
+        val windowArea = Rect(windowPos.vec, (windowPos + windowSize).vec)
+
+        return monitors.map { monitor ->
+            val monitorArea = Rect(monitor.position.vec, (monitor.position + monitor.size).vec)
+            val intersection = windowArea intersect monitorArea
+            monitor to (intersection?.area ?: Double.NEGATIVE_INFINITY)
+        }.maxBy { it.second }.first
     }
 
     private fun getMonitorName(monitor: Long): String =

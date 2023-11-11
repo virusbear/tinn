@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.system.MemoryUtil.NULL
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -49,6 +50,7 @@ class DriverGL: Driver(), Context {
             async { glfwWaitEvents() }.await()
         }
     }
+
 
     override fun createWindow(
         width: Int,
