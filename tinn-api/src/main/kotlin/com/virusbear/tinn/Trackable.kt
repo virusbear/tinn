@@ -1,15 +1,17 @@
 package com.virusbear.tinn
 
-abstract class Trackable: BaseDestroyable() {
+abstract class Trackable(
+    val driver: Driver
+): BaseDestroyable() {
     init {
-        Driver.driver.track(this)
+        driver.track(this)
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        Driver.driver.untrack(this)
+        driver.untrack(this)
         super.destroy()
     }
 }

@@ -8,9 +8,8 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWVidMode
 
 class MonitorGL(
-    val native: Long,
-    override val context: Context
-): Monitor, ContextAwareDestroyable() {
+    val native: Long
+): Monitor, Trackable() {
     override val size: IVec2
         get() = getVideoMode().run {
             IVec2(width(), height())
@@ -27,9 +26,9 @@ class MonitorGL(
     override val refreshRate: Int
         get() = getVideoMode().refreshRate()
     override val name: String
-        get() = context.execute { glfwGetMonitorName(native) } ?: "Unknown"
+        get() = glfwGetMonitorName(native) ?: "Unknown"
     override val isPrimary: Boolean
-        get() = context.execute { glfwGetPrimaryMonitor() } == native
+        get() = glfwGetPrimaryMonitor() == native
 
     private fun getVideoMode(): GLFWVidMode =
         glfwGetVideoMode(native) ?: error("no VideoMode available for monitor $name")
@@ -37,7 +36,7 @@ class MonitorGL(
     private fun getMonitorPosition(): IVec2 {
         val x = IntArray(1)
         val y = IntArray(1)
-        context.execute { glfwGetMonitorPos(native, x, y) }
+        glfwGetMonitorPos(native, x, y)
 
         return IVec2(x[0], y[0])
     }
@@ -45,7 +44,7 @@ class MonitorGL(
     private fun getMonitorDensity(): MonitorDensityInformation {
         val widthMm = IntArray(1)
         val heightMm = IntArray(1)
-        context.execute { glfwGetMonitorPhysicalSize(native, widthMm, heightMm) }
+        glfwGetMonitorPhysicalSize(native, widthMm, heightMm)
         val videoMode = getVideoMode()
 
         val widthDpi = videoMode.width() / widthMm[0].mm.toInch().value
@@ -54,7 +53,7 @@ class MonitorGL(
 
         val contentScaleX = FloatArray(1)
         val contentScaleY = FloatArray(1)
-        context.execute { glfwGetMonitorContentScale(native, contentScaleX, contentScaleY) }
+        glfwGetMonitorContentScale(native, contentScaleX, contentScaleY)
 
         return MonitorDensityInformation(
             pixelAspectRatio = pixelAspectRatio,

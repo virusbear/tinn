@@ -1,64 +1,53 @@
 package com.virusbear.tinn.opengl
 
 import com.virusbear.tinn.*
-import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.math.Vec2
-import com.virusbear.tinn.math.units.dimensions.mm
-import com.virusbear.tinn.math.units.dimensions.toInch
+import com.virusbear.tinn.color.Color
+import com.virusbear.tinn.math.*
 import com.virusbear.tinn.window.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30C
-import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil.NULL
 
 class WindowGL(
     private val native: Long,
-    override val multisample: MultiSample
-): Window, Trackable() {
+    override val multisample: MultiSample,
+    private val context: ContextGL,
+    driver: Driver
+): Window, Trackable(driver) {
     companion object {
-        fun create(width: Int, height: Int, title: String, resizable: Boolean, vsync: Boolean, multisample: MultiSample = MultiSample.None): Window {
-            glfwDefaultWindowHints()
-            glfwWindowHint(GLFW_RESIZABLE, if(resizable) GLFW_TRUE else GLFW_FALSE)
+        fun create(width: Int, height: Int, title: String, resizable: Boolean, vsync: Boolean, multisample: MultiSample = MultiSample.None, driver: Driver): Window {
+            val context = ContextGL(driver)
+
+            context.glfwDefaultWindowHints()
+            context.glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE)
+            context.glfwWindowHint(GLFW_RESIZABLE, if(resizable) GLFW_TRUE else GLFW_FALSE)
             if(multisample != MultiSample.None) {
-                glfwWindowHint(GLFW_SAMPLES, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1))
+                context.glfwWindowHint(GLFW_SAMPLES, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1))
             }
 
-            val window = glfwCreateWindow(width, height, title, NULL, NULL)
+            val window = context.glfwCreateWindow(width, height, title, NULL, NULL)
 
             if (window == NULL) {
                 throw RuntimeException("Failed to create GLFW window")
             }
 
-            val stack = MemoryStack.stackPush()
-            try {
-                val pWidth = stack.mallocInt(1)
-                val pHeight = stack.mallocInt(1)
+            val windowSize = context.glfwGetWindowSize(window)
 
-                glfwGetWindowSize(window, pWidth, pHeight)
-
-                glfwGetVideoMode(glfwGetPrimaryMonitor())?.let { vidmode ->
-                    glfwSetWindowPos(
-                        window,
-                        (vidmode.width() / 2) - pWidth.get(0) / 2,
-                        (vidmode.height() / 2) - pHeight.get(0) / 2
-                    )
-                }
-            } finally {
-                stack.close()
+            Driver.driver.availableMonitors.firstOrNull()?.size?.let { size ->
+                context.glfwSetWindowPos(window,(size / 2) - (windowSize / 2))
             }
 
-            glfwMakeContextCurrent(window)
+            context.makeCurrent(window)
             if(vsync) {
-                glfwSwapInterval(1)
+                context.glfwSwapInterval(1)
             }
 
-            GL.createCapabilities()
+            context.createCapabilities()
 
-            GL30C.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+            context.glClearColor(Color.TRANSPARENT)
 
-            return WindowGL(window, multisample)
+            return WindowGL(window, multisample, context, driver)
         }
     }
 
@@ -72,10 +61,10 @@ class WindowGL(
         private set
 
     override val renderTarget: WindowRenderTarget =
-        WindowRenderTargetGL(this)
+        WindowRenderTargetGL(this, context, driver)
 
     override val open: Boolean
-        get() = !glfwWindowShouldClose(native)
+        get() = !context.glfwWindowShouldClose(native)
 
     override var size: IVec2 = getWindowSize()
         private set
@@ -87,51 +76,46 @@ class WindowGL(
         get() = getWindowMonitor()
 
     override fun clear() {
-        GL30C.glClear(GL30C.GL_COLOR_BUFFER_BIT or GL30C.GL_DEPTH_BUFFER_BIT)
+        context.glClear(GL30C.GL_COLOR_BUFFER_BIT or GL30C.GL_DEPTH_BUFFER_BIT)
     }
 
     override fun update() {
-        glfwSwapBuffers(native)
-        glfwPollEvents()
+        context.glfwSwapBuffers(native)
+    }
+
+    fun pollEvents() {
+        context.glfwPollEvents()
     }
 
     override fun bind() {
-        glfwMakeContextCurrent(native)
+        context.makeCurrent(native)
     }
 
     override fun unbind() {
-        glfwMakeContextCurrent(0)
+        context.clearCurrent()
     }
 
     override fun destroy() {
         if(destroyed)
             return
 
-        glfwDestroyWindow(native)
+        unbind()
+        context.glfwDestroyWindow(native)
+        context.destroy()
 
         super.destroy()
     }
 
-    private fun getWindowSize(): IVec2 {
-        val width = IntArray(1)
-        val height = IntArray(1)
-        glfwGetWindowSize(native, width, height)
+    private fun getWindowSize(): IVec2 =
+        context.glfwGetWindowSize(native)
 
-        return IVec2(width[0], height[0])
-    }
-
-    private fun getWindowContentScale(): Double {
-        val scale = FloatArray(1)
-        val ignored = FloatArray(1)
-        glfwGetWindowContentScale(native, scale, ignored)
-
-        return scale[0].toDouble()
-    }
+    private fun getWindowContentScale(): Double =
+        context.glfwGetWindowContentScale(native).x
 
     private fun getWindowMonitor(): Monitor {
-        execute { glfwGetWindowMonitor(native) }.let {
+        context.glfwGetWindowMonitor(native).let {
             if(it != NULL) {
-                return MonitorGL(native, context)
+                return MonitorGL(native)
             }
         }
 
@@ -139,7 +123,7 @@ class WindowGL(
     }
 
     private fun getClosestMonitor(): Monitor {
-        val monitors = Driver.driver.availableMonitors
+        val monitors = driver.availableMonitors
         val windowPos = position
         val windowSize = size
         val windowArea = Rect(windowPos.vec, (windowPos + windowSize).vec)
@@ -151,20 +135,11 @@ class WindowGL(
         }.maxBy { it.second }.first
     }
 
-    private fun getMonitorName(monitor: Long): String =
-        glfwGetMonitorName(monitor) ?: "unknown"
-
-    private fun getWindowPos(): IVec2 {
-        val x = IntArray(1)
-        val y = IntArray(1)
-        glfwGetWindowPos(native, x, y)
-
-        return IVec2(x[0], y[0])
-    }
+    private fun getWindowPos(): IVec2 =
+        context.glfwGetWindowPos(native)
 
     private fun registerWindowEvents() {
-        glfwSetWindowSizeCallback(native) { _, width, height ->
-            size = IVec2(width, height)
+        context.glfwSetWindowSizeCallback(native) { size ->
             EventBus.publish(WindowResizeEvent(this, size))
         }
         glfwSetWindowContentScaleCallback(native) { _, scale, _ ->
@@ -173,7 +148,6 @@ class WindowGL(
         glfwSetWindowPosCallback(native) { _, x, y ->
             position = IVec2(x, y)
             EventBus.publish(WindowMoveEvent(this, position))
-            dpi = getWindowDpi()
         }
         glfwSetWindowFocusCallback(native) { _, focused ->
             EventBus.publish(WindowFocusEvent(this, focused))

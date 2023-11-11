@@ -5,10 +5,7 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.io.File
-import java.util.LinkedList
 
 abstract class Driver: BaseDestroyable() {
     abstract fun init()
@@ -65,14 +62,12 @@ abstract class Driver: BaseDestroyable() {
 
     abstract val activeRenderTarget: RenderTarget
 
-    final override var destroyed: Boolean = false
-        private set
     private val tracked = mutableSetOf<Trackable>()
 
-    fun track(trackable: Trackable) {
+    open fun track(trackable: Trackable) {
         tracked += trackable
     }
-    fun untrack(trackable: Trackable) {
+    open fun untrack(trackable: Trackable) {
         tracked -= trackable
     }
 
@@ -84,7 +79,7 @@ abstract class Driver: BaseDestroyable() {
             }
         }
 
-        destroyed = true
+        super.destroy()
     }
 
     companion object {

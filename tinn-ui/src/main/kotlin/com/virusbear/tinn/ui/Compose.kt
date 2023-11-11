@@ -54,12 +54,9 @@ internal suspend fun renderComposable(onUpdate: (TinnNode) -> Unit, content: @Co
     }
 
     launch(recomposerContext) {
-        frameChannel.consumeEach {
-            Snapshot.sendApplyNotifications()
+        while(true) {
             clock.sendFrame(System.nanoTime())
             onUpdate(rootNode)
         }
     }
-
-    frameChannel.send(Unit)
 }

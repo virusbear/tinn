@@ -7,15 +7,16 @@ import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.glfwTerminate
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.system.MemoryUtil.NULL
 import java.io.File
+import java.util.LinkedList
 
 class DriverGL: Driver() {
     override fun init() {
         GLFWErrorCallback.createPrint(System.err).set()
-        if (!GLFW.glfwInit()) {
+        if (!glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
     }
@@ -28,27 +29,29 @@ class DriverGL: Driver() {
 
         glfwTerminate()
     }
-            glfwWaitEvents()
+
+    override suspend fun pollEvents() {
+        for(window in _windows) {
+            window.pollEvents()
         }
     }
+
     override val availableMonitors: List<Monitor>
         get() =
-            execute {
-                glfwGetMonitors()?.let { buffer ->
-                    buildList {
-                        while(buffer.hasRemaining()) {
-                            add(MonitorGL(buffer.get(), this@DriverGL))
-                        }
+            glfwGetMonitors()?.let { buffer ->
+                buildList {
+                    while(buffer.hasRemaining()) {
+                        add(MonitorGL(buffer.get()))
                     }
-                } ?: emptyList()
-            }
+                }
+            } ?: emptyList()
 
     override val primaryMonitor: Monitor
-        get() = execute { glfwGetPrimaryMonitor() }.let { native ->
+        get() = glfwGetPrimaryMonitor().let { native ->
             if(native == NULL) {
                 error("No primary monitor available")
             } else {
-                MonitorGL(native, this)
+                MonitorGL(native)
             }
         }
 
@@ -60,7 +63,11 @@ class DriverGL: Driver() {
         vsync: Boolean,
         multisample: MultiSample
     ): Window =
-        WindowGL.create(width, height, title, resizable, vsync, multisample)
+        WindowGL.create(width, height, title, resizable, vsync, multisample).also {
+            _windows += it as WindowGL
+        }
+
+    private val _windows: MutableList<WindowGL> = LinkedList()
 
     override fun createDrawer(): Drawer =
         NanoVGDrawer()
@@ -142,4 +149,12 @@ class DriverGL: Driver() {
 
     override val activeRenderTarget: RenderTarget
         get() = RenderTargetGL.activeRenderTarget
+
+    override fun untrack(trackable: Trackable) {
+        super.untrack(trackable)
+
+        if(trackable is WindowGL) {
+            _windows -= trackable
+        }
+    }
 }

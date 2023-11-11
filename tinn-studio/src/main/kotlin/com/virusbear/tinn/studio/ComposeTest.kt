@@ -14,7 +14,10 @@ import com.virusbear.tinn.ui.compose.dp
 import com.virusbear.tinn.ui.compose.modifier.*
 import com.virusbear.tinn.ui.tinnWindow
 import com.virusbear.tinn.window.Window
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 
@@ -30,15 +33,23 @@ suspend fun main() {
         }
     }
 
-    tinnWindow(window, dispatcher) {
-        Box(Modifier.fillSize().padding(16)) {
-            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
-            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)
-            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomStart)
-            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomEnd)
-            Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.Center)
+    println("Hello World")
+
+    val completableFuture = CoroutineScope(dispatcher).future {
+        tinnWindow(window, dispatcher) {
+            Box(Modifier.padding(16.dp)) {
+                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
+                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)
+                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomStart)
+                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.BottomEnd)
+                Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.Center)
+            }
         }
+    }.thenApply {
+        Driver.driver.destroy()
     }
 
-    Driver.driver.destroy()
+    Driver.driver.runEventLoop()
+
+    completableFuture.cancel(true)
 }
