@@ -11,6 +11,8 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.*
 import org.lwjgl.system.MemoryStack
+import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 import com.virusbear.tinn.opengl.checkGLErrors as checkGLErrorsTinn
 
 fun ContextGL.glfwDefaultWindowHints() =
@@ -358,4 +360,57 @@ fun ContextGL.glfwGetMonitorContentScale(monitor: Long): Vec2 =
 
             Vec2(x.get().toDouble(), y.get().toDouble())
         }
+    }
+
+fun ContextGL.glGenTextures(): Int =
+    execute {
+        GL30C.glGenTextures()
+    }
+
+fun ContextGL.glTexParameteri(target: Int, pname: Int, param: Int) =
+    execute {
+        GL30C.glTexParameteri(target, pname, param)
+    }
+
+fun ContextGL.glPixelStorei(pname: Int, param: Int) =
+    execute {
+        GL30C.glPixelStorei(pname, param)
+    }
+
+fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: ByteBuffer?) =
+    execute {
+        GL30C.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
+    }
+
+fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: FloatBuffer?) =
+    execute {
+        GL30C.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
+    }
+
+fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int) =
+    glTexImage2D(target, level, internalFormat, width, height, border, format, type, null as ByteBuffer?)
+
+fun ContextGL.glTexImage2DMultisample(target: Int, samples: Int, internalFormat: Int, width: Int, height: Int, fixedSampleLocations: Boolean) =
+    execute {
+        GL33C.glTexImage2DMultisample(target, samples, internalFormat, width, height, fixedSampleLocations)
+    }
+
+fun ContextGL.glGenerateMipmap(target: Int) =
+    execute {
+        GL30C.glGenerateMipmap(target)
+    }
+
+fun ContextGL.glActiveTexture(texture: Int) =
+    execute {
+        GL30C.glActiveTexture(texture)
+    }
+
+fun ContextGL.glBindTexture(target: Int, textureId: Int) =
+    execute {
+        GL30C.glBindTexture(target, textureId)
+    }
+
+fun ContextGL.glDeleteTextures(textureId: Int) =
+    execute {
+        GL30C.glDeleteTextures(textureId)
     }
