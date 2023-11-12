@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.color.Color
 
 class ComposeColorRGBANode: BaseNode("Compose Color RGBA", ComposeColorRGBANode) {
@@ -12,7 +12,7 @@ class ComposeColorRGBANode: BaseNode("Compose Color RGBA", ComposeColorRGBANode)
     val a: Double by input("A", default = 1.0)
     var color: Color by output("Color", default = Color.TRANSPARENT)
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         color = Color(r, g, b, a)
     }
 }

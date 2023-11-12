@@ -1,9 +1,9 @@
 package com.virusbear.tinn
 
-import com.virusbear.tinn.Context.Element
-import com.virusbear.tinn.Context.Key
+import com.virusbear.tinn.ProcessingContext.Element
+import com.virusbear.tinn.ProcessingContext.Key
 
-interface Context {
+interface ProcessingContext {
     operator fun <E: Element> get(key: Key<E>): E?
 
     operator fun <E: Element> contains(key: Key<E>): Boolean =
@@ -11,7 +11,7 @@ interface Context {
 
     fun <R> fold(initial: R, operation: (R, Element) -> R): R
 
-    operator fun plus(context: Context): Context =
+    operator fun plus(context: ProcessingContext): ProcessingContext =
         if(context === EmptyContext) this else
             context.fold(this) { acc, element ->
                 val removed = acc.minusKey(element.key)
@@ -20,11 +20,11 @@ interface Context {
                 }
             }
 
-    fun minusKey(key: Key<*>): Context
+    fun minusKey(key: Key<*>): ProcessingContext
 
     interface Key<E: Element>
 
-    interface Element: Context {
+    interface Element: ProcessingContext {
         val key: Key<*>
 
         override operator fun <E: Element> get(key: Key<E>): E? =
@@ -34,7 +34,7 @@ interface Context {
         override fun <R> fold(initial: R, operation: (R, Element) -> R): R =
             operation(initial, this)
 
-        override fun minusKey(key: Key<*>): Context =
+        override fun minusKey(key: Key<*>): ProcessingContext =
             if(this.key == key) EmptyContext else this
     }
 }
@@ -61,19 +61,19 @@ fun <E: Element> Element.getPolymorphicElement(key: Key<E>): E? {
     return if(this.key === key) this as E else null
 }
 
-object EmptyContext: Context {
+object EmptyContext: ProcessingContext {
     override fun <E: Element> get(key: Key<E>): E? = null
     override fun <R> fold(initial: R, operation: (R, Element) -> R): R = initial
-    override fun plus(context: Context): Context = context
-    override fun minusKey(key: Key<*>): Context = this
+    override fun plus(context: ProcessingContext): ProcessingContext = context
+    override fun minusKey(key: Key<*>): ProcessingContext = this
     override fun hashCode(): Int = 0
     override  fun toString(): String = "EmptyProcessingContext"
 }
 
 internal class CombinedContext(
-    private val left: Context,
+    private val left: ProcessingContext,
     private val element: Element
-): Context {
+): ProcessingContext {
     override fun <E: Element> get(key: Key<E>): E? {
         var cur = this
         while(true) {
@@ -90,7 +90,7 @@ internal class CombinedContext(
     override fun <R> fold(initial: R, operation: (R, Element) -> R): R =
         operation(left.fold(initial, operation), element)
 
-    override fun minusKey(key: Key<*>): Context {
+    override fun minusKey(key: Key<*>): ProcessingContext {
         element[key]?.let { return left }
         val newLeft = left.minusKey(key)
         return when {

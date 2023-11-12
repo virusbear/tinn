@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.math
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.NodeCategory
 import com.virusbear.tinn.nodes.NodeIdentifier
@@ -13,7 +13,7 @@ class LerpNode: BaseNode("Lerp", LerpNode) {
     val t: Double by input("t", 0.0)
     var output: Double by output("Output", 0.0)
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         output = (start * (1.0 - t)) + (end * t)
     }
 }

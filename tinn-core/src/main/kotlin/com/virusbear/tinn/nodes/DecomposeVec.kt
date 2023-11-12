@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.math.*
 
 class DecomposeVec2: BaseNode("Decompose Vec2", DecomposeVec2) {
@@ -10,7 +10,7 @@ class DecomposeVec2: BaseNode("Decompose Vec2", DecomposeVec2) {
     var x: Double by output("X")
     var y: Double by output("Y")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
     }
@@ -23,7 +23,7 @@ class DecomposeIVec2: BaseNode("Decompose IVec2", DecomposeIVec2) {
     var x: Int by output("X")
     var y: Int by output("Y")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
     }
@@ -37,7 +37,7 @@ class DecomposeVec3: BaseNode("Decompose Vec3", DecomposeVec3) {
     var y: Double by output("Y")
     var z: Double by output("Z")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
         z = input.z
@@ -52,7 +52,7 @@ class DecomposeIVec3: BaseNode("Decompose IVec3", DecomposeIVec3) {
     var y: Int by output("Y")
     var z: Int by output("Z")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
         z = input.z
@@ -68,7 +68,7 @@ class DecomposeVec4: BaseNode("Decompose Vec4", DecomposeVec4) {
     var z: Double by output("Z")
     var w: Double by output("W")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
         z = input.z
@@ -85,7 +85,7 @@ class DecomposeIVec4: BaseNode("Decompose IVec4", DecomposeIVec4) {
     var z: Int by output("Z")
     var w: Int by output("W")
 
-    override fun process(context: Context) {
+    override fun process(context: ProcessingContext) {
         x = input.x
         y = input.y
         z = input.z

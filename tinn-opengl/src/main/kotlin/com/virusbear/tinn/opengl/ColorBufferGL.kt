@@ -44,7 +44,7 @@ class ColorBufferGL internal constructor(
             context.glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
             
             when(multisample) {
-                MultiSample.None -> context.glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType, null as ByteBuffer?)
+                MultiSample.None -> context.glTexImage2D(target, 0, format.internalFormat, width, height, 0, format.glFormat, format.glType)
                 else -> context.glTexImage2DMultisample(target, multisample.samples.coerceAtMost(LimitsGL.MaxSamples - 1), format.internalFormat, width, height, false)
             }
             context.checkGLErrors()

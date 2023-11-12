@@ -1,7 +1,7 @@
 package com.virusbear.tinn.nodes
 
 import com.virusbear.tinn.AbstractContextElement
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.EmptyContext
 
 open class NodeIdentifier(
@@ -10,9 +10,9 @@ open class NodeIdentifier(
     val internal: Boolean = false,
     private val factory: NodeFactory
 ): AbstractContextElement(NodeIdentifier) {
-    companion object Key: Context.Key<NodeIdentifier>
+    companion object Key: ProcessingContext.Key<NodeIdentifier>
 
-    fun new(context: Context = EmptyContext): Node =
+    fun new(context: ProcessingContext = EmptyContext): Node =
         factory(context + this)
 
     override fun equals(other: Any?): Boolean {

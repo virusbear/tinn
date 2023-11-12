@@ -113,7 +113,7 @@ abstract class BaseNode(
         id = -1
     }
 
-    override fun load(reader: SceneReader, context: Context) {
+    override fun load(reader: SceneReader, context: ProcessingContext) {
         val version = reader.string("version")
         require(SCENE_VERSION.version >= version.version) { "Unsupported file version. Unable to load BaseNode" }
 

@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes.constants
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.nodes.BaseNode
 import com.virusbear.tinn.nodes.Constant
 import com.virusbear.tinn.nodes.NodeCategory
@@ -11,5 +11,5 @@ class ConstantPINode: BaseNode("PI", ConstantPINode) {
 
     val pi: Double by output("PI", default = kotlin.math.PI)
 
-    override fun process(context: Context) {}
+    override fun process(context: ProcessingContext) {}
 }

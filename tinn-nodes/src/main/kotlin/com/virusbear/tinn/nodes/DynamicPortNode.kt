@@ -1,6 +1,6 @@
 package com.virusbear.tinn.nodes
 
-import com.virusbear.tinn.Context
+import com.virusbear.tinn.ProcessingContext
 import com.virusbear.tinn.SceneReader
 import com.virusbear.tinn.SceneWriter
 import kotlin.reflect.KClass
@@ -48,7 +48,7 @@ abstract class DynamicPortNode(
         _dynamicPorts -= port
     }
 
-    override fun load(reader: SceneReader, context: Context) {
+    override fun load(reader: SceneReader, context: ProcessingContext) {
         super.load(reader, context)
 
         val version = reader.string("version")
