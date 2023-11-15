@@ -16,7 +16,7 @@ import org.lwjgl.nanovg.NanoVGGL3
 import java.util.*
 
 class NanoVGDrawer(
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ): Drawer, Trackable(driver) {
     private val ctx = context.execute { NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS or NanoVGGL3.NVG_STENCIL_STROKES or NanoVGGL3.NVG_IMAGE_NODELETE) }

@@ -21,16 +21,19 @@ abstract class Driver: BaseDestroyable() {
     abstract val availableMonitors: List<Monitor>
     abstract val primaryMonitor: Monitor
 
+    abstract fun createContext(): GraphicsContext
+
     abstract fun createWindow(
         width: Int,
         height: Int,
         title: String,
         resizable: Boolean,
         vsync: Boolean,
-        multisample: MultiSample
+        multisample: MultiSample,
+        context: GraphicsContext
     ): Window
 
-    abstract fun createDrawer(): Drawer
+    abstract fun createDrawer(context: GraphicsContext): Drawer
     abstract fun createDrawable(size: Vec2, block: Drawer.() -> Unit): Drawable
 
     abstract fun createColorBuffer(
@@ -39,28 +42,30 @@ abstract class Driver: BaseDestroyable() {
         contentScale: Double,
         format: ColorFormat,
         multisample: MultiSample,
-        levels: MipMapLevel
+        levels: MipMapLevel,
+        context: GraphicsContext
     ): ColorBuffer
     abstract fun loadImage(
         file: File,
-        format: ColorFormat
+        format: ColorFormat,
+        context: GraphicsContext
     ): ColorBuffer
 
-    abstract fun createDepthBuffer(width: Int, height: Int): DepthBuffer
-    abstract fun createIndexBuffer(size: Int): IndexBuffer
-    abstract fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer
-    abstract fun createRenderTarget(width: Int, height: Int, contentScale: Double): RenderTarget
-    abstract fun createComputeShader(code: String): ComputeShader
-    abstract fun createEvaluationShader(code: String): EvaluationShader
-    abstract fun createFragmentShader(code: String): FragmentShader
-    abstract fun createGeometryShader(code: String): GeometryShader
-    abstract fun createShaderProgram(): ShaderProgram
-    abstract fun createTesselationControlShader(code: String): TesselationControlShader
-    abstract fun createVertexShader(code: String): VertexShader
+    abstract fun createDepthBuffer(width: Int, height: Int, context: GraphicsContext): DepthBuffer
+    abstract fun createIndexBuffer(size: Int, context: GraphicsContext): IndexBuffer
+    abstract fun createVertexBuffer(size: Int, format: VertexFormat, context: GraphicsContext): VertexBuffer
+    abstract fun createRenderTarget(width: Int, height: Int, contentScale: Double, context: GraphicsContext): RenderTarget
+    abstract fun createComputeShader(code: String, context: GraphicsContext): ComputeShader
+    abstract fun createEvaluationShader(code: String, context: GraphicsContext): EvaluationShader
+    abstract fun createFragmentShader(code: String, context: GraphicsContext): FragmentShader
+    abstract fun createGeometryShader(code: String, context: GraphicsContext): GeometryShader
+    abstract fun createShaderProgram(context: GraphicsContext): ShaderProgram
+    abstract fun createTesselationControlShader(code: String, context: GraphicsContext): TesselationControlShader
+    abstract fun createVertexShader(code: String, context: GraphicsContext): VertexShader
     //TODO: add loadShader(binary: ShaderBinary): Shader?
     //TODO: add loadShaderProgram(binary: ShaderProgramBinary): ShaderProgram?
 
-    abstract val activeRenderTarget: RenderTarget
+    abstract fun activeRenderTarget(context: GraphicsContext): RenderTarget
 
     private val tracked = mutableSetOf<Trackable>()
 

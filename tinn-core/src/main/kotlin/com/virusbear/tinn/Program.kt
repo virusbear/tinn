@@ -117,7 +117,7 @@ class Program(name: String = "Program"): BaseDestroyable(), SceneSavable {
 class ProgramContextElement(
     val program: Program
 ): AbstractContextElement(ProgramContextElement) {
-    companion object Key: com.virusbear.tinn.Context.ProcessingContext.Key<ProgramContextElement>
+    companion object Key: ProcessingContext.Key<ProgramContextElement>
 
     override fun toString(): String =
         "Program(${program.name})"

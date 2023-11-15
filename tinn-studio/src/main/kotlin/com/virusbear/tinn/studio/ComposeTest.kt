@@ -20,23 +20,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
+import kotlin.coroutines.EmptyCoroutineContext
 
 suspend fun main() {
     Driver.use(DriverGL())
 
-    val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-
     val window: Window = Driver.use {
         init()
-        runBlocking(dispatcher) {
-            createWindow(512, 512, "tinn", resizable = true, vsync = true, multisample = MultiSample.None)
-        }
+
+        createWindow(512, 512, "tinn", resizable = true, vsync = true, multisample = MultiSample.None)
     }
 
     println("Hello World")
 
-    val completableFuture = CoroutineScope(dispatcher).future {
-        tinnWindow(window, dispatcher) {
+    val completableFuture = CoroutineScope(EmptyCoroutineContext).future {
+        tinnWindow(window) {
             Box(Modifier.padding(16.dp)) {
                 Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopStart)
                 Box(Modifier.size(1.dp, 1.dp).background(Color.WHITE), alignment = Alignment.TopEnd)

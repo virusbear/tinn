@@ -199,7 +199,7 @@ class Nodespace(name: String, val parent: Nodespace? = null): BaseDestroyable(),
 class NodespaceContextElement(
     val nodespace: Nodespace
 ): AbstractContextElement(NodespaceContextElement) {
-    companion object Key: com.virusbear.tinn.Context.ProcessingContext.Key<NodespaceContextElement>
+    companion object Key: ProcessingContext.Key<NodespaceContextElement>
 
     override fun toString(): String =
         "Nodespace(${nodespace.name})"

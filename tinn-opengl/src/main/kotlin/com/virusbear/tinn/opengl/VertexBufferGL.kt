@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL30C.*
 class VertexBufferGL internal constructor(
     override val size: Int,
     override val format: VertexFormat,
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ): VertexBuffer, Trackable(driver) {
     private val vao: Int

@@ -6,15 +6,12 @@ import com.virusbear.tinn.RenderTarget
 import com.virusbear.tinn.Trackable
 import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.IVec2
-import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.window.Window
 import com.virusbear.tinn.window.WindowRenderTarget
-import org.lwjgl.glfw.GLFW.glfwGetCurrentContext
-import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL30C.*
 import java.util.*
 
-class WindowRenderTargetGL(override val window: Window, context: ContextGL, driver: Driver):
+class WindowRenderTargetGL(override val window: Window, context: GraphicsContextGL, driver: Driver):
     RenderTargetGL(
         0, 0, 1.0,
         glGetInteger(GL_FRAMEBUFFER_BINDING),
@@ -39,7 +36,7 @@ open class RenderTargetGL(
     override val height: Int,
     override val contentScale: Double,
     protected val frameBuffer: Int = glGenFramebuffers(),
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ) : RenderTarget, Trackable(driver) {
     //TODO: separate type for ColorBufferAttachment necessary?
@@ -54,7 +51,7 @@ open class RenderTargetGL(
 
         val activeRenderTarget: RenderTarget
             get() {
-                val stack = active.getOrPut(Driver.driver.currentContext.native) { Stack() }
+                val stack = active.getOrPut((Driver.driver as DriverGL).currentContext.native) { Stack() }
                 return stack.peek()
             }
     }

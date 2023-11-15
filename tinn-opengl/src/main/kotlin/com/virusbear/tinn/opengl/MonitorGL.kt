@@ -4,12 +4,11 @@ import com.virusbear.tinn.*
 import com.virusbear.tinn.math.IVec2
 import com.virusbear.tinn.math.units.dimensions.mm
 import com.virusbear.tinn.math.units.dimensions.toInch
-import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWVidMode
 
 class MonitorGL(
     val native: Long,
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ): Monitor, Trackable(driver) {
     override val size: IVec2

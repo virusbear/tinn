@@ -1,5 +1,6 @@
 package com.virusbear.tinn.opengl
 
+import com.virusbear.tinn.GraphicsContext
 import com.virusbear.tinn.Driver
 import com.virusbear.tinn.Trackable
 import org.lwjgl.glfw.GLFW
@@ -8,7 +9,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class ContextGL(driver: Driver): Trackable(driver) {
+class GraphicsContextGL(driver: Driver): Trackable(driver), GraphicsContext {
     var native: Long = NULL
         private set
     private val owner: ExecutorService = Executors.newSingleThreadExecutor()
@@ -16,6 +17,7 @@ class ContextGL(driver: Driver): Trackable(driver) {
     fun makeCurrent(context: Long) {
         ensureAlive()
 
+        clearCurrent()
         native = context
         glfwMakeContextCurrent()
     }

@@ -16,7 +16,7 @@ class ColorBufferGL internal constructor(
     val format: ColorFormat,
     override val  multisample: MultiSample,
     val levels: MipMapLevel,
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ): ColorBuffer, Trackable(driver) {
     internal val target: Int
@@ -101,7 +101,7 @@ class ColorBufferGL internal constructor(
     }
 
     companion object {
-        fun loadImage(file: File, format: ColorFormat = ColorFormat.RGB8, context: ContextGL, driver: Driver): ColorBuffer {
+        fun loadImage(file: File, format: ColorFormat = ColorFormat.RGB8, context: GraphicsContextGL, driver: Driver): ColorBuffer {
             val stack = MemoryStack.stackPush()
 
             val w = stack.mallocInt(1)

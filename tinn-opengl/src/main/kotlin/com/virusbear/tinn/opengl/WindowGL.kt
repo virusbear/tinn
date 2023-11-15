@@ -5,19 +5,18 @@ import com.virusbear.tinn.color.Color
 import com.virusbear.tinn.math.*
 import com.virusbear.tinn.window.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryUtil.NULL
 
 class WindowGL(
     private val native: Long,
     override val multisample: MultiSample,
-    private val context: ContextGL,
+    private val context: GraphicsContextGL,
     driver: Driver
 ): Window, Trackable(driver) {
     companion object {
-        fun create(width: Int, height: Int, title: String, resizable: Boolean, vsync: Boolean, multisample: MultiSample = MultiSample.None, driver: Driver): Window {
-            val context = ContextGL(driver)
+        fun create(width: Int, height: Int, title: String, resizable: Boolean, vsync: Boolean, multisample: MultiSample = MultiSample.None, driver: DriverGL): Window {
+            val context = driver.createContext() as GraphicsContextGL
 
             context.glfwDefaultWindowHints()
             context.glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE)
@@ -47,12 +46,13 @@ class WindowGL(
 
             context.glClearColor(Color.TRANSPARENT)
 
+            driver.pushContext(context)
+
             return WindowGL(window, multisample, context, driver)
         }
     }
 
     init {
-        bind()
         registerWindowEvents()
     }
 
@@ -87,13 +87,10 @@ class WindowGL(
         context.glfwPollEvents()
     }
 
-    override fun bind() {
-        context.makeCurrent(native)
-    }
+    //In openGL, a window is the context. As the windows context is always bound in the context object, we do not need to do anything in bind and unbind here
+    override fun bind() { }
 
-    override fun unbind() {
-        context.clearCurrent()
-    }
+    override fun unbind() { }
 
     override fun destroy() {
         if(destroyed)

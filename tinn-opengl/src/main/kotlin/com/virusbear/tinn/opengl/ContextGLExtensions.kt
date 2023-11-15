@@ -15,22 +15,22 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import com.virusbear.tinn.opengl.checkGLErrors as checkGLErrorsTinn
 
-fun ContextGL.glfwDefaultWindowHints() =
+fun GraphicsContextGL.glfwDefaultWindowHints() =
     execute {
         GLFW.glfwDefaultWindowHints()
     }
 
-fun ContextGL.glfwWindowHint(hint: Int, value: Int) =
+fun GraphicsContextGL.glfwWindowHint(hint: Int, value: Int) =
     execute {
         GLFW.glfwWindowHint(hint, value)
     }
 
-fun ContextGL.glfwCreateWindow(width: Int, height: Int, title: String, monitor: Long, share: Long): Long =
+fun GraphicsContextGL.glfwCreateWindow(width: Int, height: Int, title: String, monitor: Long, share: Long): Long =
     execute {
         GLFW.glfwCreateWindow(width, height, title, monitor, share)
     }
 
-fun ContextGL.glfwGetWindowSize(window: Long): IVec2 =
+fun GraphicsContextGL.glfwGetWindowSize(window: Long): IVec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
@@ -42,54 +42,54 @@ fun ContextGL.glfwGetWindowSize(window: Long): IVec2 =
         }
     }
 
-fun ContextGL.glfwSetWindowPos(window: Long, pos: IVec2) =
+fun GraphicsContextGL.glfwSetWindowPos(window: Long, pos: IVec2) =
     execute {
         GLFW.glfwSetWindowPos(window, pos.x, pos.y)
     }
 
-fun ContextGL.glfwSwapInterval(interval: Int) =
+fun GraphicsContextGL.glfwSwapInterval(interval: Int) =
     execute {
         GLFW.glfwSwapInterval(interval)
     }
 
-fun ContextGL.createCapabilities(): GLCapabilities {
+fun GraphicsContextGL.createCapabilities(): GLCapabilities {
     return execute {
         GL.createCapabilities()
     }
 }
 
-fun ContextGL.glClearColor(color: Color) {
+fun GraphicsContextGL.glClearColor(color: Color) {
     execute {
         GL30C.glClearColor(color.r.toFloat(), color.g.toFloat(), color.b.toFloat(), color.a.toFloat())
     }
 }
 
-fun ContextGL.glfwWindowShouldClose(window: Long): Boolean =
+fun GraphicsContextGL.glfwWindowShouldClose(window: Long): Boolean =
     execute {
         GLFW.glfwWindowShouldClose(window)
     }
 
-fun ContextGL.glClear(mask: Int) =
+fun GraphicsContextGL.glClear(mask: Int) =
     execute {
         GL30C.glClear(mask)
     }
 
-fun ContextGL.glfwSwapBuffers(window: Long) =
+fun GraphicsContextGL.glfwSwapBuffers(window: Long) =
     execute {
         GLFW.glfwSwapBuffers(window)
     }
 
-fun ContextGL.glfwPollEvents() =
+fun GraphicsContextGL.glfwPollEvents() =
     execute {
         GLFW.glfwPollEvents()
     }
 
-fun ContextGL.glfwDestroyWindow(window: Long) =
+fun GraphicsContextGL.glfwDestroyWindow(window: Long) =
     execute {
         GLFW.glfwDestroyWindow(window)
     }
 
-fun ContextGL.glfwGetWindowContentScale(window: Long): Vec2 =
+fun GraphicsContextGL.glfwGetWindowContentScale(window: Long): Vec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val scaleX = stack.mallocFloat(1)
@@ -101,12 +101,12 @@ fun ContextGL.glfwGetWindowContentScale(window: Long): Vec2 =
         }
     }
 
-fun ContextGL.glfwGetWindowMonitor(window: Long): Long =
+fun GraphicsContextGL.glfwGetWindowMonitor(window: Long): Long =
     execute {
         GLFW.glfwGetWindowMonitor(window)
     }
 
-fun ContextGL.glfwGetWindowPos(window: Long): IVec2 =
+fun GraphicsContextGL.glfwGetWindowPos(window: Long): IVec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val xPos = stack.mallocInt(1)
@@ -118,7 +118,7 @@ fun ContextGL.glfwGetWindowPos(window: Long): IVec2 =
         }
     }
 
-fun ContextGL.glfwSetWindowSizeCallback(window: Long, callback: (size: IVec2) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowSizeCallback(window: Long, callback: (size: IVec2) -> Unit) =
     execute {
         GLFW.glfwSetWindowSizeCallback(window) { callbackWindow, width, height ->
             if(callbackWindow == window) {
@@ -127,7 +127,7 @@ fun ContextGL.glfwSetWindowSizeCallback(window: Long, callback: (size: IVec2) ->
         }
     }
 
-fun ContextGL.glfwSetWindowContentScaleCallback(window: Long, callback: (scale: Vec2) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowContentScaleCallback(window: Long, callback: (scale: Vec2) -> Unit) =
     execute {
         GLFW.glfwSetWindowContentScaleCallback(window) { callbackWindow, scaleX, scaleY ->
             if(callbackWindow == window) {
@@ -136,7 +136,7 @@ fun ContextGL.glfwSetWindowContentScaleCallback(window: Long, callback: (scale: 
         }
     }
 
-fun ContextGL.glfwSetWindowPosCallback(window: Long, callback: (pos: IVec2) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowPosCallback(window: Long, callback: (pos: IVec2) -> Unit) =
     execute {
         GLFW.glfwSetWindowPosCallback(window) { callbackWindow, x, y ->
             if(callbackWindow == window) {
@@ -145,7 +145,7 @@ fun ContextGL.glfwSetWindowPosCallback(window: Long, callback: (pos: IVec2) -> U
         }
     }
 
-fun ContextGL.glfwSetWindowFocusCallback(window: Long, callback: (focused: Boolean) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowFocusCallback(window: Long, callback: (focused: Boolean) -> Unit) =
     execute {
         GLFW.glfwSetWindowFocusCallback(window) { callbackWindow, focused ->
             if(callbackWindow == window) {
@@ -154,7 +154,7 @@ fun ContextGL.glfwSetWindowFocusCallback(window: Long, callback: (focused: Boole
         }
     }
 
-fun ContextGL.glfwSetWindowMaximizeCallback(window: Long, callback: (maximized: Boolean) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowMaximizeCallback(window: Long, callback: (maximized: Boolean) -> Unit) =
     execute {
         GLFW.glfwSetWindowMaximizeCallback(window) { callbackWindow, maximized ->
             if(callbackWindow == window) {
@@ -163,7 +163,7 @@ fun ContextGL.glfwSetWindowMaximizeCallback(window: Long, callback: (maximized: 
         }
     }
 
-fun ContextGL.glfwSetWindowIconifyCallback(window: Long, callback: (minimized: Boolean) -> Unit) =
+fun GraphicsContextGL.glfwSetWindowIconifyCallback(window: Long, callback: (minimized: Boolean) -> Unit) =
     execute {
         GLFW.glfwSetWindowIconifyCallback(window) { callbackWindow, minimized ->
            if(callbackWindow == window) {
@@ -172,7 +172,7 @@ fun ContextGL.glfwSetWindowIconifyCallback(window: Long, callback: (minimized: B
         }
     }
 
-fun ContextGL.glfwSetScrollCallback(window: Long, callback: (offset: Vec2) -> Unit) =
+fun GraphicsContextGL.glfwSetScrollCallback(window: Long, callback: (offset: Vec2) -> Unit) =
     execute {
         GLFW.glfwSetScrollCallback(window) { callbackWindow, x, y ->
             if(callbackWindow == window) {
@@ -181,7 +181,7 @@ fun ContextGL.glfwSetScrollCallback(window: Long, callback: (offset: Vec2) -> Un
         }
     }
 
-fun ContextGL.glfwSetCursorEnterCallback(window: Long, callback: (entered: Boolean) -> Unit) =
+fun GraphicsContextGL.glfwSetCursorEnterCallback(window: Long, callback: (entered: Boolean) -> Unit) =
     execute {
         GLFW.glfwSetCursorEnterCallback(window) { callbackWindow, entered ->
             if(callbackWindow == window) {
@@ -190,7 +190,7 @@ fun ContextGL.glfwSetCursorEnterCallback(window: Long, callback: (entered: Boole
         }
     }
 
-fun ContextGL.glfwSetCursorPosCallback(window: Long, callback: (pos: Vec2) -> Unit) =
+fun GraphicsContextGL.glfwSetCursorPosCallback(window: Long, callback: (pos: Vec2) -> Unit) =
     execute {
         GLFW.glfwSetCursorPosCallback(window) { callbackWindow, x, y ->
             if(callbackWindow == window) {
@@ -199,7 +199,7 @@ fun ContextGL.glfwSetCursorPosCallback(window: Long, callback: (pos: Vec2) -> Un
         }
     }
 
-fun ContextGL.glfwSetMouseButtonCallback(window: Long, callback: (button: MouseButton, action: Action, mods: Set<Mod>) -> Unit) =
+fun GraphicsContextGL.glfwSetMouseButtonCallback(window: Long, callback: (button: MouseButton, action: Action, mods: Set<Mod>) -> Unit) =
     execute {
         GLFW.glfwSetMouseButtonCallback(window) { callbackWindow, button, action, mods ->
             if(callbackWindow == window) {
@@ -208,7 +208,7 @@ fun ContextGL.glfwSetMouseButtonCallback(window: Long, callback: (button: MouseB
         }
     }
 
-fun ContextGL.glfwSetCharCallback(window: Long, callback: (codepoint: Char) -> Unit) =
+fun GraphicsContextGL.glfwSetCharCallback(window: Long, callback: (codepoint: Char) -> Unit) =
     execute {
         GLFW.glfwSetCharCallback(window) { callbackWindow, codepoint ->
             if(callbackWindow == window) {
@@ -217,7 +217,7 @@ fun ContextGL.glfwSetCharCallback(window: Long, callback: (codepoint: Char) -> U
         }
     }
 
-fun ContextGL.glfwSetKeyCallback(window: Long, callback: (key: Key?, code: Int, action: Action, mods: Set<Mod>) -> Unit) =
+fun GraphicsContextGL.glfwSetKeyCallback(window: Long, callback: (key: Key?, code: Int, action: Action, mods: Set<Mod>) -> Unit) =
     execute {
         GLFW.glfwSetKeyCallback(window) { callbackWindow, key, code, action, mods ->
             if(callbackWindow == window) {
@@ -226,7 +226,7 @@ fun ContextGL.glfwSetKeyCallback(window: Long, callback: (key: Key?, code: Int, 
         }
     }
 
-fun ContextGL.glfwSetCharModsCallback(window: Long, callback: (codepoint: Char, mods: Set<Mod>) -> Unit) =
+fun GraphicsContextGL.glfwSetCharModsCallback(window: Long, callback: (codepoint: Char, mods: Set<Mod>) -> Unit) =
     execute {
         GLFW.glfwSetCharModsCallback(window) { callbackWindow, codepoint, mods ->
             if(callbackWindow == window) {
@@ -235,98 +235,98 @@ fun ContextGL.glfwSetCharModsCallback(window: Long, callback: (codepoint: Char, 
         }
     }
 
-fun ContextGL.glGenBuffers(): Int =
+fun GraphicsContextGL.glGenBuffers(): Int =
     execute {
         GL30C.glGenBuffers()
     }
 
-fun ContextGL.glGenVertexArrays(): Int =
+fun GraphicsContextGL.glGenVertexArrays(): Int =
     execute {
         GL30C.glGenVertexArrays()
     }
 
-fun ContextGL.checkGLErrors(errorFunction: ((error: Int) -> String?)? = null) {
+fun GraphicsContextGL.checkGLErrors(errorFunction: ((error: Int) -> String?)? = null) {
     execute {
         checkGLErrorsTinn(errorFunction)
     }
 }
 
-fun ContextGL.glBindBuffer(target: Int, buffer: Int) =
+fun GraphicsContextGL.glBindBuffer(target: Int, buffer: Int) =
     execute {
         GL30C.glBindBuffer(target, buffer)
     }
 
-fun ContextGL.glBufferData(target: Int, size: Long, usage: Int) =
+fun GraphicsContextGL.glBufferData(target: Int, size: Long, usage: Int) =
     execute {
         GL30C.glBufferData(target, size, usage)
     }
 
-fun ContextGL.glVertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, pointer: Long) =
+fun GraphicsContextGL.glVertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, pointer: Long) =
     execute {
         GL30C.glVertexAttribPointer(index, size, type, normalized, stride, pointer)
     }
 
-fun ContextGL.glEnableVertexAttribArray(index: Int) =
+fun GraphicsContextGL.glEnableVertexAttribArray(index: Int) =
     execute {
         GL30C.glEnableVertexAttribArray(index)
     }
 
-fun ContextGL.glBindVertexArray(array: Int) =
+fun GraphicsContextGL.glBindVertexArray(array: Int) =
     execute {
         GL30C.glBindVertexArray(array)
     }
 
-fun ContextGL.glDeleteVertexArrays(array: Int) =
+fun GraphicsContextGL.glDeleteVertexArrays(array: Int) =
     execute {
         GL30C.glDeleteVertexArrays(array)
     }
 
-fun ContextGL.glDeleteBuffers(buffer: Int) =
+fun GraphicsContextGL.glDeleteBuffers(buffer: Int) =
     execute {
         GL30C.glDeleteBuffers(buffer)
     }
 
-fun ContextGL.glFramebufferTexture2D(target: Int, attachment: Int, texTarget: Int, texture: Int, level: Int) =
+fun GraphicsContextGL.glFramebufferTexture2D(target: Int, attachment: Int, texTarget: Int, texture: Int, level: Int) =
     execute {
         GL30C.glFramebufferTexture2D(target, attachment, texTarget, texture, level)
     }
 
-fun ContextGL.glDeleteFramebuffers(frameBuffer: Int) =
+fun GraphicsContextGL.glDeleteFramebuffers(frameBuffer: Int) =
     execute {
         GL30C.glDeleteFramebuffers(frameBuffer)
     }
 
-fun ContextGL.glBindFramebuffer(target: Int, frameBuffer: Int) =
+fun GraphicsContextGL.glBindFramebuffer(target: Int, frameBuffer: Int) =
     execute {
         GL30C.glBindFramebuffer(target, frameBuffer)
     }
 
-fun ContextGL.glDrawBuffers(attachments: IntArray) =
+fun GraphicsContextGL.glDrawBuffers(attachments: IntArray) =
     execute {
         GL30C.glDrawBuffers(attachments)
     }
 
-fun ContextGL.glViewport(pos: IVec2, size: IVec2) =
+fun GraphicsContextGL.glViewport(pos: IVec2, size: IVec2) =
     execute {
         GL30C.glViewport(pos.x, pos.y, size.x, size.y)
     }
 
-fun ContextGL.glfwGetMonitorName(monitor: Long): String? =
+fun GraphicsContextGL.glfwGetMonitorName(monitor: Long): String? =
     execute {
         GLFW.glfwGetMonitorName(monitor)
     }
 
-fun ContextGL.glfwGetPrimaryMonitor(): Long =
+fun GraphicsContextGL.glfwGetPrimaryMonitor(): Long =
     execute {
         GLFW.glfwGetPrimaryMonitor()
     }
 
-fun ContextGL.glfwGetVideoMode(monitor: Long): GLFWVidMode? =
+fun GraphicsContextGL.glfwGetVideoMode(monitor: Long): GLFWVidMode? =
     execute {
         GLFW.glfwGetVideoMode(monitor)
     }
 
-fun ContextGL.glfwGetMonitorPos(monitor: Long): IVec2 =
+fun GraphicsContextGL.glfwGetMonitorPos(monitor: Long): IVec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val x = stack.mallocInt(1)
@@ -338,7 +338,7 @@ fun ContextGL.glfwGetMonitorPos(monitor: Long): IVec2 =
         }
     }
 
-fun ContextGL.glfwGetMonitorPhysicalSize(monitor: Long): IVec2 =
+fun GraphicsContextGL.glfwGetMonitorPhysicalSize(monitor: Long): IVec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val width = stack.mallocInt(1)
@@ -350,7 +350,7 @@ fun ContextGL.glfwGetMonitorPhysicalSize(monitor: Long): IVec2 =
         }
     }
 
-fun ContextGL.glfwGetMonitorContentScale(monitor: Long): Vec2 =
+fun GraphicsContextGL.glfwGetMonitorContentScale(monitor: Long): Vec2 =
     execute {
         MemoryStack.stackPush().use { stack ->
             val x = stack.mallocFloat(1)
@@ -362,55 +362,55 @@ fun ContextGL.glfwGetMonitorContentScale(monitor: Long): Vec2 =
         }
     }
 
-fun ContextGL.glGenTextures(): Int =
+fun GraphicsContextGL.glGenTextures(): Int =
     execute {
         GL30C.glGenTextures()
     }
 
-fun ContextGL.glTexParameteri(target: Int, pname: Int, param: Int) =
+fun GraphicsContextGL.glTexParameteri(target: Int, pname: Int, param: Int) =
     execute {
         GL30C.glTexParameteri(target, pname, param)
     }
 
-fun ContextGL.glPixelStorei(pname: Int, param: Int) =
+fun GraphicsContextGL.glPixelStorei(pname: Int, param: Int) =
     execute {
         GL30C.glPixelStorei(pname, param)
     }
 
-fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: ByteBuffer?) =
+fun GraphicsContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: ByteBuffer?) =
     execute {
         GL30C.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
     }
 
-fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: FloatBuffer?) =
+fun GraphicsContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: FloatBuffer?) =
     execute {
         GL30C.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
     }
 
-fun ContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int) =
+fun GraphicsContextGL.glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int) =
     glTexImage2D(target, level, internalFormat, width, height, border, format, type, null as ByteBuffer?)
 
-fun ContextGL.glTexImage2DMultisample(target: Int, samples: Int, internalFormat: Int, width: Int, height: Int, fixedSampleLocations: Boolean) =
+fun GraphicsContextGL.glTexImage2DMultisample(target: Int, samples: Int, internalFormat: Int, width: Int, height: Int, fixedSampleLocations: Boolean) =
     execute {
         GL33C.glTexImage2DMultisample(target, samples, internalFormat, width, height, fixedSampleLocations)
     }
 
-fun ContextGL.glGenerateMipmap(target: Int) =
+fun GraphicsContextGL.glGenerateMipmap(target: Int) =
     execute {
         GL30C.glGenerateMipmap(target)
     }
 
-fun ContextGL.glActiveTexture(texture: Int) =
+fun GraphicsContextGL.glActiveTexture(texture: Int) =
     execute {
         GL30C.glActiveTexture(texture)
     }
 
-fun ContextGL.glBindTexture(target: Int, textureId: Int) =
+fun GraphicsContextGL.glBindTexture(target: Int, textureId: Int) =
     execute {
         GL30C.glBindTexture(target, textureId)
     }
 
-fun ContextGL.glDeleteTextures(textureId: Int) =
+fun GraphicsContextGL.glDeleteTextures(textureId: Int) =
     execute {
         GL30C.glDeleteTextures(textureId)
     }

@@ -6,12 +6,11 @@ import com.virusbear.tinn.draw.Drawer
 import com.virusbear.tinn.math.Vec2
 import com.virusbear.tinn.shader.*
 import com.virusbear.tinn.window.Window
-import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.system.MemoryUtil.NULL
 import java.io.File
-import java.util.LinkedList
+import java.util.*
 
 class DriverGL: Driver() {
     override fun init() {
@@ -41,7 +40,7 @@ class DriverGL: Driver() {
             glfwGetMonitors()?.let { buffer ->
                 buildList {
                     while(buffer.hasRemaining()) {
-                        add(MonitorGL(buffer.get()))
+                        add(MonitorGL(buffer.get(), currentContext, this@DriverGL))
                     }
                 }
             } ?: emptyList()
@@ -51,9 +50,12 @@ class DriverGL: Driver() {
             if(native == NULL) {
                 error("No primary monitor available")
             } else {
-                MonitorGL(native)
+                MonitorGL(native, currentContext, this)
             }
         }
+
+    override fun createContext(): GraphicsContext =
+        GraphicsContextGL(this)
 
     override fun createWindow(
         width: Int,
@@ -63,14 +65,14 @@ class DriverGL: Driver() {
         vsync: Boolean,
         multisample: MultiSample
     ): Window =
-        WindowGL.create(width, height, title, resizable, vsync, multisample).also {
+        WindowGL.create(width, height, title, resizable, vsync, multisample, this).also {
             _windows += it as WindowGL
         }
 
     private val _windows: MutableList<WindowGL> = LinkedList()
 
     override fun createDrawer(): Drawer =
-        NanoVGDrawer()
+        NanoVGDrawer(currentContext, driver)
 
     override fun createDrawable(size: Vec2, block: Drawer.() -> Unit): Drawable =
         DrawableGL(size, block)
@@ -89,11 +91,13 @@ class DriverGL: Driver() {
             contentScale,
             format,
             multisample,
-            levels
+            levels,
+            currentContext,
+            this
         )
 
     override fun loadImage(file: File, format: ColorFormat): ColorBuffer =
-        ColorBufferGL.loadImage(file, format)
+        ColorBufferGL.loadImage(file, format, currentContext, this)
 
     override fun createDepthBuffer(width: Int, height: Int): DepthBuffer {
         TODO("Prio 5")
@@ -101,13 +105,17 @@ class DriverGL: Driver() {
 
     override fun createIndexBuffer(size: Int): IndexBuffer =
         IndexBufferGL(
-            size
+            size,
+            currentContext,
+            this
         )
 
     override fun createVertexBuffer(size: Int, format: VertexFormat): VertexBuffer =
         VertexBufferGL(
             size,
-            format
+            format,
+            currentContext,
+            this
         )
 
     override fun createRenderTarget(
@@ -116,7 +124,7 @@ class DriverGL: Driver() {
         contentScale: Double
     ): RenderTarget =
         RenderTargetGL(
-            width, height, contentScale
+            width, height, contentScale, context = currentContext, driver = this
         )
 
     override fun createComputeShader(code: String): ComputeShader {

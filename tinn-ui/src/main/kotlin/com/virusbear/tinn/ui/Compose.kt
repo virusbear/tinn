@@ -15,20 +15,18 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlin.coroutines.CoroutineContext
 
-suspend fun tinnWindow(window: Window, uiContext: CoroutineContext, content: @Composable () -> Unit) {
+suspend fun tinnWindow(window: Window, content: @Composable () -> Unit) {
     renderComposable(
         onUpdate = { node ->
-            runBlocking(uiContext) {
-                node.density = Density(window.dpi / Dp.ReferenceDensity.density)
-                node.measureAndPlace(Constraints(0, window.width, 0, window.height))
-                window.clear()
-                with(window.renderTarget.drawer) {
-                    begin(window.width, window.height, window.contentScale)
-                    node.draw(this)
-                    end()
-                }
-                window.update()
+            node.density = Density(window.dpi / Dp.ReferenceDensity.density)
+            node.measureAndPlace(Constraints(0, window.width, 0, window.height))
+            window.clear()
+            with(window.renderTarget.drawer) {
+                begin(window.width, window.height, window.contentScale)
+                node.draw(this)
+                end()
             }
+            window.update()
         },
         content = content)
 }
