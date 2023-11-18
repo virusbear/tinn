@@ -64,18 +64,11 @@ abstract class Driver: BaseDestroyable() {
 
     abstract val activeRenderTarget: RenderTarget
 
-    private val tracked = mutableSetOf<Destroyable>()
-
-    open fun track(trackable: Destroyable) {
-        tracked += trackable
-    }
-    open fun untrack(trackable: Destroyable) {
-        tracked -= trackable
-    }
+    internal val tracker = Tracker<Destroyable>()
 
     override fun destroy() {
         while(true) {
-            when(val e = tracked.firstOrNull()) {
+            when(val e = tracker.tracked.firstOrNull()) {
                 null -> break
                 else -> e.destroy()
             }
