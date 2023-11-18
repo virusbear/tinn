@@ -64,12 +64,12 @@ abstract class Driver: BaseDestroyable() {
 
     abstract val activeRenderTarget: RenderTarget
 
-    private val tracked = mutableSetOf<Trackable>()
+    private val tracked = mutableSetOf<Destroyable>()
 
-    open fun track(trackable: Trackable) {
+    open fun track(trackable: Destroyable) {
         tracked += trackable
     }
-    open fun untrack(trackable: Trackable) {
+    open fun untrack(trackable: Destroyable) {
         tracked -= trackable
     }
 
