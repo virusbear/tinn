@@ -1,3 +1,6 @@
 package com.virusbear.tinn
 
-interface GraphicsContext
+interface GraphicsContext {
+    val renderThread: RenderThread
+    val driver: Driver
+}
